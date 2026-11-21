@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angela Wang</title>
+  <meta name="description" content="Angela Wang: CS student working across product, design, and engineering." />
+
+  <!-- Fonts: Figtree (body, easy to read) + Gaegu (handwritten accent) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- ===== SVG FILTERS (invisible; used by CSS) ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- Thick white sticker outline + soft shadow. Change radius="7" to make the border thicker/thinner. -->
+      <filter id="sticker" x="-15%" y="-10%" width="130%" height="125%" color-interpolation-filters="sRGB">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="grown" />
+        <feGaussianBlur in="grown" stdDeviation="2.5" result="soft" />
+        <feComponentTransfer in="soft" result="outline">
+          <feFuncA type="linear" slope="3" intercept="-1" />
+        </feComponentTransfer>
+        <feFlood flood-color="#ffffff" />
+        <feComposite in2="outline" operator="in" result="white" />
+        <feGaussianBlur in="outline" stdDeviation="6" />
+        <feOffset dx="3" dy="9" />
+        <feComponentTransfer result="shadow">
+          <feFuncA type="linear" slope="0.22" />
+        </feComponentTransfer>
+        <feMerge>
+          <feMergeNode in="shadow" />
+          <feMergeNode in="white" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <!-- reusable star shape (unit size, scale it up) -->
+      <path id="star-shape" d="M0,-1 L0.235,-0.324 L0.951,-0.309 L0.38,0.124 L0.588,0.809 L0,0.4 L-0.588,0.809 L-0.38,0.124 L-0.951,-0.309 L-0.235,-0.324Z" />
+    </defs>
+  </svg>
+
+  <!-- ===== TOP NAV ===== -->
+  <header class="nav">
+    <a class="nav__logo" href="#top" aria-label="Back to top">AW</a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#tin">Interests</a>
+      <a href="#contact">Contact</a>
+      <!-- TODO: put your resume at public/resume.pdf -->
+      <a class="nav__resume" href="/resume.pdf" target="_blank" rel="noopener">Resume</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ============================================================
+         1. HERO
+         ============================================================ -->
+    <section class="hero" aria-labelledby="hero-name">
+      <div class="hero__text">
+        <p class="hand hero__hi">hi, i'm</p>
+        <h1 id="hero-name" class="hero__name">Angela Wang</h1>
+        <!-- TODO: tweak this one-liner -->
+        <p class="hero__intro">CS student at Cornell working where product, design, and engineering meet.</p>
+
+        <ul class="quick-links" aria-label="Quick links">
+          <li><a class="pill pill--primary" href="/resume.pdf" target="_blank" rel="noopener">Resume ↗</a></li>
+          <!-- TODO: replace with your real email / profile URLs -->
+          <li><a class="pill" href="mailto:you@example.com">Email</a></li>
+          <li><a class="pill" href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a class="pill" href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+
+        <!-- TODO: replace with 2-3 sentences about you -->
+        <p class="hero__about">
+          <span class="ph">[About me: 2–3 sentences. What you're studying, what kind of work you love
+          (e.g. turning fuzzy problems into products people enjoy), and what you're looking for next
+          (e.g. Summer 2027 PM / design / SWE internships).]</span>
+        </p>
+      </div>
+
+      <div class="hero__art">
+        <!-- Stop-motion sticker: 3 frames stacked, hard-cut every 0.7s (see .me-sticker in style.css) -->
+        <div class="me-sticker" role="img" aria-label="Cutout photo of Angela in a striped sundress and brown boots, holding a matcha drink">
+          <img src="/images/me_photo1.png" alt="" width="696" height="1180" />
+          <img src="/images/me_photo2.png" alt="" width="696" height="1180" />
+          <img src="/images/me_photo3.png" alt="" width="696" height="1180" />
+        </div>
+        <p class="hand hero__note" aria-hidden="true">← matcha in hand, always</p>
+        <svg class="deco-star deco-star--a" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
+        <svg class="deco-star deco-star--b" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
+        <svg class="deco-star deco-star--c" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. EXPERIENCE
+         ============================================================ -->
+    <section id="experience" class="section">
+      <h2 class="section__title"><span class="tape">experience</span></h2>
+
+      <ol class="exp-list">
+        <li class="exp">
+          <div class="exp__head">
+            <h3 class="exp__role">Technical Product Management Intern</h3>
+            <p class="exp__date ph">[Mon YYYY – Mon YYYY]</p>
+          </div>
+          <p class="exp__place">Mastercard</p>
+          <p class="exp__desc ph">[1–2 lines: what you owned and the result, e.g. "Led X for Y, cutting Z by N%."]</p>
+        </li>
+        <li class="exp">
+          <div class="exp__head">
+            <h3 class="exp__role">President</h3>
+            <p class="exp__date ph">[Mon YYYY – Present]</p>
+          </div>
+          <p class="exp__place">Design consulting club, Cornell University <span class="ph">[official club name]</span></p>
+          <p class="exp__desc ph">[1–2 lines: team size, clients, what you lead.]</p>
+        </li>
+        <li class="exp">
+          <div class="exp__head">
+            <h3 class="exp__role">User Experience &amp; Research Intern</h3>
+            <p class="exp__date ph">[Mon YYYY – Mon YYYY]</p>
+          </div>
+          <p class="exp__place">PTC</p>
+          <p class="exp__desc ph">[1–2 lines: research you ran, what shipped because of it.]</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============================================================
+         3. PROJECTS
+         ============================================================ -->
+    <section id="projects" class="section">
+      <h2 class="section__title"><span class="tape tape--sage">projects</span></h2>
+
+      <div class="projects">
+        <article class="project">
+          <!-- TODO: swap the placeholder div for <img src="/images/docupal.png" alt="..."> -->
+          <div class="project__img ph-img" aria-hidden="true">image coming soon</div>
+          <div class="project__body">
+            <h3 class="project__title">DocuPal</h3>
+            <p class="project__role">Developer &amp; Designer</p>
+            <p class="project__desc ph">[1–2 lines: what it does and who it's for.]</p>
+            <ul class="chips" aria-label="Tech used"><li class="ph">[React]</li><li class="ph">[Python]</li><li class="ph">[Figma]</li></ul>
+            <p class="project__links"><a href="#" class="ph">[Live ↗]</a> <a href="#" class="ph">[Code ↗]</a></p>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="project__img ph-img" aria-hidden="true">image coming soon</div>
+          <div class="project__body">
+            <h3 class="project__title">Microsoft Copilot for Sales</h3>
+            <p class="project__role">Contract Product Designer</p>
+            <p class="project__desc ph">[1–2 lines: the problem and your design contribution.]</p>
+            <ul class="chips" aria-label="Tools used"><li class="ph">[Figma]</li><li class="ph">[User research]</li></ul>
+            <p class="project__links"><a href="#" class="ph">[Case study ↗]</a></p>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="project__img ph-img" aria-hidden="true">image coming soon</div>
+          <div class="project__body">
+            <h3 class="project__title">PinPoint</h3>
+            <p class="project__role">Designer</p>
+            <p class="project__desc ph">[1–2 lines: what it does and who it's for.]</p>
+            <ul class="chips" aria-label="Tools used"><li class="ph">[Figma]</li><li class="ph">[Prototyping]</li></ul>
+            <p class="project__links"><a href="#" class="ph">[Case study ↗]</a></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. THE TIN (interests) — opens when scrolled into view (see main.js)
+         ============================================================ -->
+    <section id="tin" class="section wall">
+      <h2 class="section__title"><span class="tape tape--butter">what's in my tin</span></h2>
+      <p class="section__sub">An old mint tin I covered in stickers, washi tape, hair clips, and my initials. These are the things I'd keep in it.</p>
+
+      <div class="wall__stage">
+        <div class="tin" data-state="closed">
+          <p class="hand tin__hint" aria-hidden="true">psst, it opens ✿</p>
+
+          <div class="tin__base">
+            <svg viewBox="0 0 300 200" aria-hidden="true">
+              <defs>
+                <linearGradient id="metal-base" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#ebe8e2" /><stop offset=".5" stop-color="#d3cec5" /><stop offset="1" stop-color="#e6e2db" />
+                </linearGradient>
+                <linearGradient id="metal-inside" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#a9a49b" /><stop offset=".35" stop-color="#cdc8bf" /><stop offset="1" stop-color="#dcd8d1" />
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="296" height="196" rx="26" fill="url(#metal-base)" stroke="#b5afa4" stroke-width="3" />
+              <rect x="16" y="16" width="268" height="168" rx="16" fill="url(#metal-inside)" />
+              <rect x="16" y="16" width="268" height="168" rx="16" fill="none" stroke="#9a948a" stroke-width="2" opacity=".5" />
+            </svg>
+          </div>
+
+          <button class="tin__lid" type="button" aria-label="Open or close the tin">
+            <!-- front of lid: stickers + washi tape (drawn from my real tin) -->
+            <svg class="lid-face lid-front" viewBox="0 0 300 200" aria-hidden="true">
+              <defs>
+                <linearGradient id="metal-lid" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f1eee8" /><stop offset=".55" stop-color="#d8d3ca" /><stop offset="1" stop-color="#ebe7e0" />
+                </linearGradient>
+                <pattern id="tape-dots" width="12" height="12" patternUnits="userSpaceOnUse">
+                  <rect width="12" height="12" fill="#a65e3f" /><circle cx="6" cy="6" r="2.2" fill="#f5e6d6" />
+                </pattern>
+              </defs>
+              <rect x="2" y="2" width="296" height="196" rx="26" fill="url(#metal-lid)" stroke="#b5afa4" stroke-width="3" />
+              <!-- washi tape cross -->
+              <rect x="130" y="4" width="30" height="192" fill="url(#tape-dots)" opacity=".92" />
+              <rect x="4" y="86" width="292" height="26" fill="url(#tape-dots)" opacity=".92" />
+              <!-- plum star -->
+              <use href="#star-shape" transform="translate(64 50) rotate(-14) scale(30)" fill="#6b3a40" stroke="#fff" stroke-width=".14" stroke-linejoin="round" />
+              <!-- bow -->
+              <g transform="translate(204 46)">
+                <path d="M-28,-16 L0,0 L-28,16 Z M28,-16 L0,0 L28,16 Z" fill="#3f2427" stroke="#fff" stroke-width="4" stroke-linejoin="round" />
+                <circle r="5" fill="#fbf7f0" stroke="#e6ddd2" />
+              </g>
+              <!-- envelope -->
+              <g transform="translate(256 50) rotate(4)">
+                <rect x="-26" y="-22" width="52" height="44" rx="3" fill="#8c3b3b" />
+                <rect x="-19" y="-14" width="38" height="30" rx="2" fill="#efe3d0" />
+                <path d="M-19,-14 L0,3 L19,-14" fill="none" stroke="#d8c7ae" stroke-width="2" />
+                <circle cy="3" r="3.5" fill="#c0505a" />
+                <use href="#star-shape" transform="translate(16 -16) scale(6)" fill="#e9a3b6" />
+              </g>
+              <!-- cat flower sticker -->
+              <g transform="translate(66 150)">
+                <g fill="#fff"><circle cx="0" cy="-17" r="17" /><circle cx="16" cy="-5" r="17" /><circle cx="10" cy="14" r="17" /><circle cx="-10" cy="14" r="17" /><circle cx="-16" cy="-5" r="17" /></g>
+                <g fill="#b99ab8"><circle cx="0" cy="-15" r="13" /><circle cx="14" cy="-4" r="13" /><circle cx="9" cy="12" r="13" /><circle cx="-9" cy="12" r="13" /><circle cx="-14" cy="-4" r="13" /></g>
+                <path d="M-12,-2 L-11,-14 L-4,-7 L4,-7 L11,-14 L12,-2 Q12,12 0,12 Q-12,12 -12,-2Z" fill="#e8c9b5" />
+                <circle cx="-5" cy="1" r="1.4" fill="#5b3b3b" /><circle cx="5" cy="1" r="1.4" fill="#5b3b3b" />
+                <path d="M-2,5 L0,6.5 L2,5 M-16,3 L-8,4 M16,3 L8,4" stroke="#5b3b3b" stroke-width="1" fill="none" />
+              </g>
+              <!-- red hair clips -->
+              <g transform="translate(202 152) rotate(-14)" stroke="#fff" stroke-width="3">
+                <path d="M-30,-14 Q-34,-6 -30,-2 L28,-6 Q32,-10 28,-14 Z" fill="#b5473f" />
+                <path d="M-30,6 Q-34,14 -30,18 L28,14 Q32,10 28,6 Z" fill="#b5473f" />
+              </g>
+              <!-- button -->
+              <g transform="translate(258 152)">
+                <circle r="19" fill="#ece3ea" stroke="#c9bcc6" stroke-width="2" />
+                <circle r="13" fill="none" stroke="#d9ccd6" />
+                <circle cx="-4" r="2.2" fill="#a89aa5" /><circle cx="4" r="2.2" fill="#a89aa5" />
+              </g>
+              <!-- rhinestones -->
+              <g fill="#fff" stroke="#cdd6de"><circle cx="160" cy="16" r="4" /><circle cx="110" cy="70" r="4" /><circle cx="240" cy="118" r="4" /><circle cx="160" cy="182" r="4" /><circle cx="112" cy="130" r="3.5" /></g>
+            </svg>
+
+            <!-- underside of lid: my initials AW -->
+            <svg class="lid-face lid-back" viewBox="0 0 300 200" aria-hidden="true">
+              <rect x="2" y="2" width="296" height="196" rx="26" fill="url(#metal-lid)" stroke="#b5afa4" stroke-width="3" />
+              <g font-family="Figtree, sans-serif" font-weight="700" font-size="28" text-anchor="middle" fill="#6a6662">
+                <rect x="108" y="78" width="36" height="40" rx="5" fill="#efe2c0" stroke="#c9b48a" stroke-width="2" /><text x="126" y="108">A</text>
+                <rect x="156" y="78" width="36" height="40" rx="5" fill="#efe2c0" stroke="#c9b48a" stroke-width="2" /><text x="174" y="108">W</text>
+              </g>
+              <use href="#star-shape" transform="translate(92 48) scale(15)" fill="#d6b45a" stroke="#fff" stroke-width=".18" stroke-linejoin="round" />
+              <use href="#star-shape" transform="translate(242 164) rotate(10) scale(11)" fill="#d6b45a" stroke="#fff" stroke-width=".22" stroke-linejoin="round" />
+              <circle cx="44" cy="40" r="13" fill="#3a3533" stroke="#fff" stroke-width="3" />
+              <circle cx="46" cy="82" r="10" fill="#f4f1ee" stroke="#ddd6d0" stroke-width="2" />
+              <circle cx="206" cy="146" r="9" fill="#f4f1ee" stroke="#ddd6d0" stroke-width="2" />
+              <circle cx="52" cy="150" r="17" fill="#55688c" stroke="#fff" stroke-width="3" />
+              <!-- bunny sticker -->
+              <g transform="translate(86 150)">
+                <path d="M-14,16 Q-18,-2 -8,-6 Q-12,-24 -5,-24 Q0,-22 -1,-8 Q2,-24 8,-22 Q12,-18 6,-5 Q16,0 13,16 Z" fill="#fffdf8" stroke="#e2dad0" stroke-width="2" />
+                <circle cx="-3" cy="4" r="1.3" fill="#5b4b45" /><circle cx="5" cy="4" r="1.3" fill="#5b4b45" />
+              </g>
+              <!-- yellow hair clip + bow sticker -->
+              <g transform="translate(236 44) rotate(-12)">
+                <path d="M-34,-6 Q-38,0 -34,6 L26,4 Q30,0 26,-4 Z" fill="#e9b949" stroke="#fff" stroke-width="3" />
+                <path d="M6,-16 L18,0 L6,16 Z M30,-16 L18,0 L30,16 Z" fill="#e59a4a" stroke="#fff" stroke-width="3" stroke-linejoin="round" />
+              </g>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Interests. Each one rises out of the tin. Hover/tap shows the sentence in data-note. -->
+        <!-- TODO: edit the notes to sound like you -->
+        <ul class="tin-items" aria-label="Things I love">
+          <li><button class="tin-item" type="button" style="--r:-6deg" aria-describedby="n1"><span class="tin-item__icon" aria-hidden="true">🍣</span><span class="tin-item__label">sushi (&amp; all food)</span><span class="tin-item__note" id="n1" role="tooltip">[If there's a good omakase in town, I've probably been.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:5deg" aria-describedby="n2"><span class="tin-item__icon" aria-hidden="true">🍲</span><span class="tin-item__label">hot pot</span><span class="tin-item__note" id="n2" role="tooltip">[My ideal group dinner: a big pot and too many dipping sauces.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:-3deg" aria-describedby="n3"><span class="tin-item__icon" aria-hidden="true">🥒</span><span class="tin-item__label">pickles</span><span class="tin-item__note" id="n3" role="tooltip">[Any kind, any time, straight from the jar.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:7deg" aria-describedby="n4"><span class="tin-item__icon" aria-hidden="true">🧘‍♀️</span><span class="tin-item__label">yoga</span><span class="tin-item__note" id="n4" role="tooltip">[How I reset after a long week.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:-8deg" aria-describedby="n5"><span class="tin-item__icon" aria-hidden="true">✨</span><span class="tin-item__label">collecting smiskis</span><span class="tin-item__note" id="n5" role="tooltip">[Tiny glow-in-the-dark figures hiding all over my desk.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:4deg" aria-describedby="n6"><span class="tin-item__icon" aria-hidden="true">🕯️</span><span class="tin-item__label">candles</span><span class="tin-item__note" id="n6" role="tooltip">[Always one lit while I work.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:-4deg" aria-describedby="n7"><span class="tin-item__icon" aria-hidden="true">✂️</span><span class="tin-item__label">crafting</span><span class="tin-item__note" id="n7" role="tooltip">[Stickers, washi tape, and this very tin.]</span></button></li>
+          <li><button class="tin-item" type="button" style="--r:6deg" aria-describedby="n8"><span class="tin-item__icon" aria-hidden="true">✈️</span><span class="tin-item__label">traveling</span><span class="tin-item__note" id="n8" role="tooltip">[Always planning the next trip.]</span></button></li>
+          <li><button class="tin-item tin-item--fav" type="button" style="--r:-5deg" aria-describedby="n9"><span class="tin-item__icon" aria-hidden="true">📍</span><span class="tin-item__label">barcelona</span><span class="tin-item__tag hand">fav place so far</span><span class="tin-item__note" id="n9" role="tooltip">[Gaudí, tapas, and the beach in one city.]</span></button></li>
+        </ul>
+      </div>
+
+      <button class="tin-replay hand" type="button">↻ close &amp; open again</button>
+    </section>
+
+    <!-- ============================================================
+         5. THE WALL (photo collage, inspired by the wall above my bed)
+         ============================================================ -->
+    <section id="wall" class="section">
+      <h2 class="section__title"><span class="tape tape--pink">the wall</span></h2>
+      <p class="section__sub ph">[Placeholder: prints, photobooth strips, and stars like the wall above my bed. Add photos to public/images and swap them in.]</p>
+
+      <div class="collage">
+        <figure class="print" style="--r:-4deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
+        <figure class="booth" style="--r:3deg"><div class="ph-img"></div><div class="ph-img"></div><div class="ph-img"></div><div class="ph-img"></div></figure>
+        <figure class="print print--wide" style="--r:2deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
+        <figure class="print" style="--r:-2deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
+        <svg class="deco-star collage__star" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. CONTACT / FOOTER
+         ============================================================ -->
+    <footer id="contact" class="contact">
+      <h2 class="contact__title">let's chat ✿</h2>
+      <p class="contact__text">Open to <span class="ph">[Summer 2027 internships in product / design / engineering]</span>. The fastest way to reach me is email.</p>
+      <ul class="quick-links quick-links--center">
+        <li><a class="pill pill--primary" href="mailto:you@example.com">you@example.com</a></li>
+        <li><a class="pill" href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a class="pill" href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a class="pill" href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+      </ul>
+      <p class="contact__small">made by hand (and code) by Angela Wang · <span id="year"></span></p>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
