@@ -7,12 +7,13 @@
   <!-- lets CSS hide things that animate in, only when JS is running -->
   <script>document.documentElement.classList.add('js')</script>
   <meta name="description" content="Angela Wang: CS '28 at Cornell. Designer and developer who likes products and people." />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Fonts: Roycella (self-hosted script, big titles only) + Afacad (everything else) -->
-  <link rel="preload" href="/fonts/Roycella.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- Fonts: Anton (poster headlines), Mrs Saint Delafield (pink signature script), Afacad (everything else) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&family=Anton&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/src/style.css" />
 </head>
@@ -68,79 +69,84 @@
 
     <!-- ============================================================
          1. HERO
-         Entrance: name letters rise in one by one, then each [data-rise] line fades up (main.js + style.css)
+         Big ANGELA (Anton) with the sticker standing in front of it and a pink script "Hi, I'm".
+         Entrance (main.js + style.css): ANGELA letters rise → script writes in → [data-rise] lines fade up.
          ============================================================ -->
-    <section class="hero" aria-labelledby="hero-name">
-      <div class="hero__text">
-        <h1 id="hero-name" class="display hero__name" data-split>Hi, I'm Angela!</h1>
-        <p class="hero__school" data-rise>CS '28 @ Cornell</p>
+    <section id="top" class="hero" aria-labelledby="hero-name">
+      <div class="hero__top">
+        <a class="mark" href="#top" aria-label="Angela Wang">AW</a>
+        <p class="label hero__meta" data-rise><span>Product / Design / Code</span><span>Ithaca, NY</span></p>
+      </div>
 
+      <div class="hero__stage">
+        <h1 id="hero-name" class="hero__title">
+          <span class="script hero__hi" aria-hidden="true">Hi, I<span class="apos">’</span>m</span>
+          <span class="poster hero__name" data-split>ANGELA</span>
+          <span class="sr-only">Hi, I'm Angela</span>
+        </h1>
+
+        <!-- Stop-motion sticker: 3 frames stacked, hard-cut every 0.7s (see .me-sticker in style.css) -->
+        <div class="hero__art" data-rise>
+          <div class="me-sticker" role="img" aria-label="Cutout photo of Angela in a striped sundress and brown boots, holding a matcha drink">
+            <img src="/images/me_photo1.png" alt="" width="696" height="1180" />
+            <img src="/images/me_photo2.png" alt="" width="696" height="1180" />
+            <img src="/images/me_photo3.png" alt="" width="696" height="1180" />
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__text">
+        <p class="label hero__school" data-rise><span class="tick" aria-hidden="true">///</span> CS '28 @ Cornell</p>
         <p class="hero__lead" data-rise>I like products, and I like people.</p>
         <p class="hero__about" data-rise>
           I love thinking about what we should build, how it helps people, and how to go about it.
           As a designer and developer, I love being able to think creatively and build technically.
         </p>
-
         <ul class="links" aria-label="Quick links" data-rise>
           <!-- TODO: put your resume at public/resume.pdf, and replace the email / profile URLs -->
-          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume <span aria-hidden="true">↗</span></a></li>
+          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume ↗</a></li>
           <li><a href="mailto:you@example.com">Email</a></li>
           <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
           <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
         </ul>
       </div>
-
-      <div class="hero__art" data-rise>
-        <!-- Stop-motion sticker: 3 frames stacked, hard-cut every 0.7s (see .me-sticker in style.css) -->
-        <div class="me-sticker" role="img" aria-label="Cutout photo of Angela in a striped sundress and brown boots, holding a matcha drink">
-          <img src="/images/me_photo1.png" alt="" width="696" height="1180" />
-          <img src="/images/me_photo2.png" alt="" width="696" height="1180" />
-          <img src="/images/me_photo3.png" alt="" width="696" height="1180" />
-        </div>
-      </div>
     </section>
 
     <!-- ============================================================
-         2. WORK: experience + projects
-         Images alternate sides and "print" in from a slot as you scroll (class .shot).
-         --tilt = the image's angle. Images live in public/images/work/.
+         2. EXPERIENCE + PROJECTS
+         Section head: tiny counter label, big Anton title, pink script word across it.
+         Entries alternate sides; the photo slides in from its side, the text slides up.
          ============================================================ -->
     <section id="experience" class="section">
-      <h2 class="display section__title" data-reveal>Experience</h2>
+      <header class="section-head" data-reveal>
+        <p class="label"><span class="tick" aria-hidden="true">///</span> 01 / 04 <span class="label__sep">Experience</span></p>
+        <h2 class="section-head__title"><span class="poster">EXPERIENCE</span><span class="script section-head__script writes" aria-hidden="true">my work</span></h2>
+      </header>
 
       <div class="entries">
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:-3deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/mastercard.jpg" alt="Angela at the Mastercard office" width="900" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/mastercard.jpg" alt="Angela at the Mastercard office" width="900" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">June 2026 – August 2026</p>
             <h3 class="entry__title">Technical Product Management Intern <span class="entry__at">at Mastercard</span></h3>
-            <p class="entry__date">June 2026 – August 2026</p>
             <p class="entry__desc">Shaped product strategy for consolidating marketing technology platforms and supported feature development for Mastercard.com.</p>
           </div>
         </article>
 
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:2.5deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/dcc.jpg" alt="Design Consulting at Cornell team photo" width="900" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/dcc.jpg" alt="Design Consulting at Cornell team photo" width="900" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">January 2026 – Present</p>
             <h3 class="entry__title">President of Design Consulting <span class="entry__at">at Cornell</span></h3>
-            <p class="entry__date">January 2026 – Present</p>
             <p class="entry__desc">Leading Cornell's student-run design consultancy, supporting client projects and internal team operations.</p>
           </div>
         </article>
 
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:-2deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/ptc.jpg" alt="PTC intern group in the PTC office" width="900" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/ptc.jpg" alt="PTC intern group in the PTC office" width="900" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">June 2025 – August 2025</p>
             <h3 class="entry__title">User Experience and Research Intern <span class="entry__at">at PTC</span></h3>
-            <p class="entry__date">June 2025 – August 2025</p>
             <p class="entry__desc">Redesigned complex workflows to simplify the Windchill software experience.</p>
           </div>
         </article>
@@ -148,39 +154,34 @@
     </section>
 
     <section id="projects" class="section">
-      <h2 class="display section__title" data-reveal>Projects</h2>
+      <header class="section-head" data-reveal>
+        <p class="label"><span class="tick" aria-hidden="true">///</span> 02 / 04 <span class="label__sep">Projects</span></p>
+        <h2 class="section-head__title"><span class="poster">PROJECTS</span><span class="script section-head__script writes" aria-hidden="true">lately</span></h2>
+      </header>
 
       <div class="entries">
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:2deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/docupal.jpg" alt="DocuPal upload screen: Household documents made simple" width="960" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/docupal.jpg" alt="DocuPal upload screen: Household documents made simple" width="960" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">2026</p>
             <h3 class="entry__title">DocuPal <span class="entry__at">– Developer and Designer</span></h3>
-            <p class="entry__date">2026</p>
             <p class="entry__desc">AI-powered platform to help immigrants understand complex documents and navigate important paperwork.</p>
           </div>
         </article>
 
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:-2.5deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/microsoft.jpg" alt="Microsoft bid review interface mockups" width="960" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/microsoft.jpg" alt="Microsoft bid review interface mockups" width="960" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">2025</p>
             <h3 class="entry__title">Microsoft <span class="entry__at">– Contract Designer</span></h3>
-            <p class="entry__date">2025</p>
             <p class="entry__desc">AI-powered bid review experience to help buyers navigate complex information and make more confident purchasing decisions.</p>
           </div>
         </article>
 
         <article class="entry" data-reveal>
-          <figure class="shot" style="--tilt:3deg">
-            <span class="shot__slot" aria-hidden="true"></span>
-            <div class="shot__window"><img class="shot__paper" src="/images/work/pinpoint.jpg" alt="PinPoint app shown on two phones" width="960" height="600" loading="lazy" /></div>
-          </figure>
+          <figure class="entry__img"><img src="/images/work/pinpoint.jpg" alt="PinPoint app shown on two phones" width="960" height="600" loading="lazy" /></figure>
           <div class="entry__text">
+            <p class="label entry__date">Mobile app</p>
             <h3 class="entry__title">PinPoint <span class="entry__at">– Designer</span></h3>
             <p class="entry__desc">Mobile experience to help Cornell students discover local events and activities around Ithaca.</p>
           </div>
@@ -189,12 +190,28 @@
     </section>
 
     <!-- ============================================================
-         3. WHAT'S IN MY TIN?  (drawn illustration of my real tin)
-         Opens when scrolled into view (see main.js):
-         closed → wiggle → pop → lid swings up on its hinge → charms fade in
+         3. INTERESTS MARQUEE: a slow ticker band. The list is written twice so it loops seamlessly.
+         Edit both copies if you change the words.
+         ============================================================ -->
+    <section class="marquee" aria-label="Some things I love">
+      <p class="label marquee__label"><span class="tick" aria-hidden="true">///</span> 03 / 04 <span class="label__sep">Things I love</span></p>
+      <div class="marquee__band">
+        <div class="marquee__track">
+          <p class="poster marquee__text">MATCHA <i>·</i> CANDLES <i>·</i> PHOTOGRAPHY <i>·</i> BUNNIES <i>·</i> STARS <i>·</i> YOSHITOMO NARA <i>·</i> CATS <i>·</i> SMISKI <i>·</i> HOT POT <i>·</i> BARCELONA <i>·</i> HAIR CLIPS <i>·</i> ANGEL WINGS <i>·</i>&nbsp;</p>
+          <p class="poster marquee__text" aria-hidden="true">MATCHA <i>·</i> CANDLES <i>·</i> PHOTOGRAPHY <i>·</i> BUNNIES <i>·</i> STARS <i>·</i> YOSHITOMO NARA <i>·</i> CATS <i>·</i> SMISKI <i>·</i> HOT POT <i>·</i> BARCELONA <i>·</i> HAIR CLIPS <i>·</i> ANGEL WINGS <i>·</i>&nbsp;</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. FINALE: WHAT'S IN MY TIN?  (drawn illustration of my real tin)
+         Opens when scrolled into view (main.js): closed → wiggle → pop → lid swings up → charms fade in
          ============================================================ -->
     <section id="tin" class="section tin-section">
-      <h2 class="display section__title section__title--center" data-reveal>What's in my tin?</h2>
+      <header class="tin-head" data-reveal>
+        <p class="label"><span class="tick" aria-hidden="true">///</span> 04 / 04 <span class="label__sep">The tin</span></p>
+        <h2 class="script tin-head__title writes">What<span class="apos">’</span>s in my tin?</h2>
+      </header>
 
       <div class="tin" data-state="closed">
         <div class="tin__body">
@@ -252,22 +269,24 @@
         </div>
       </div>
 
-      <button class="tin-replay" type="button">Close and open again</button>
+      <button class="tin-replay label" type="button">Close and open again</button>
     </section>
 
     <!-- ============================================================
-         4. CONTACT / FOOTER
+         FOOTER: contact line + the AW signature as the sign-off
          ============================================================ -->
-    <footer id="contact" class="section contact">
-      <h2 class="display section__title section__title--center" data-reveal>Let's chat</h2>
-      <p class="contact__text" data-reveal>The fastest way to reach me is email.</p>
-      <ul class="links links--center" data-reveal>
-        <li><a href="mailto:you@example.com">you@example.com</a></li>
-        <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
-        <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
-      </ul>
-      <p class="contact__small">Angela Wang · <span id="year"></span></p>
+    <footer id="contact" class="footer">
+      <div class="footer__row">
+        <p class="label">Angela Wang <span class="label__sep">Ithaca, NY</span></p>
+        <ul class="links links--small" aria-label="Contact">
+          <li><a href="mailto:you@example.com">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+        </ul>
+        <p class="label">© <span id="year"></span></p>
+      </div>
+      <p class="script signoff writes" data-reveal aria-label="Signed, AW">AW</p>
     </footer>
   </main>
 

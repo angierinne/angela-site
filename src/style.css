@@ -1,43 +1,34 @@
 /* =============================================================
-   Angela Wang — personal site
-   Direction: minimal light canvas, one script display font for big moments,
-   quiet supporting text, and a few real objects placed with intent.
+   Angela Wang — "a personal lookbook"
+   Bold poster type (Anton), a pink signature script (Mrs Saint Delafield),
+   quiet body text (Afacad), earthy colors with one hot accent.
 
    Sections in this file:
-   0. Tokens + fonts   1. Base   2. Motion helpers   3. Hero
-   4. Sections + work entries ("printing" images)   5. Tin
-   6. Contact   7. Reduced motion
+   0. Tokens   1. Base + shared pieces (labels, links, script, hairlines)
+   2. Motion helpers   3. Hero   4. Section heads + entries
+   5. Marquee   6. Tin   7. Footer   8. Reduced motion
    ============================================================= */
 
-/* ---------- 0. TOKENS + FONTS ---------- */
-@font-face {
-  font-family: "Roycella";
-  src: url("/fonts/Roycella.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block; /* avoid a flash of the fallback font in the big titles */
-}
-
+/* ---------- 0. TOKENS ---------- */
 :root {
-  --bg: #FAF5E8;          /* one soft buttercream off-white for the whole page */
-  --ink: #1f1a17;         /* strong dark: text + display titles */
-  --muted: #5f5650;       /* quiet supporting text */
-  --soft: #8a807a;        /* dates, captions */
-  --pink: #F3D9D8;        /* accent only */
-  --sage: #A5A17B;        /* accent only */
-  --sage-deep: #67633f;   /* sage dark enough for small text */
+  /* ~60 / 30 / 10 */
+  --sand: #F0E5DB;        /* Soft Sand: the one background for the whole page */
+  --ink: #474329;         /* Mocha Green: text, headlines, hairlines */
+  --ink-soft: #6a6548;    /* Mocha Green, lighter: quiet body text (still ~5:1 on sand) */
+  --pink: #FC75B4;        /* Watermelon Pink: script, small markers, hover underlines ONLY. Never body text. */
 
-  --font-display: "Roycella", "Snell Roundhand", cursive;  /* ONLY big titles */
-  --font-body: "Afacad", system-ui, sans-serif;            /* everything else */
+  --font-poster: "Anton", "Impact", sans-serif;                 /* big headlines */
+  --font-script: "Mrs Saint Delafield", cursive;                /* signature script, always large */
+  --font-body: "Afacad", system-ui, sans-serif;                 /* everything else */
 
   --gutter: clamp(20px, 5vw, 64px);
-  --maxw: 1080px;
+  --maxw: 1160px;
   --side: max(var(--gutter), calc((100% - var(--maxw)) / 2));
   --ease: cubic-bezier(.22, .61, .36, 1);       /* smooth ease-out, no bounce */
   --ease-io: cubic-bezier(.65, 0, .35, 1);      /* smooth ease-in-out */
 }
 
-/* ---------- 1. BASE ---------- */
+/* ---------- 1. BASE + SHARED PIECES ---------- */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; }
 body {
@@ -46,95 +37,117 @@ body {
   font-size: 18px;
   line-height: 1.55;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--sand);
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
-h1, h2, h3, p { margin: 0; }
+h1, h2, h3, p, figure { margin: 0; }
 ul { list-style: none; margin: 0; padding: 0; }
 button { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--pink); outline-offset: 4px; border-radius: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* The script display font. Generous padding + line-height so swashes never get clipped
-   or bump into the text around them. */
-.display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.25;
-  padding: .08em .3em .2em .04em;
-  letter-spacing: 0;
+/* big condensed poster type */
+.poster { font-family: var(--font-poster); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: -.005em; }
+
+/* pink signature script. Thin, so always large. A Soft Sand outline keeps it readable where it crosses green letters. */
+.script {
+  font-family: var(--font-script); font-weight: 400;
+  color: var(--pink);
+  line-height: 1.1;
+  -webkit-text-stroke: .09em var(--sand);
+  paint-order: stroke fill;
 }
 
-/* minimal text links */
-.links { display: flex; flex-wrap: wrap; gap: 8px 26px; font-weight: 500; font-size: 17px; }
-.links--center { justify-content: center; }
-.links a {
-  text-decoration: underline;
-  text-decoration-color: var(--pink);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
-  transition: text-decoration-color .25s, color .25s;
+/* tiny uppercase editorial labels: "01 / 04", "ITHACA, NY" */
+.label {
+  font-size: 12.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink);
 }
-.links a:hover { text-decoration-color: var(--sage); }
+.label__sep::before { content: "—"; margin: 0 .7em; opacity: .5; }
+/* the script's apostrophe has wide built-in spacing; this pulls it in so "What’s" doesn't gap */
+.apos { margin: 0 -.22em 0 -.12em; }
+.tick { color: var(--pink); letter-spacing: .05em; margin-right: .5em; font-weight: 700; }
+
+/* links: plain text; a short pink underline draws in on hover */
+.links { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 500; font-size: 17px; }
+.links--small { font-size: 14px; gap: 6px 22px; }
+.links a { position: relative; text-decoration: none; }
+.links a::after {
+  content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px;
+  background: var(--pink);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .35s var(--ease);
+}
+.links a:hover::after, .links a:focus-visible::after { transform: scaleX(1); }
 
 /* ---------- 2. MOTION HELPERS ----------
    Only hide things when JS is running (html.js), so the page still works without it. */
-.js [data-rise] { opacity: 0; transform: translateY(14px); }
-.js .is-ready [data-rise] {
-  animation: rise .5s var(--ease) forwards;
-  animation-delay: var(--d, 0s);
-}
-.js [data-split] .ch { display: inline-block; opacity: 0; transform: translateY(.3em); }
-.js .is-ready [data-split] .ch {
-  animation: rise .5s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 38ms);
-}
 @keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes write { to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
 
-/* scroll reveal: fade up once */
-.js [data-reveal]:not(.entry) { opacity: 0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+/* hero lines fade up in sequence (--d set in main.js) */
+.js [data-rise] { opacity: 0; transform: translateY(14px); }
+.js .is-ready [data-rise] { animation: rise .5s var(--ease) forwards; animation-delay: var(--d, 0s); }
+
+/* ANGELA letters rise in */
+.js [data-split] .ch { display: inline-block; opacity: 0; transform: translateY(.35em); }
+.js .is-ready [data-split] .ch { animation: rise .55s var(--ease) forwards; animation-delay: calc(var(--i) * 55ms); }
+
+/* the script "writes in": a soft left-to-right wipe */
+.js .writes {
+  -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+          mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%;
+  -webkit-mask-position: 100% 0; mask-position: 100% 0;
+}
+.js .is-ready .hero__hi, .js .is-in .writes, .js .writes.is-in { animation: write .9s var(--ease-io) forwards; }
+.js .is-in .section-head__script { animation-delay: .35s; }
+.js .is-ready .hero__hi { animation-delay: .45s; }
+
+/* generic scroll reveal: slide up once */
+.js [data-reveal]:not(.entry) { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
 .js [data-reveal].is-in:not(.entry) { opacity: 1; transform: none; }
 
 /* ---------- 3. HERO ---------- */
-.hero {
-  position: relative;
-  display: grid; grid-template-columns: 1.25fr .75fr; align-items: center;
-  gap: clamp(16px, 3vw, 48px);
-  min-height: 100svh;
-  padding: clamp(40px, 7vw, 88px) var(--side);
-}
-.hero__name {
-  font-size: clamp(54px, 9.2vw, 138px);
-  margin-left: -.06em;
-  white-space: nowrap;
-}
-.hero__school {
-  margin-top: 4px;
-  font-size: 17px; font-weight: 500; letter-spacing: .06em; color: var(--sage-deep);
-}
-.hero__lead {
-  margin-top: clamp(28px, 4vw, 44px);
-  font-size: clamp(25px, 2.6vw, 34px); font-weight: 600; line-height: 1.2; letter-spacing: -.01em;
-}
-.hero__about { margin-top: 14px; max-width: 44ch; font-size: 17px; color: var(--muted); }
-.hero .links { margin-top: 30px; }
+.hero { position: relative; padding: 22px var(--side) clamp(64px, 9vw, 120px); min-height: 100svh; }
+.hero__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hero__meta { display: flex; gap: 28px; }
 
-.hero__art { position: relative; display: flex; justify-content: center; }
-/* one soft pink disc behind the sticker: the only "color block" on the page */
-.hero__art::before {
-  content: ""; position: absolute; z-index: -1;
-  width: 78%; aspect-ratio: 1; border-radius: 50%;
-  top: 14%; left: 8%;
-  background: var(--pink);
+/* the AW mark, top-left */
+.mark {
+  font-family: var(--font-script); color: var(--pink); text-decoration: none;
+  font-size: 46px; line-height: 1; padding: 0 .2em;
 }
+
+.hero__stage { position: relative; margin-top: clamp(56px, 11vh, 120px); }
+.hero__title { position: relative; margin: 0; font-weight: 400; }
+.hero__name {
+  display: block; white-space: nowrap;
+  font-size: min(27vw, 380px);
+  margin-left: -.02em;
+}
+.hero__hi {
+  position: absolute; z-index: 3;
+  left: .08em; top: -.42em;
+  font-size: min(12vw, 170px);
+  transform: rotate(-8deg); transform-origin: left center;
+  padding: 0 .3em .1em 0;
+}
+.js .hero__hi { -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%); mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+
+/* the sticker stands IN FRONT of the big letters */
+/* sits over the right leg of the final A, so the whole name still reads */
+.hero__art { position: absolute; z-index: 2; right: -6%; top: -24%; }
 
 /* The stop-motion sticker. 3 frames stacked; each is visible 1/3 of a 2.1s loop
    = a hard cut every 0.7s. steps(1, end) means no fading in between. */
 .me-sticker {
   position: relative;
-  height: min(72vh, 600px);
+  height: min(74vh, 640px);
   aspect-ratio: 696 / 1180;
   filter: url(#sticker);
 }
@@ -150,74 +163,88 @@ button { font: inherit; color: inherit; }
   100%    { opacity: 0; }
 }
 
-@media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 56px; }
-  .hero__name { font-size: clamp(48px, 14.5vw, 96px); }
-  .me-sticker { height: min(58vh, 440px); }
+.hero__text { position: relative; z-index: 1; margin-top: clamp(28px, 4vw, 48px); max-width: min(50%, 560px); }
+.hero__school { margin-bottom: 18px; }
+.hero__lead { font-size: clamp(26px, 2.8vw, 36px); font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+.hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: var(--ink-soft); }
+.hero .links { margin-top: 28px; }
+
+@media (max-width: 760px) {
+  .hero { min-height: 0; }
+  .hero__meta span:first-child { display: none; }
+  .hero__stage { margin-top: 72px; }
+  .hero__hi { top: -.55em; }
+  .hero__name { font-size: 23vw; }
+  .hero__art { right: -3%; top: -46%; }
+  .me-sticker { height: min(42vh, 280px); }
+  .hero__text { max-width: none; margin-top: clamp(150px, 44vw, 210px); }
 }
 
-/* ---------- 4. SECTIONS + WORK ENTRIES ---------- */
-.section { padding: clamp(64px, 9vw, 120px) var(--side); }
-.section__title { font-size: clamp(56px, 8vw, 104px); margin-bottom: clamp(24px, 4vw, 48px); }
-.section__title--center { text-align: center; }
+/* ---------- 4. SECTION HEADS + ENTRIES ---------- */
+.section { padding: clamp(72px, 10vw, 140px) var(--side); }
 
-.entries { display: grid; gap: clamp(72px, 10vw, 128px); }
-
-/* Alternating layout: image left / text right, then flipped. The image pushes a little
-   into the text column (negative margin) so they feel placed together, not boxed. */
-.entry {
-  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: center;
-}
-.entry .shot { grid-row: 1; grid-column: 1 / 7; margin-right: -5%; }
-.entry .entry__text { grid-row: 1; grid-column: 7 / 13; padding-left: clamp(32px, 6vw, 80px); }
-.entry:nth-child(even) .shot { grid-column: 7 / 13; margin-right: 0; margin-left: -5%; }
-.entry:nth-child(even) .entry__text { grid-column: 1 / 7; padding-left: 0; padding-right: clamp(32px, 6vw, 80px); }
-.entry:nth-child(3n+2) .entry__text { align-self: end; padding-bottom: 6%; }   /* vary the rhythm a little */
-
-.entry__title { font-size: clamp(22px, 2.2vw, 27px); font-weight: 600; line-height: 1.2; letter-spacing: -.01em; }
-.entry__at { font-weight: 400; color: var(--muted); }
-.entry__date { margin-top: 8px; font-size: 14px; letter-spacing: .04em; color: var(--soft); }
-.entry__desc { margin-top: 12px; font-size: 17px; color: var(--muted); max-width: 40ch; }
-
-/* text fades up after its image starts printing */
-.js .entry .entry__text { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease) .35s, transform .8s var(--ease) .35s; }
-.js .entry.is-in .entry__text { opacity: 1; transform: none; }
-
-/* "Printing" images: a thin slot appears, the photo slides down out of it, the slot fades away.
-   Afterwards the photo floats gently and lifts on hover. */
-.shot { position: relative; margin: 0; rotate: var(--tilt, 0deg); }
-.shot__slot {
-  position: absolute; z-index: 2; top: -5px; left: -4%; right: -4%; height: 5px;
-  border-radius: 5px; background: var(--ink);
-  opacity: 0;
-}
-.shot__window {
-  /* clips only the top edge, so the photo looks like it comes out of the slot */
-  clip-path: inset(0 -80px -80px -80px);
-}
-.shot__paper {
-  width: 100%; height: auto; border-radius: 3px;
-  box-shadow: 0 2px 4px rgb(31 26 23 / .08), 0 18px 36px -16px rgb(31 26 23 / .35);
-  transition: translate .45s var(--ease), box-shadow .45s var(--ease);
-}
-.js .shot__paper { transform: translateY(calc(-100% - 70px)); /* far enough that its shadow is hidden too */ transition: transform 1.3s var(--ease-io), translate .45s var(--ease), box-shadow .45s var(--ease); }
-.js .entry.is-in .shot__paper { transform: none; }
-.js .entry.is-in .shot__slot { animation: slot 1.9s var(--ease) forwards; }
-@keyframes slot { 0% { opacity: 0; } 12% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
-
-/* after printing: no clipping, gentle float, lift on hover */
-.shot.is-printed .shot__window { clip-path: none; animation: float 7s ease-in-out infinite alternate; }
-.entry:nth-child(even) .shot.is-printed .shot__window { animation-delay: -3s; }
-@keyframes float { from { transform: translateY(0); } to { transform: translateY(-8px); } }
-.shot:hover .shot__paper { translate: 0 -8px; box-shadow: 0 4px 8px rgb(31 26 23 / .08), 0 28px 48px -18px rgb(31 26 23 / .4); }
-
-@media (max-width: 720px) {
-  .entry { grid-template-columns: 1fr; gap: 28px; }
-  .entry .shot, .entry:nth-child(even) .shot { grid-column: 1; grid-row: 1; margin: 0 4%; }
-  .entry .entry__text, .entry:nth-child(even) .entry__text { grid-column: 1; grid-row: 2; padding: 0; align-self: start; }
+.section-head { position: relative; border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: clamp(72px, 9vw, 120px); }
+.section-head__title { position: relative; margin-top: clamp(20px, 3vw, 36px); font-weight: 400; }
+.section-head__title .poster { display: block; font-size: min(16vw, 210px); }
+.section-head__script {
+  position: absolute; z-index: 1;
+  left: 52%; bottom: -.62em;
+  font-size: min(10vw, 130px);
+  transform: rotate(-7deg);
+  padding: 0 .3em .1em .1em;
 }
 
-/* ---------- 5. TIN ---------- */
+.entries { display: grid; gap: clamp(80px, 11vw, 150px); }
+
+/* lookbook layout: big photo, off-grid, alternating sides, nudging into the text column */
+.entry { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: start; }
+.entry__img { grid-row: 1; grid-column: 1 / 9; margin-right: -4%; }
+.entry__text { grid-row: 1; grid-column: 9 / 13; padding-left: clamp(24px, 4vw, 56px); align-self: end; }
+.entry:nth-child(even) .entry__img { grid-column: 5 / 13; margin-right: 0; margin-left: -4%; margin-top: clamp(24px, 5vw, 72px); }
+.entry:nth-child(even) .entry__text { grid-column: 1 / 5; padding-left: 0; padding-right: clamp(24px, 4vw, 56px); align-self: start; }
+
+/* hairline above the text instead of a card */
+.entry__text { border-top: 1px solid var(--ink); padding-top: 14px; }
+.entry__date { color: var(--ink-soft); }
+.entry__title { margin-top: 10px; font-size: clamp(22px, 2.1vw, 27px); font-weight: 600; line-height: 1.2; letter-spacing: -.01em; }
+.entry__at { font-weight: 400; }
+.entry__desc { margin-top: 10px; font-size: 17px; color: var(--ink-soft); }
+
+.entry__img img {
+  width: 100%; height: auto;
+  transition: translate .5s var(--ease), box-shadow .5s var(--ease);
+}
+.entry__img:hover img { translate: 0 -8px; box-shadow: 0 24px 40px -22px rgb(71 67 41 / .55); }
+
+/* scroll reveal: photo slides in from its side, text slides up */
+.js .entry .entry__img { opacity: 0; transform: translate(-48px, 24px); transition: opacity 1s var(--ease), transform 1.1s var(--ease); }
+.js .entry:nth-child(even) .entry__img { transform: translate(48px, 24px); }
+.js .entry .entry__text { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease) .2s, transform .9s var(--ease) .2s; }
+.js .entry.is-in .entry__img, .js .entry.is-in .entry__text { opacity: 1; transform: none; }
+
+@media (max-width: 760px) {
+  .entry { grid-template-columns: 1fr; gap: 22px; }
+  .entry .entry__img, .entry:nth-child(even) .entry__img { grid-column: 1; grid-row: 1; margin: 0; }
+  .entry:nth-child(even) .entry__img { margin-left: 10%; }
+  .entry:nth-child(odd) .entry__img { margin-right: 10%; }
+  .entry .entry__text, .entry:nth-child(even) .entry__text { grid-column: 1; grid-row: 2; padding: 14px 0 0; align-self: start; }
+  .section-head__script { left: 34%; bottom: -.75em; }
+}
+
+/* ---------- 5. MARQUEE ---------- */
+.marquee { padding: clamp(24px, 4vw, 48px) 0; }
+.marquee__label { padding: 0 var(--side); margin-bottom: 14px; }
+.marquee__band { overflow: hidden; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 10px; }
+.marquee__track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
+.marquee__band:hover .marquee__track { animation-play-state: paused; }
+.marquee__text { font-size: clamp(44px, 6.5vw, 92px); white-space: nowrap; line-height: 1; padding-right: .3em; }
+.marquee__text i { font-style: normal; color: var(--pink); margin: 0 .25em; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ---------- 6. TIN ---------- */
+.tin-head { text-align: center; margin-bottom: clamp(8px, 2vw, 24px); }
+.tin-head__title { font-size: min(14vw, 150px); padding: 0 .3em .1em; margin-top: 8px; }
+
 /* The stage is two lids tall: closed, the tin sits in the middle; open, the lid
    swings up on its hinge into the top half and the tray slides into the bottom half. */
 .tin {
@@ -232,10 +259,8 @@ button { font: inherit; color: inherit; }
   transform: translateY(-25.74%);   /* centers the closed tin: (330 + 20) / 2 / 680 */
   transition: transform 1.6s var(--ease-io);
 }
-.tin__base, .tin__lid {
-  position: absolute; left: 0; bottom: 0; width: 100%; aspect-ratio: 500 / 330;
-}
-.tin__tray { width: 100%; height: 100%; filter: drop-shadow(0 22px 26px rgb(31 26 23 / .22)); }
+.tin__base, .tin__lid { position: absolute; left: 0; bottom: 0; width: 100%; aspect-ratio: 500 / 330; }
+.tin__tray { width: 100%; height: 100%; filter: drop-shadow(0 22px 26px rgb(71 67 41 / .25)); }
 
 .tin__lid {
   padding: 0; border: 0; background: none; cursor: pointer;
@@ -247,7 +272,7 @@ button { font: inherit; color: inherit; }
 .lid-face {
   position: absolute; inset: 0; width: 100%; height: 100%;
   backface-visibility: hidden;
-  filter: drop-shadow(0 10px 14px rgb(31 26 23 / .2));
+  filter: drop-shadow(0 10px 14px rgb(71 67 41 / .22));
 }
 .lid-back { transform: rotateX(180deg); }
 
@@ -291,18 +316,18 @@ button { font: inherit; color: inherit; }
 .charm__art--placeholder {
   display: grid; place-items: center; text-align: center;
   width: clamp(46px, 12vw, 70px); aspect-ratio: 1; border-radius: 50%;
-  font-size: 11px; line-height: 1.1; color: var(--soft);
-  background: rgb(255 255 255 / .55); border: 1.5px dashed #9b9488; filter: none;
+  font-size: 11px; line-height: 1.1; color: var(--ink-soft);
+  background: rgb(255 255 255 / .55); border: 1.5px dashed var(--ink-soft); filter: none;
 }
-.charm__label { font-size: clamp(12px, 3vw, 14px); font-weight: 600; color: var(--ink); opacity: .8; }
+.charm__label { font-size: clamp(10px, 2.4vw, 11.5px); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
 
 /* the short description: only on hover (desktop) or tap (mobile, via .is-active from main.js) */
 .charm__note {
   position: absolute; top: 38%; translate: 0 -50%;
   width: max-content; max-width: 190px; z-index: 10;
-  background: var(--ink); color: var(--bg);
-  font-size: 14px; font-weight: 400; line-height: 1.4; text-align: left;
-  padding: 8px 12px; border-radius: 8px;
+  background: var(--ink); color: var(--sand);
+  font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; line-height: 1.4; text-align: left;
+  padding: 8px 12px; border-radius: 2px;
   opacity: 0; pointer-events: none; transition: opacity .25s var(--ease);
 }
 .charm[data-side="right"] .charm__note { left: calc(100% + 8px); }
@@ -314,25 +339,26 @@ button { font: inherit; color: inherit; }
 .charm:focus-visible .charm__note { opacity: 1; }
 
 .tin-replay {
-  display: block; margin: 16px auto 0; padding: 4px 10px;
-  font-size: 15px; color: var(--soft); background: none; border: 0; cursor: pointer;
-  text-decoration: underline; text-decoration-color: var(--pink); text-underline-offset: 5px;
+  display: block; margin: 14px auto 0; padding: 4px 10px;
+  font-size: 11px; color: var(--ink-soft); background: none; border: 0; cursor: pointer;
 }
 .tin-replay:hover { color: var(--ink); }
 
-/* ---------- 6. CONTACT ---------- */
-.contact { text-align: center; padding-bottom: 40px; }
-.contact .section__title { margin-bottom: 8px; }
-.contact__text { color: var(--muted); margin-bottom: 22px; }
-.contact__small { margin-top: 64px; font-size: 14px; color: var(--soft); }
+/* ---------- 7. FOOTER ---------- */
+.footer { padding: 0 var(--side) clamp(32px, 5vw, 56px); }
+.footer__row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px;
+  border-top: 1px solid var(--ink); padding-top: 16px;
+}
+/* the sign-off signature */
+.signoff { text-align: center; font-size: min(30vw, 200px); line-height: 1; margin-top: clamp(24px, 4vw, 48px); padding: 0 .3em; }
 
-/* ---------- 7. REDUCED MOTION: final states, no animation ---------- */
+/* ---------- 8. REDUCED MOTION: final states, no animation ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .entry .entry__text { opacity: 1 !important; transform: none !important; }
-  .js .shot__paper { transform: none !important; }
-  .shot__window { clip-path: none; }
+  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .entry .entry__img, .js .entry .entry__text { opacity: 1 !important; transform: none !important; }
+  .js .hero__hi, .js .writes { -webkit-mask-image: none !important; mask-image: none !important; }
   .me-sticker img:nth-child(1) { opacity: 1; }
   .me-sticker img:not(:first-child) { opacity: 0; }
 }

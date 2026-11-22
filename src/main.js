@@ -4,48 +4,44 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =============================================================
-   HERO ENTRANCE
-   Split the name into letters (each rises in, see [data-split] in style.css),
-   then the lines marked [data-rise] fade up one after another. ~1.4s total.
+   HERO ENTRANCE (~1.5s total)
+   1. ANGELA's letters rise in (each letter is wrapped in a span here)
+   2. the pink "Hi, I'm" writes in (CSS mask wipe, starts at 0.45s)
+   3. lines marked [data-rise] fade up one after another
    ============================================================= */
 const name = document.querySelector('[data-split]');
 if (!reduceMotion) {
   const text = name.textContent;
-  name.setAttribute('aria-label', text);
   name.textContent = '';
   [...text].forEach((char, i) => {
-    if (char === ' ') return name.append(' ');
     const span = document.createElement('span');
     span.className = 'ch';
-    span.setAttribute('aria-hidden', 'true');
     span.style.setProperty('--i', i);
     span.textContent = char;
     name.append(span);
   });
 }
-// stagger the supporting lines after the name
-document.querySelectorAll('[data-rise]').forEach((el, i) => {
-  el.style.setProperty('--d', `${0.5 + i * 0.16}s`);
+// stagger the supporting pieces after the name + script
+document.querySelectorAll('.hero [data-rise]').forEach((el, i) => {
+  el.style.setProperty('--d', `${0.55 + i * 0.12}s`);
 });
-// start once the script font is ready, so letters don't animate in the fallback font
+// start once the fonts are ready, so nothing animates in a fallback font
 const start = () => document.querySelector('.hero').classList.add('is-ready');
 Promise.race([
-  document.fonts.load('1em Roycella'),
+  Promise.all([document.fonts.load('1em Anton'), document.fonts.load('1em "Mrs Saint Delafield"')]),
   new Promise((r) => setTimeout(r, 1200)),
 ]).then(start, start);
 
 /* =============================================================
-   SCROLL REVEALS + "PRINTING" IMAGES
-   [data-reveal] gets .is-in when it scrolls into view (once).
-   For work entries, the photo prints out of its slot; when done it starts floating.
+   SCROLL REVEALS
+   [data-reveal] gets .is-in once it scrolls into view. CSS decides what that does:
+   entries slide in, section scripts write in, the sign-off signs itself.
    ============================================================= */
 const revealer = new IntersectionObserver((entries) => {
   entries.forEach(({ isIntersecting, target }) => {
     if (!isIntersecting) return;
     target.classList.add('is-in');
     revealer.unobserve(target);
-    const shot = target.querySelector('.shot');
-    if (shot) setTimeout(() => shot.classList.add('is-printed'), reduceMotion ? 0 : 1400);
   });
 }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('[data-reveal]').forEach((el) => revealer.observe(el));
