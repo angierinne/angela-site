@@ -54,8 +54,8 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 5. **Footer** (`#contact`): hairline row (name, Ithaca, contact links, ©), then the big pink "AW" sign-off that writes itself in.
 
 ## Motion rules
-- Smooth, confident, editorial: slides, reveals, writing-in. Never bouncy or chaotic: use `--ease` (ease-out) / `--ease-io` (ease-in-out), no overshoot.
-- Smooth everywhere except the photo stickers, which get a small, polished bounce.
+- Smooth, confident, editorial: slides, reveals, writing-in, using `--ease` (ease-out) / `--ease-io` (ease-in-out) with no overshoot. Never chaotic.
+- The ONE exception: photo stickers get a small, polished bounce (`--bounce`) for pop-in, lift and flip.
 - Always respect `prefers-reduced-motion`: everything shows its final state, the hero shows frame 1, the tin starts open, the marquee is static, stickers don't pop or flip (description fades instead).
 - Check desktop (1400px), tablet (~900px) and phone (390px) widths. No horizontal scroll.
 
