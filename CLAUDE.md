@@ -7,7 +7,7 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 2. **Angela**: it should feel personal and creative, not like a corporate template.
 
 ## Sticker book (layered on the lookbook, since 2026-11-22)
-- Personal images are presented as real **photo stickers**: white sticker border, soft shadow, slight tilt (about -3° to 3°, varied), playful bouncy motion. Same family as the hero cutout (SVG `#sticker` filter) and the tin charms (`#sticker-sm`).
+- Personal images are presented as real **photo stickers**: white sticker border, soft shadow, slight tilt (about -4° to 4°, varied), playful bouncy motion. Same family as the hero cutout (SVG `#sticker` filter) and the tin items (`#sticker-item`).
 - The page itself stays clean and spacious; the stickers and their motion carry the personality. Happy, bubbly, energetic, but polished, not childish.
 - Bounce is allowed ONLY for sticker motion (`--bounce` ease: pop-in, lift, flip). Everything else stays smooth (`--ease`, `--ease-io`).
 - Huge type is reserved for the landing. Other section headers are small: a tiny uppercase label + a dusty rose script word.
