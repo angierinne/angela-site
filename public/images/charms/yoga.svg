@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- rolled-up yoga mat -->
+  <rect x="22" y="30" width="78" height="40" rx="6" fill="#a5a17b"/>
+  <rect x="22" y="30" width="78" height="10" rx="5" fill="#bdb994"/>
+  <ellipse cx="22" cy="50" rx="14" ry="20" fill="#bdb994" stroke="#8d8964" stroke-width="2"/>
+  <path d="M22,50 m0,-3 a3,3 0 1,1 -1,5 a7,7 0 1,1 7,-9 a11,11 0 1,1 -14,14" fill="none" stroke="#7a7652" stroke-width="2" stroke-linecap="round"/>
+  <path d="M52,28 L52,72 M74,28 L74,72" stroke="#f3d9d8" stroke-width="6"/>
+  <path d="M52,28 C56,12 70,12 74,28" fill="none" stroke="#f3d9d8" stroke-width="4" stroke-linecap="round"/>
+</svg>

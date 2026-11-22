@@ -1,38 +1,40 @@
 /* =============================================================
    Angela Wang — personal site
+   Direction: minimal light canvas, one script display font for big moments,
+   quiet supporting text, and a few real objects placed with intent.
+
    Sections in this file:
-   0. Tokens (colors, fonts)   1. Base   2. Hero
-   3. Shared section bits      4. Work (experience + projects)
-   5. Tin (interests)          6. Wall collage   7. Contact
-   8. Reduced motion
+   0. Tokens + fonts   1. Base   2. Motion helpers   3. Hero
+   4. Sections + work entries ("printing" images)   5. Tin
+   6. Contact   7. Reduced motion
    ============================================================= */
 
-/* ---------- 0. TOKENS: change the palette here ---------- */
+/* ---------- 0. TOKENS + FONTS ---------- */
+@font-face {
+  font-family: "Roycella";
+  src: url("/fonts/Roycella.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block; /* avoid a flash of the fallback font in the big titles */
+}
+
 :root {
-  /* the three theme colors */
-  --pink: #F3D9D8;        /* dusty pink: work section, hovers */
-  --butter: #F2E6BE;      /* buttercream: hero, contact, tape */
-  --sage: #A5A17B;        /* sage olive: tin section, primary buttons */
+  --bg: #FAF5E8;          /* one soft buttercream off-white for the whole page */
+  --ink: #1f1a17;         /* strong dark: text + display titles */
+  --muted: #5f5650;       /* quiet supporting text */
+  --soft: #8a807a;        /* dates, captions */
+  --pink: #F3D9D8;        /* accent only */
+  --sage: #A5A17B;        /* accent only */
+  --sage-deep: #67633f;   /* sage dark enough for small text */
 
-  /* deeper shades of the theme, for text-sized accents (need contrast) */
-  --pink-deep: #b06f6b;
-  --sage-deep: #5d5a3a;
+  --font-display: "Roycella", "Snell Roundhand", cursive;  /* ONLY big titles */
+  --font-body: "Afacad", system-ui, sans-serif;            /* everything else */
 
-  --paper: #FBF7EF;       /* soft off-white background */
-  --card: #FFFDF8;
-  --ink: #3b302d;         /* main text: dark, stays readable on all 3 colors */
-  --muted: #6b5f59;       /* secondary text (dates etc.) */
-  --line: #e6d9c8;
-
-  --font-body: "Figtree", system-ui, sans-serif;
-  --font-hand: "Gaegu", "Figtree", cursive;
-
-  --radius: 14px;
-  --shadow: 0 1px 2px rgb(59 48 45 / .08), 0 10px 24px -10px rgb(59 48 45 / .28);
-  --gutter: clamp(16px, 4vw, 48px);
+  --gutter: clamp(20px, 5vw, 64px);
   --maxw: 1080px;
-  /* side padding that also centers content at --maxw, so section backgrounds can go full-width */
   --side: max(var(--gutter), calc((100% - var(--maxw)) / 2));
+  --ease: cubic-bezier(.22, .61, .36, 1);       /* smooth ease-out, no bounce */
+  --ease-io: cubic-bezier(.65, 0, .35, 1);      /* smooth ease-in-out */
 }
 
 /* ---------- 1. BASE ---------- */
@@ -41,59 +43,92 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.55;
   color: var(--ink);
-  background-color: var(--paper);
+  background: var(--bg);
   overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 h1, h2, h3, p { margin: 0; }
-ul, ol { list-style: none; margin: 0; padding: 0; }
+ul { list-style: none; margin: 0; padding: 0; }
 button { font: inherit; color: inherit; }
-:focus-visible { outline: 3px solid var(--sage-deep); outline-offset: 3px; border-radius: 6px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
 
-.hand { font-family: var(--font-hand); }
-
-/* Placeholder text: anything with class="ph" still needs your real content.
-   Delete the class once you replace the text. */
-.ph { color: var(--muted); font-style: italic; }
-.ph-img {
-  display: grid; place-items: center;
-  background: repeating-linear-gradient(45deg, #f3ece3 0 10px, #efe6db 10px 20px);
-  color: var(--muted); font-size: 14px;
-  border: 1.5px dashed #d8cabd;
+/* The script display font. Generous padding + line-height so swashes never get clipped
+   or bump into the text around them. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.25;
+  padding: .08em .3em .2em .04em;
+  letter-spacing: 0;
 }
 
-/* buttons */
-.quick-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-.quick-links--center { justify-content: center; }
-.pill {
-  display: inline-block; text-decoration: none; font-weight: 600; font-size: 15px;
-  padding: 9px 18px; border-radius: 999px;
-  background: var(--card); border: 1.5px solid var(--ink);
-  transition: transform .15s, background .15s;
+/* minimal text links */
+.links { display: flex; flex-wrap: wrap; gap: 8px 26px; font-weight: 500; font-size: 17px; }
+.links--center { justify-content: center; }
+.links a {
+  text-decoration: underline;
+  text-decoration-color: var(--pink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color .25s, color .25s;
 }
-.pill:hover { transform: translateY(-2px) rotate(-1deg); background: var(--pink); }
-.pill--primary { background: var(--sage); }
-.pill--primary:hover { background: var(--pink); }
+.links a:hover { text-decoration-color: var(--sage); }
 
-/* ---------- 2. HERO ---------- */
+/* ---------- 2. MOTION HELPERS ----------
+   Only hide things when JS is running (html.js), so the page still works without it. */
+.js [data-rise] { opacity: 0; transform: translateY(14px); }
+.js .is-ready [data-rise] {
+  animation: rise .5s var(--ease) forwards;
+  animation-delay: var(--d, 0s);
+}
+.js [data-split] .ch { display: inline-block; opacity: 0; transform: translateY(.3em); }
+.js .is-ready [data-split] .ch {
+  animation: rise .5s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 38ms);
+}
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+/* scroll reveal: fade up once */
+.js [data-reveal]:not(.entry) { opacity: 0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.js [data-reveal].is-in:not(.entry) { opacity: 1; transform: none; }
+
+/* ---------- 3. HERO ---------- */
 .hero {
-  background-color: var(--butter);
-  background-image: radial-gradient(rgb(59 48 45 / .07) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-  padding: clamp(32px, 6vw, 72px) var(--side) clamp(40px, 6vw, 72px);
-  display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: clamp(24px, 4vw, 56px);
+  position: relative;
+  display: grid; grid-template-columns: 1.25fr .75fr; align-items: center;
+  gap: clamp(16px, 3vw, 48px);
   min-height: 100svh;
+  padding: clamp(40px, 7vw, 88px) var(--side);
 }
 .hero__name {
-  font-size: clamp(46px, 7.5vw, 88px); line-height: 1; letter-spacing: -.03em; font-weight: 700;
+  font-size: clamp(54px, 9.2vw, 138px);
+  margin-left: -.06em;
+  white-space: nowrap;
 }
-.hero__intro { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; margin-top: 12px; color: var(--sage-deep); font-weight: 700; }
+.hero__school {
+  margin-top: 4px;
+  font-size: 17px; font-weight: 500; letter-spacing: .06em; color: var(--sage-deep);
+}
+.hero__lead {
+  margin-top: clamp(28px, 4vw, 44px);
+  font-size: clamp(25px, 2.6vw, 34px); font-weight: 600; line-height: 1.2; letter-spacing: -.01em;
+}
+.hero__about { margin-top: 14px; max-width: 44ch; font-size: 17px; color: var(--muted); }
+.hero .links { margin-top: 30px; }
 
 .hero__art { position: relative; display: flex; justify-content: center; }
+/* one soft pink disc behind the sticker: the only "color block" on the page */
+.hero__art::before {
+  content: ""; position: absolute; z-index: -1;
+  width: 78%; aspect-ratio: 1; border-radius: 50%;
+  top: 14%; left: 8%;
+  background: var(--pink);
+}
 
 /* The stop-motion sticker. 3 frames stacked; each is visible 1/3 of a 2.1s loop
    = a hard cut every 0.7s. steps(1, end) means no fading in between. */
@@ -115,198 +150,163 @@ button { font: inherit; color: inherit; }
   100%    { opacity: 0; }
 }
 
-.deco-star { position: absolute; width: 34px; fill: var(--pink); stroke: #fff; stroke-width: .16; stroke-linejoin: round;
-  filter: drop-shadow(0 2px 3px rgb(59 48 45 / .18)); animation: twinkle 3s ease-in-out infinite; }
-.deco-star--a { top: 6%; left: 8%; }
-.deco-star--b { top: 18%; right: 14%; width: 22px; fill: var(--sage); animation-delay: -1s; }
-.deco-star--c { bottom: 10%; left: 14%; width: 26px; fill: #fff; animation-delay: -2s; }
-@keyframes twinkle { 50% { transform: scale(.82) rotate(18deg); } }
-
-@media (max-width: 820px) {
-  .hero { grid-template-columns: 1fr; min-height: 0; }
-  .me-sticker { height: min(56vh, 420px); }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 56px; }
+  .hero__name { font-size: clamp(48px, 14.5vw, 96px); }
+  .me-sticker { height: min(58vh, 440px); }
 }
 
-/* ---------- 3. SHARED SECTION BITS ---------- */
-.section { padding: clamp(56px, 8vw, 96px) var(--side); }
-.section__title { font-family: var(--font-hand); font-weight: 700; font-size: clamp(36px, 5vw, 48px); line-height: 1; margin-bottom: 32px; }
-.section__title--second { margin-top: clamp(56px, 8vw, 88px); }
+/* ---------- 4. SECTIONS + WORK ENTRIES ---------- */
+.section { padding: clamp(64px, 9vw, 120px) var(--side); }
+.section__title { font-size: clamp(56px, 8vw, 104px); margin-bottom: clamp(24px, 4vw, 48px); }
 .section__title--center { text-align: center; }
-.section__sub { color: var(--muted); max-width: 60ch; margin: -12px 0 32px; }
 
-/* washi tape label behind section titles */
-.tape {
-  display: inline-block; padding: 6px 22px 2px;
-  background-color: rgb(255 255 255 / .7);
-  background-image: repeating-linear-gradient(90deg, rgb(255 255 255 / .35) 0 6px, transparent 6px 12px);
-  transform: rotate(-2deg);
-  clip-path: polygon(0 8%, 3% 0, 97% 4%, 100% 0, 99% 50%, 100% 100%, 96% 94%, 3% 100%, 0 92%, 1% 50%);
-}
-.tape--sage { background-color: rgb(165 161 123 / .6); transform: rotate(1.5deg); }
-.tape--butter { background-color: var(--butter); }
-.tape--pink { background-color: var(--pink); transform: rotate(2deg); }
+.entries { display: grid; gap: clamp(72px, 10vw, 128px); }
 
-/* a photo print: white border, soft shadow, a strip of tape on top */
-.print, .booth {
-  position: relative; margin: 0;
-  background: #fff; padding: 8px 8px 10px;
-  box-shadow: var(--shadow);
-  transform: rotate(var(--r, 0));
-}
-.print img { width: 100%; height: auto; }
-.print::before {
-  content: ""; position: absolute; top: -11px; left: 50%; width: 84px; height: 22px;
-  translate: -50% 0; rotate: -4deg;
-  background: rgb(242 230 190 / .9);
-  clip-path: polygon(0 10%, 4% 0, 96% 6%, 100% 0, 98% 100%, 3% 94%);
-}
-
-/* ---------- 4. WORK: experience + projects ---------- */
-.work {
-  background-color: var(--pink);
-  background-image: radial-gradient(rgb(59 48 45 / .06) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-}
-.entries { display: grid; gap: clamp(28px, 4vw, 40px); max-width: 880px; }
+/* Alternating layout: image left / text right, then flipped. The image pushes a little
+   into the text column (negative margin) so they feel placed together, not boxed. */
 .entry {
-  display: grid; grid-template-columns: minmax(0, 260px) 1fr; gap: clamp(20px, 3.5vw, 40px); align-items: center;
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: center;
 }
-.print--screen::before { background: rgb(165 161 123 / .55); }
-.entry__title { font-size: 20px; font-weight: 500; line-height: 1.3; }
-.entry__role { font-weight: 700; }
-.entry__date { font-size: 13px; color: var(--muted); letter-spacing: .02em; margin-top: 2px; }
-.entry__desc { margin-top: 8px; max-width: 52ch; }
-.entry__links { margin-top: 8px; font-weight: 600; font-size: 15px; }
+.entry .shot { grid-row: 1; grid-column: 1 / 7; margin-right: -5%; }
+.entry .entry__text { grid-row: 1; grid-column: 7 / 13; padding-left: clamp(32px, 6vw, 80px); }
+.entry:nth-child(even) .shot { grid-column: 7 / 13; margin-right: 0; margin-left: -5%; }
+.entry:nth-child(even) .entry__text { grid-column: 1 / 7; padding-left: 0; padding-right: clamp(32px, 6vw, 80px); }
+.entry:nth-child(3n+2) .entry__text { align-self: end; padding-bottom: 6%; }   /* vary the rhythm a little */
 
-@media (max-width: 600px) {
-  .entry { grid-template-columns: 1fr; gap: 18px; }
-  .entry .print { max-width: 300px; }
+.entry__title { font-size: clamp(22px, 2.2vw, 27px); font-weight: 600; line-height: 1.2; letter-spacing: -.01em; }
+.entry__at { font-weight: 400; color: var(--muted); }
+.entry__date { margin-top: 8px; font-size: 14px; letter-spacing: .04em; color: var(--soft); }
+.entry__desc { margin-top: 12px; font-size: 17px; color: var(--muted); max-width: 40ch; }
+
+/* text fades up after its image starts printing */
+.js .entry .entry__text { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease) .35s, transform .8s var(--ease) .35s; }
+.js .entry.is-in .entry__text { opacity: 1; transform: none; }
+
+/* "Printing" images: a thin slot appears, the photo slides down out of it, the slot fades away.
+   Afterwards the photo floats gently and lifts on hover. */
+.shot { position: relative; margin: 0; rotate: var(--tilt, 0deg); }
+.shot__slot {
+  position: absolute; z-index: 2; top: -5px; left: -4%; right: -4%; height: 5px;
+  border-radius: 5px; background: var(--ink);
+  opacity: 0;
+}
+.shot__window {
+  /* clips only the top edge, so the photo looks like it comes out of the slot */
+  clip-path: inset(0 -80px -80px -80px);
+}
+.shot__paper {
+  width: 100%; height: auto; border-radius: 3px;
+  box-shadow: 0 2px 4px rgb(31 26 23 / .08), 0 18px 36px -16px rgb(31 26 23 / .35);
+  transition: translate .45s var(--ease), box-shadow .45s var(--ease);
+}
+.js .shot__paper { transform: translateY(calc(-100% - 70px)); /* far enough that its shadow is hidden too */ transition: transform 1.3s var(--ease-io), translate .45s var(--ease), box-shadow .45s var(--ease); }
+.js .entry.is-in .shot__paper { transform: none; }
+.js .entry.is-in .shot__slot { animation: slot 1.9s var(--ease) forwards; }
+@keyframes slot { 0% { opacity: 0; } 12% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+
+/* after printing: no clipping, gentle float, lift on hover */
+.shot.is-printed .shot__window { clip-path: none; animation: float 7s ease-in-out infinite alternate; }
+.entry:nth-child(even) .shot.is-printed .shot__window { animation-delay: -3s; }
+@keyframes float { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+.shot:hover .shot__paper { translate: 0 -8px; box-shadow: 0 4px 8px rgb(31 26 23 / .08), 0 28px 48px -18px rgb(31 26 23 / .4); }
+
+@media (max-width: 720px) {
+  .entry { grid-template-columns: 1fr; gap: 28px; }
+  .entry .shot, .entry:nth-child(even) .shot { grid-column: 1; grid-row: 1; margin: 0 4%; }
+  .entry .entry__text, .entry:nth-child(even) .entry__text { grid-column: 1; grid-row: 2; padding: 0; align-self: start; }
 }
 
-/* ---------- 5. TIN (interests) ---------- */
-.tin-section {
-  background-color: var(--sage);
-  background-image: radial-gradient(rgb(255 255 255 / .14) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-  overflow-x: clip;
-}
-
+/* ---------- 5. TIN ---------- */
 /* The stage is two lids tall: closed, the tin sits in the middle; open, the lid
-   flips up on its hinge into the top half and the tray slides into the bottom half. */
+   swings up on its hinge into the top half and the tray slides into the bottom half. */
 .tin {
-  --lid-h: 48.53%;            /* 660 / 1360: one lid's share of the stage height */
   position: relative;
-  width: min(520px, 100%);
+  width: min(560px, 100%);
   margin: 0 auto;
-  aspect-ratio: 1000 / 1360;
-  perspective: 1400px;
+  aspect-ratio: 500 / 680;
+  perspective: 1600px;
 }
 .tin__body {
   position: absolute; inset: 0;
-  transform: translateY(-25.7%);   /* centers the closed tin in the stage */
-  transition: transform 1.5s cubic-bezier(.5, 0, .25, 1);
+  transform: translateY(-25.74%);   /* centers the closed tin: (330 + 20) / 2 / 680 */
+  transition: transform 1.6s var(--ease-io);
 }
 .tin__base, .tin__lid {
-  position: absolute; left: 0; bottom: 0; width: 100%; aspect-ratio: 1000 / 660;
-  border-radius: 7% / 10.6%;
+  position: absolute; left: 0; bottom: 0; width: 100%; aspect-ratio: 500 / 330;
 }
-
-/* the tray: brushed silver with a rim and some depth */
-.tin__base {
-  background:
-    radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / .45), transparent 60%),
-    linear-gradient(160deg, #d8d5cf, #b9b5ad 55%, #cdc9c2);
-  box-shadow:
-    inset 0 0 0 5px #e4e1db,
-    inset 0 0 0 7px #a7a29a,
-    inset 0 18px 30px -6px rgb(0 0 0 / .28),
-    0 18px 30px -12px rgb(40 35 25 / .45);
-}
+.tin__tray { width: 100%; height: 100%; filter: drop-shadow(0 22px 26px rgb(31 26 23 / .22)); }
 
 .tin__lid {
   padding: 0; border: 0; background: none; cursor: pointer;
   transform-style: preserve-3d;
-  transform-origin: 50% -3%;      /* the hinge, just above the tray's top edge */
-  transition: transform 1.5s cubic-bezier(.5, 0, .25, 1);
+  transform-origin: 50% -3.03%;   /* the hinge: 10 units above the tray's top edge */
+  transition: transform 1.6s var(--ease-io);
 }
-/* (no filter on .tin__lid: a filter there would flatten the 3D flip; shadows go on the faces) */
+/* NEVER put `filter` on .tin__lid or its ancestors: it flattens the 3D flip. Shadows go on the faces. */
 .lid-face {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  border-radius: inherit; object-fit: cover;
   backface-visibility: hidden;
-  box-shadow: 0 0 0 3px #d9d5ce, 0 14px 24px -10px rgb(40 35 25 / .5);
+  filter: drop-shadow(0 10px 14px rgb(31 26 23 / .2));
 }
 .lid-back { transform: rotateX(180deg); }
 
-/* 1) wiggle */
-.tin[data-state="wiggle"] .tin__lid { animation: lid-wiggle 1.4s ease-in-out; }
+/* 1) small wiggle */
+.tin[data-state="wiggle"] .tin__lid { animation: lid-wiggle 1.3s ease-in-out; }
 @keyframes lid-wiggle {
   0%, 100% { transform: none; }
-  12% { transform: translateY(-1.5%) rotate(-2.5deg); }
-  26% { transform: translateY(-1%) rotate(2.5deg); }
-  40% { transform: translateY(-2%) rotate(-2deg); }
-  54% { transform: translateY(-1%) rotate(2deg); }
-  68% { transform: translateY(-1.5%) rotate(-1deg); }
-  82% { transform: translateY(-.5%) rotate(.5deg); }
+  15% { transform: translateY(-.8%) rotate(-1.6deg); }
+  32% { transform: translateY(-.5%) rotate(1.6deg); }
+  50% { transform: translateY(-1%) rotate(-1.2deg); }
+  68% { transform: translateY(-.5%) rotate(1deg); }
+  85% { transform: translateY(-.3%) rotate(-.4deg); }
 }
-/* 2) pop: the lid lifts a little, like it just unstuck */
-.tin[data-state="pop"] .tin__lid { transform: translateY(-5%) scale(1.02); transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
-/* 3) open: the lid swings up on its hinge and shows the "AW" inside */
+/* 2) pop: the lid lifts off the tray */
+.tin[data-state="pop"] .tin__lid { transform: translateY(-5%); transition: transform .45s var(--ease); }
+/* 3) open: the lid swings up and shows its inside */
 .tin[data-state="open"] .tin__body { transform: none; }
 .tin[data-state="open"] .tin__lid { transform: rotateX(180deg); }
 
-.tin__hint {
-  position: absolute; left: 0; right: 0; bottom: 6%; text-align: center;
-  font-size: 24px; color: var(--ink); transform: rotate(-3deg);
-  transition: opacity .3s;
-}
-.tin:not([data-state="closed"]) .tin__hint { opacity: 0; }
-
-/* charms inside the tray. Hidden until the tin is open, then they appear one by one. */
+/* charms inside the tray: hidden until open, then fade up one at a time */
 .charms { position: absolute; inset: 0; }
 .charms li { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; }
 .charm {
-  position: relative; display: flex; flex-direction: column; align-items: center;
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 0; border: 0; background: none; cursor: pointer;
-  opacity: 0; transform: translateY(30%) scale(.5);
-  transition: opacity .2s, transform .2s;
+  opacity: 0; transform: translateY(14px) rotate(var(--r));
+  transition: opacity .25s, transform .25s;
 }
 .tin[data-state="open"] .charm {
-  opacity: 1; transform: rotate(var(--r)) scale(1);
-  transition: opacity .5s, transform .6s cubic-bezier(.3, 1.6, .5, 1);
-  transition-delay: calc(1.2s + var(--i) * .18s);
+  opacity: 1; transform: rotate(var(--r));
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+  transition-delay: calc(1.35s + var(--i) * .15s);
 }
-.charm__icon {
-  font-size: clamp(32px, 8vw, 52px); line-height: 1.1;
+.charm__art {
+  width: clamp(54px, 15vw, 92px); height: auto;
   filter: url(#sticker-sm);           /* same white cutout outline as the hero sticker */
-  transition: scale .2s;
+  transition: translate .3s var(--ease);
 }
-.charm:hover .charm__icon, .charm.is-active .charm__icon { scale: 1.12; }
-/* smiski spot: replace with an <img class="charm__photo"> later */
-.charm__icon--placeholder {
+.charm:hover .charm__art, .charm.is-active .charm__art { translate: 0 -4px; }
+/* smiski spot: replace with an <img class="charm__art"> later */
+.charm__art--placeholder {
   display: grid; place-items: center; text-align: center;
-  width: clamp(44px, 11vw, 64px); aspect-ratio: 1; border-radius: 50%;
-  font-family: var(--font-body); font-size: 10px; line-height: 1.1; color: var(--muted);
-  background: rgb(255 255 255 / .6); border: 2px dashed #8f8a80; filter: none;
+  width: clamp(46px, 12vw, 70px); aspect-ratio: 1; border-radius: 50%;
+  font-size: 11px; line-height: 1.1; color: var(--soft);
+  background: rgb(255 255 255 / .55); border: 1.5px dashed #9b9488; filter: none;
 }
-.charm__photo { width: clamp(44px, 11vw, 64px); height: auto; filter: url(#sticker-sm); }
-.charm__label {
-  font-family: var(--font-hand); font-weight: 700; font-size: clamp(15px, 3.4vw, 19px); line-height: 1;
-  background: #fff; padding: 2px 7px 0; border-radius: 6px; margin-top: 2px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / .2);
-}
+.charm__label { font-size: clamp(12px, 3vw, 14px); font-weight: 600; color: var(--ink); opacity: .8; }
 
 /* the short description: only on hover (desktop) or tap (mobile, via .is-active from main.js) */
 .charm__note {
-  position: absolute; top: 50%; translate: 0 -50%;
-  width: max-content; max-width: 180px; z-index: 10;
-  background: var(--ink); color: var(--paper);
-  font-family: var(--font-body); font-size: 14px; line-height: 1.4; text-align: left;
-  padding: 8px 12px; border-radius: 10px;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
+  position: absolute; top: 38%; translate: 0 -50%;
+  width: max-content; max-width: 190px; z-index: 10;
+  background: var(--ink); color: var(--bg);
+  font-size: 14px; font-weight: 400; line-height: 1.4; text-align: left;
+  padding: 8px 12px; border-radius: 8px;
+  opacity: 0; pointer-events: none; transition: opacity .25s var(--ease);
 }
-.charm[data-side="right"] .charm__note { left: calc(100% + 10px); }
-.charm[data-side="left"] .charm__note { right: calc(100% + 10px); }
+.charm[data-side="right"] .charm__note { left: calc(100% + 8px); }
+.charm[data-side="left"] .charm__note { right: calc(100% + 8px); }
 @media (hover: hover) {
   .charm:hover .charm__note { opacity: 1; }
 }
@@ -314,39 +314,25 @@ button { font: inherit; color: inherit; }
 .charm:focus-visible .charm__note { opacity: 1; }
 
 .tin-replay {
-  display: block; margin: 20px auto 0; padding: 4px 14px;
-  font-size: 20px; color: var(--ink); background: none; border: 0; cursor: pointer;
+  display: block; margin: 16px auto 0; padding: 4px 10px;
+  font-size: 15px; color: var(--soft); background: none; border: 0; cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--pink); text-underline-offset: 5px;
 }
-.tin-replay:hover { text-decoration: underline; }
+.tin-replay:hover { color: var(--ink); }
 
-/* ---------- 6. WALL COLLAGE ---------- */
-.collage {
-  position: relative;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 28px; align-items: start;
-  padding: 24px; border-radius: var(--radius);
-  background: #f3ebe1;
-}
-.print .ph-img { aspect-ratio: 4 / 5; }
-.print--wide .ph-img { aspect-ratio: 5 / 4; }
-.print figcaption { text-align: center; font-size: 18px; margin-top: 4px; color: var(--muted); }
-.booth { display: grid; gap: 6px; padding-bottom: 22px; max-width: 150px; justify-self: center; }
-.booth .ph-img { aspect-ratio: 4 / 3; }
-.collage__star { width: 40px; right: 10px; top: -14px; fill: var(--butter); }
+/* ---------- 6. CONTACT ---------- */
+.contact { text-align: center; padding-bottom: 40px; }
+.contact .section__title { margin-bottom: 8px; }
+.contact__text { color: var(--muted); margin-bottom: 22px; }
+.contact__small { margin-top: 64px; font-size: 14px; color: var(--soft); }
 
-/* ---------- 7. CONTACT ---------- */
-.contact {
-  padding: clamp(48px, 7vw, 80px) var(--side) 28px;
-  background: var(--butter); text-align: center;
-  border-top: 2px dashed rgb(165 161 123 / .6);
-}
-.contact__title { font-family: var(--font-hand); font-weight: 700; font-size: clamp(40px, 6vw, 56px); line-height: 1; }
-.contact__text { margin: 14px auto 0; max-width: 46ch; }
-.contact__small { margin-top: 40px; font-size: 14px; color: var(--muted); }
-
-/* ---------- 8. REDUCED MOTION: no frame swapping, tin shown already open ---------- */
+/* ---------- 7. REDUCED MOTION: final states, no animation ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .entry .entry__text { opacity: 1 !important; transform: none !important; }
+  .js .shot__paper { transform: none !important; }
+  .shot__window { clip-path: none; }
   .me-sticker img:nth-child(1) { opacity: 1; }
   .me-sticker img:not(:first-child) { opacity: 0; }
 }

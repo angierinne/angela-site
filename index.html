@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Angela Wang</title>
-  <meta name="description" content="Angela Wang: CS '28 at Cornell. Product, design, and engineering." />
+  <!-- lets CSS hide things that animate in, only when JS is running -->
+  <script>document.documentElement.classList.add('js')</script>
+  <meta name="description" content="Angela Wang: CS '28 at Cornell. Designer and developer who likes products and people." />
 
-  <!-- Fonts: Figtree (body, easy to read) + Gaegu (handwritten accent) -->
+  <!-- Fonts: Roycella (self-hosted script, big titles only) + Afacad (everything else) -->
+  <link rel="preload" href="/fonts/Roycella.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/src/style.css" />
 </head>
@@ -18,7 +21,7 @@
   <!-- ===== SVG FILTERS (invisible; used by CSS) ===== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <!-- Thick white sticker outline + soft shadow. Change radius="7" to make the border thicker/thinner. -->
+      <!-- Thick white sticker outline + soft shadow (hero cutout). -->
       <filter id="sticker" x="-15%" y="-10%" width="130%" height="125%" color-interpolation-filters="sRGB">
         <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="grown" />
         <feGaussianBlur in="grown" stdDeviation="2.5" result="soft" />
@@ -38,9 +41,9 @@
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
-      <!-- Same idea, thinner border, for the small charms inside the tin -->
+      <!-- Same idea, thinner border, for the charms inside the tin -->
       <filter id="sticker-sm" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
-        <feMorphology in="SourceAlpha" operator="dilate" radius="3.5" result="grown" />
+        <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="grown" />
         <feGaussianBlur in="grown" stdDeviation="1.2" result="soft" />
         <feComponentTransfer in="soft" result="outline">
           <feFuncA type="linear" slope="3" intercept="-1" />
@@ -50,7 +53,7 @@
         <feGaussianBlur in="outline" stdDeviation="2.5" />
         <feOffset dx="1" dy="3" />
         <feComponentTransfer result="shadow">
-          <feFuncA type="linear" slope="0.3" />
+          <feFuncA type="linear" slope="0.28" />
         </feComponentTransfer>
         <feMerge>
           <feMergeNode in="shadow" />
@@ -58,8 +61,6 @@
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
-      <!-- reusable star shape (unit size, scale it up) -->
-      <path id="star-shape" d="M0,-1 L0.235,-0.324 L0.951,-0.309 L0.38,0.124 L0.588,0.809 L0,0.4 L-0.588,0.809 L-0.38,0.124 L-0.951,-0.309 L-0.235,-0.324Z" />
     </defs>
   </svg>
 
@@ -67,108 +68,120 @@
 
     <!-- ============================================================
          1. HERO
+         Entrance: name letters rise in one by one, then each [data-rise] line fades up (main.js + style.css)
          ============================================================ -->
     <section class="hero" aria-labelledby="hero-name">
       <div class="hero__text">
-        <h1 id="hero-name" class="hero__name">Hi, I'm Angela!</h1>
-        <p class="hero__intro hand">cs '28 @ cornell</p>
+        <h1 id="hero-name" class="display hero__name" data-split>Hi, I'm Angela!</h1>
+        <p class="hero__school" data-rise>CS '28 @ Cornell</p>
 
-        <ul class="quick-links" aria-label="Quick links">
-          <!-- TODO: put your resume at public/resume.pdf -->
-          <li><a class="pill pill--primary" href="/resume.pdf" target="_blank" rel="noopener">Resume ↗</a></li>
-          <!-- TODO: replace with your real email / profile URLs -->
-          <li><a class="pill" href="mailto:you@example.com">Email</a></li>
-          <li><a class="pill" href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a class="pill" href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+        <p class="hero__lead" data-rise>I like products, and I like people.</p>
+        <p class="hero__about" data-rise>
+          I love thinking about what we should build, how it helps people, and how to go about it.
+          As a designer and developer, I love being able to think creatively and build technically.
+        </p>
+
+        <ul class="links" aria-label="Quick links" data-rise>
+          <!-- TODO: put your resume at public/resume.pdf, and replace the email / profile URLs -->
+          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume <span aria-hidden="true">↗</span></a></li>
+          <li><a href="mailto:you@example.com">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
         </ul>
       </div>
 
-      <div class="hero__art">
+      <div class="hero__art" data-rise>
         <!-- Stop-motion sticker: 3 frames stacked, hard-cut every 0.7s (see .me-sticker in style.css) -->
         <div class="me-sticker" role="img" aria-label="Cutout photo of Angela in a striped sundress and brown boots, holding a matcha drink">
           <img src="/images/me_photo1.png" alt="" width="696" height="1180" />
           <img src="/images/me_photo2.png" alt="" width="696" height="1180" />
           <img src="/images/me_photo3.png" alt="" width="696" height="1180" />
         </div>
-        <svg class="deco-star deco-star--a" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
-        <svg class="deco-star deco-star--b" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
-        <svg class="deco-star deco-star--c" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
       </div>
     </section>
 
     <!-- ============================================================
          2. WORK: experience + projects
-         Each entry = a taped print (image) + text. Images live in public/images/work/.
+         Images alternate sides and "print" in from a slot as you scroll (class .shot).
+         --tilt = the image's angle. Images live in public/images/work/.
          ============================================================ -->
-    <section id="work" class="section work">
+    <section id="experience" class="section">
+      <h2 class="display section__title" data-reveal>Experience</h2>
 
-      <h2 class="section__title"><span class="tape">experience</span></h2>
       <div class="entries">
-        <article class="entry">
-          <figure class="print" style="--r:-2.5deg">
-            <img src="/images/work/mastercard.jpg" alt="Angela at the Mastercard office" width="900" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:-3deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/mastercard.jpg" alt="Angela at the Mastercard office" width="900" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">technical product management intern</span> at mastercard</h3>
-            <p class="entry__date">june 2026 - august 2026</p>
+            <h3 class="entry__title">Technical Product Management Intern <span class="entry__at">at Mastercard</span></h3>
+            <p class="entry__date">June 2026 – August 2026</p>
             <p class="entry__desc">Shaped product strategy for consolidating marketing technology platforms and supported feature development for Mastercard.com.</p>
           </div>
         </article>
 
-        <article class="entry">
-          <figure class="print" style="--r:2deg">
-            <img src="/images/work/dcc.jpg" alt="Design Consulting at Cornell team photo" width="900" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:2.5deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/dcc.jpg" alt="Design Consulting at Cornell team photo" width="900" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">president of design consulting</span> at cornell</h3>
-            <p class="entry__date">january 2026 - present</p>
+            <h3 class="entry__title">President of Design Consulting <span class="entry__at">at Cornell</span></h3>
+            <p class="entry__date">January 2026 – Present</p>
             <p class="entry__desc">Leading Cornell's student-run design consultancy, supporting client projects and internal team operations.</p>
           </div>
         </article>
 
-        <article class="entry">
-          <figure class="print" style="--r:-1.5deg">
-            <img src="/images/work/ptc.jpg" alt="PTC intern group in the PTC office" width="900" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:-2deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/ptc.jpg" alt="PTC intern group in the PTC office" width="900" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">user experience and research intern</span> at ptc</h3>
-            <p class="entry__date">june 2025 - august 2025</p>
+            <h3 class="entry__title">User Experience and Research Intern <span class="entry__at">at PTC</span></h3>
+            <p class="entry__date">June 2025 – August 2025</p>
             <p class="entry__desc">Redesigned complex workflows to simplify the Windchill software experience.</p>
           </div>
         </article>
       </div>
+    </section>
 
-      <h2 class="section__title section__title--second"><span class="tape tape--sage">projects</span></h2>
+    <section id="projects" class="section">
+      <h2 class="display section__title" data-reveal>Projects</h2>
+
       <div class="entries">
-        <article class="entry">
-          <figure class="print print--screen" style="--r:1.5deg">
-            <img src="/images/work/docupal.jpg" alt="DocuPal upload screen: Household documents made simple" width="960" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:2deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/docupal.jpg" alt="DocuPal upload screen: Household documents made simple" width="960" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">docupal</span> - developer and designer</h3>
+            <h3 class="entry__title">DocuPal <span class="entry__at">– Developer and Designer</span></h3>
             <p class="entry__date">2026</p>
             <p class="entry__desc">AI-powered platform to help immigrants understand complex documents and navigate important paperwork.</p>
-            <!-- TODO (optional): add links, e.g. <p class="entry__links"><a href="...">Live ↗</a></p> -->
           </div>
         </article>
 
-        <article class="entry">
-          <figure class="print print--screen" style="--r:-2deg">
-            <img src="/images/work/microsoft.jpg" alt="Microsoft bid review interface mockups" width="960" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:-2.5deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/microsoft.jpg" alt="Microsoft bid review interface mockups" width="960" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">microsoft</span> - contract designer</h3>
+            <h3 class="entry__title">Microsoft <span class="entry__at">– Contract Designer</span></h3>
             <p class="entry__date">2025</p>
             <p class="entry__desc">AI-powered bid review experience to help buyers navigate complex information and make more confident purchasing decisions.</p>
           </div>
         </article>
 
-        <article class="entry">
-          <figure class="print print--screen" style="--r:2deg">
-            <img src="/images/work/pinpoint.jpg" alt="PinPoint app shown on two phones" width="960" height="600" loading="lazy" />
+        <article class="entry" data-reveal>
+          <figure class="shot" style="--tilt:3deg">
+            <span class="shot__slot" aria-hidden="true"></span>
+            <div class="shot__window"><img class="shot__paper" src="/images/work/pinpoint.jpg" alt="PinPoint app shown on two phones" width="960" height="600" loading="lazy" /></div>
           </figure>
           <div class="entry__text">
-            <h3 class="entry__title"><span class="entry__role">pinpoint</span> - designer</h3>
+            <h3 class="entry__title">PinPoint <span class="entry__at">– Designer</span></h3>
             <p class="entry__desc">Mobile experience to help Cornell students discover local events and activities around Ithaca.</p>
           </div>
         </article>
@@ -176,55 +189,56 @@
     </section>
 
     <!-- ============================================================
-         3. THE TIN (hobbies & interests). Real photos of my tin.
+         3. WHAT'S IN MY TIN?  (drawn illustration of my real tin)
          Opens when scrolled into view (see main.js):
-         closed → wiggle → pop → lid flips open on its hinge → charms appear inside
+         closed → wiggle → pop → lid swings up on its hinge → charms fade in
          ============================================================ -->
     <section id="tin" class="section tin-section">
-      <h2 class="section__title section__title--center"><span class="tape tape--butter">what's in my tin</span></h2>
+      <h2 class="display section__title section__title--center" data-reveal>What's in my tin?</h2>
 
       <div class="tin" data-state="closed">
         <div class="tin__body">
-          <!-- bottom half of the tin (the tray) with charms inside -->
+          <!-- bottom half (the tray) with charms inside -->
           <div class="tin__base">
-            <!-- Each charm: --x/--y = position inside the tray, --r = tilt.
-                 data-side = which side its note pops out on. -->
+            <img class="tin__tray" src="/images/tin/tray.svg" alt="" />
+            <!-- Each charm: --x/--y = position inside the tray, --r = tilt, --i = order it appears.
+                 data-side = which side its note shows on. -->
             <ul class="charms" aria-label="Hobbies and interests">
-              <li style="--x:20%; --y:30%; --r:-10deg; --i:0">
+              <li style="--x:22%; --y:33%; --r:-8deg; --i:0">
                 <button class="charm" type="button" data-side="right" aria-describedby="note-sushi">
-                  <span class="charm__icon" aria-hidden="true">🍣</span>
-                  <span class="charm__label">sushi</span>
-                  <span class="charm__note" id="note-sushi" role="tooltip">[sushi description]</span>
+                  <img class="charm__art" src="/images/charms/sushi.svg" alt="" />
+                  <span class="charm__label">Sushi</span>
+                  <span class="charm__note" id="note-sushi" role="tooltip">[Sushi description]</span>
                 </button>
               </li>
-              <li style="--x:50%; --y:26%; --r:6deg; --i:1">
+              <li style="--x:51%; --y:30%; --r:5deg; --i:1">
                 <button class="charm" type="button" data-side="right" aria-describedby="note-yoga">
-                  <span class="charm__icon" aria-hidden="true">🧘‍♀️</span>
-                  <span class="charm__label">yoga</span>
-                  <span class="charm__note" id="note-yoga" role="tooltip">[yoga description]</span>
+                  <img class="charm__art" src="/images/charms/yoga.svg" alt="" />
+                  <span class="charm__label">Yoga</span>
+                  <span class="charm__note" id="note-yoga" role="tooltip">[Yoga description]</span>
                 </button>
               </li>
-              <li style="--x:80%; --y:32%; --r:-4deg; --i:2">
+              <li style="--x:79%; --y:34%; --r:-4deg; --i:2">
                 <!-- TODO: swap the placeholder span for your smiski photo, e.g.
-                     <img class="charm__photo" src="/images/smiski.png" alt="" />  (transparent PNG works best) -->
+                     <img class="charm__art" src="/images/charms/smiski.png" alt="" />  (transparent PNG works best) -->
                 <button class="charm" type="button" data-side="left" aria-describedby="note-smiski">
-                  <span class="charm__icon charm__icon--placeholder" aria-hidden="true">smiski<br />photo</span>
-                  <span class="charm__label">smiski</span>
-                  <span class="charm__note" id="note-smiski" role="tooltip">[smiski description]</span>
+                  <span class="charm__art charm__art--placeholder" aria-hidden="true">photo<br />soon</span>
+                  <span class="charm__label">Smiski</span>
+                  <span class="charm__note" id="note-smiski" role="tooltip">[Smiski description]</span>
                 </button>
               </li>
-              <li style="--x:33%; --y:70%; --r:8deg; --i:3">
+              <li style="--x:34%; --y:72%; --r:6deg; --i:3">
                 <button class="charm" type="button" data-side="right" aria-describedby="note-travel">
-                  <span class="charm__icon" aria-hidden="true">✈️</span>
-                  <span class="charm__label">traveling</span>
-                  <span class="charm__note" id="note-travel" role="tooltip">[traveling description]</span>
+                  <img class="charm__art" src="/images/charms/travel.svg" alt="" />
+                  <span class="charm__label">Traveling</span>
+                  <span class="charm__note" id="note-travel" role="tooltip">[Traveling description]</span>
                 </button>
               </li>
-              <li style="--x:68%; --y:70%; --r:-7deg; --i:4">
+              <li style="--x:67%; --y:71%; --r:-6deg; --i:4">
                 <button class="charm" type="button" data-side="left" aria-describedby="note-craft">
-                  <span class="charm__icon" aria-hidden="true">✂️</span>
-                  <span class="charm__label">crafting</span>
-                  <span class="charm__note" id="note-craft" role="tooltip">[crafting description]</span>
+                  <img class="charm__art" src="/images/charms/craft.svg" alt="" />
+                  <span class="charm__label">Crafting</span>
+                  <span class="charm__note" id="note-craft" role="tooltip">[Crafting description]</span>
                 </button>
               </li>
             </ul>
@@ -232,45 +246,28 @@
 
           <!-- the lid: front = sticker-covered top, back = inside with my "AW" -->
           <button class="tin__lid" type="button" aria-label="Open or close the tin">
-            <img class="lid-face lid-front" src="/images/tin_lid_top.jpg" alt="" width="1000" height="660" />
-            <img class="lid-face lid-back" src="/images/tin_lid_inside.jpg" alt="" width="1000" height="660" />
+            <img class="lid-face lid-front" src="/images/tin/lid-top.svg" alt="" />
+            <img class="lid-face lid-back" src="/images/tin/lid-inside.svg" alt="" />
           </button>
         </div>
-        <p class="hand tin__hint" aria-hidden="true">psst, it opens ✿</p>
       </div>
 
-      <button class="tin-replay hand" type="button">↻ close &amp; open again</button>
+      <button class="tin-replay" type="button">Close and open again</button>
     </section>
 
     <!-- ============================================================
-         4. THE WALL (photo collage, inspired by the wall above my bed)
+         4. CONTACT / FOOTER
          ============================================================ -->
-    <section id="wall" class="section">
-      <h2 class="section__title"><span class="tape tape--pink">the wall</span></h2>
-      <p class="section__sub ph">[Placeholder: prints, photobooth strips, and stars like the wall above my bed. Add photos to public/images and swap them in.]</p>
-
-      <div class="collage">
-        <figure class="print" style="--r:-4deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
-        <figure class="booth" style="--r:3deg"><div class="ph-img"></div><div class="ph-img"></div><div class="ph-img"></div><div class="ph-img"></div></figure>
-        <figure class="print print--wide" style="--r:2deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
-        <figure class="print" style="--r:-2deg"><div class="ph-img">photo</div><figcaption class="hand">[caption]</figcaption></figure>
-        <svg class="deco-star collage__star" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true"><use href="#star-shape" /></svg>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         5. CONTACT / FOOTER
-         ============================================================ -->
-    <footer id="contact" class="contact">
-      <h2 class="contact__title">let's chat ✿</h2>
-      <p class="contact__text">Open to <span class="ph">[Summer 2027 internships in product / design / engineering]</span>. The fastest way to reach me is email.</p>
-      <ul class="quick-links quick-links--center">
-        <li><a class="pill pill--primary" href="mailto:you@example.com">you@example.com</a></li>
-        <li><a class="pill" href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
-        <li><a class="pill" href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a class="pill" href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+    <footer id="contact" class="section contact">
+      <h2 class="display section__title section__title--center" data-reveal>Let's chat</h2>
+      <p class="contact__text" data-reveal>The fastest way to reach me is email.</p>
+      <ul class="links links--center" data-reveal>
+        <li><a href="mailto:you@example.com">you@example.com</a></li>
+        <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
       </ul>
-      <p class="contact__small">made by hand (and code) by Angela Wang · <span id="year"></span></p>
+      <p class="contact__small">Angela Wang · <span id="year"></span></p>
     </footer>
   </main>
 

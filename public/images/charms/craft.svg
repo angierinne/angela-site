@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- roll of floral washi tape -->
+  <defs>
+    <pattern id="w" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#f3d9d8"/><circle cx="6" cy="6" r="2.2" fill="#c98581"/><circle cx="0" cy="0" r="1.2" fill="#fff"/><circle cx="12" cy="12" r="1.2" fill="#fff"/></pattern>
+  </defs>
+  <path d="M74,62 L110,74 L106,88 L70,76Z" fill="url(#w)" opacity=".95"/>
+  <path d="M106,74 L110,76 L107,80 L111,83 L106,88" fill="none" stroke="#e9c3c1" stroke-width="1.5"/>
+  <circle cx="52" cy="50" r="36" fill="url(#w)"/>
+  <circle cx="52" cy="50" r="36" fill="none" stroke="#e3b6b3" stroke-width="2"/>
+  <circle cx="52" cy="50" r="18" fill="#d8c3a2"/>
+  <circle cx="52" cy="50" r="14" fill="#fbf7ef"/>
+  <circle cx="52" cy="50" r="27" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5"/>
+</svg>
