@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- two pillar candles: an original drawing -->
+  <defs>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".9"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>
+  </defs>
+  <circle cx="44" cy="26" r="18" fill="url(#glow)"/>
+  <circle cx="78" cy="38" r="15" fill="url(#glow)"/>
+  <!-- tall cream candle -->
+  <rect x="30" y="34" width="28" height="56" rx="5" fill="#f4ead6"/>
+  <path d="M30,40 C34,44 38,38 42,44 C46,49 50,40 58,42 L58,38 C58,35 55,34 52,34 L36,34 C33,34 30,35 30,38Z" fill="#fbf5e9"/>
+  <rect x="30" y="34" width="6" height="56" rx="3" fill="#fff" opacity=".45"/>
+  <path d="M44,34 L44,27" stroke="#4b3f35" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M44,27 C39,22 41,14 44,9 C47,14 49,22 44,27Z" fill="#f6a33b"/>
+  <path d="M44,25 C42,22 43,18 44,15 C45,18 46,22 44,25Z" fill="#ffe08a"/>
+  <!-- short pink candle -->
+  <rect x="64" y="50" width="28" height="40" rx="5" fill="#f2b8c6"/>
+  <path d="M64,56 C68,60 72,54 76,59 C80,63 84,56 92,58 L92,54 C92,51 89,50 86,50 L70,50 C67,50 64,51 64,54Z" fill="#f8d3dc"/>
+  <rect x="64" y="50" width="6" height="40" rx="3" fill="#fff" opacity=".35"/>
+  <path d="M78,50 L78,44" stroke="#4b3f35" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M78,44 C74,40 75,33 78,29 C81,33 82,40 78,44Z" fill="#f6a33b"/>
+  <path d="M78,42 C76,40 77,36 78,34 C79,36 80,40 78,42Z" fill="#ffe08a"/>
+  <rect x="24" y="88" width="74" height="6" rx="3" fill="#cdbb9a"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- a walking sneaker with a little leaf: an original drawing -->
+  <path d="M14,70 C14,60 20,54 30,52 L48,48 C54,47 58,42 60,36 L62,30 C63,27 66,26 69,27 L82,31 C86,32 88,36 87,40 L85,48 C96,52 106,58 108,66 C109,70 106,74 101,74 L20,74 C16,74 14,72 14,70Z" fill="#fbf8f2" stroke="#d9cfc0" stroke-width="2"/>
+  <path d="M60,36 L84,43 M58,42 L83,49 M55,47 L80,54" stroke="#a5a17b" stroke-width="3" stroke-linecap="round"/>
+  <path d="M30,52 C38,58 48,60 58,58" fill="none" stroke="#f2b8c6" stroke-width="5" stroke-linecap="round"/>
+  <path d="M12,72 L110,72 C110,78 106,82 100,82 L20,82 C15,82 12,78 12,72Z" fill="#a5a17b"/>
+  <path d="M22,77 L32,77 M40,77 L50,77 M58,77 L68,77 M76,77 L86,77" stroke="#8b875f" stroke-width="2" stroke-linecap="round"/>
+  <path d="M96,20 C88,22 84,30 88,38 C96,36 100,28 96,20Z" fill="#8fa86a"/>
+  <path d="M95,24 C92,28 90,32 89,36" fill="none" stroke="#6f8a4f" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

@@ -35,7 +35,7 @@ Promise.race([
 /* =============================================================
    SCROLL REVEALS
    [data-reveal] gets .is-in once it scrolls into view. CSS decides what that does:
-   entries slide in, section scripts write in, the sign-off signs itself.
+   the work stickers pop in one by one, scripts write in, the sign-off signs itself.
    ============================================================= */
 const revealer = new IntersectionObserver((entries) => {
   entries.forEach(({ isIntersecting, target }) => {
@@ -48,12 +48,11 @@ document.querySelectorAll('[data-reveal]').forEach((el) => revealer.observe(el))
 
 /* =============================================================
    THE TIN
-   closed → wiggle (1.3s) → pop (0.45s) → open (lid swings up 1.6s, charms fade in)
+   closed → wiggle (1.3s) → pop (0.45s) → open (lid swings up 1.6s, charms fade in; they're visual only)
    The look of each step lives in style.css under [data-state="..."].
    ============================================================= */
 const tin = document.querySelector('.tin');
 const lid = tin.querySelector('.tin__lid');
-const charms = [...tin.querySelectorAll('.charm')];
 const replay = document.querySelector('.tin-replay');
 
 const WIGGLE_MS = 1300;
@@ -74,7 +73,6 @@ function openTin() {
 
 function closeTin() {
   clearTimers();
-  charms.forEach((c) => c.classList.remove('is-active'));
   setState('closed');
 }
 
@@ -92,14 +90,15 @@ function replayTin() {
 lid.addEventListener('click', replayTin);
 replay.addEventListener('click', replayTin);
 
-/* Charm notes: desktop shows them on hover (CSS).
-   On touch screens there's no hover, so a tap toggles the note instead. */
-charms.forEach((charm) => {
-  charm.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const wasActive = charm.classList.contains('is-active');
-    charms.forEach((c) => c.classList.remove('is-active'));
-    if (!wasActive) charm.classList.add('is-active');
+/* =============================================================
+   WORK STICKERS: flip on tap
+   Desktop flips on hover (CSS). Touch screens have no hover, so a tap flips the
+   sticker and a second tap flips it back.
+   ============================================================= */
+const canHover = window.matchMedia('(hover: hover)').matches;
+document.querySelectorAll('.sticker__card').forEach((card) => {
+  card.addEventListener('click', () => {
+    if (canHover) return;
+    card.classList.toggle('is-flipped');
   });
 });
-document.addEventListener('click', () => charms.forEach((c) => c.classList.remove('is-active')));

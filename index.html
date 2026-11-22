@@ -75,7 +75,6 @@
     <section id="top" class="hero" aria-labelledby="hero-name">
       <div class="hero__top">
         <a class="mark" href="#top" aria-label="Angela Wang">AW</a>
-        <p class="label hero__meta" data-rise><span>Product / Design / Code</span><span>Ithaca, NY</span></p>
       </div>
 
       <div class="hero__stage">
@@ -113,80 +112,92 @@
     </section>
 
     <!-- ============================================================
-         2. EXPERIENCE + PROJECTS
-         Section head: tiny counter label, big Anton title, pink script word across it.
-         Entries alternate sides; the photo slides in from its side, the text slides up.
+         2. MY WORK: one row of 6 photo stickers (3x2 on tablets, 2x3 on phones).
+         Each sticker pops in, then flips on hover (tap on phones) to show its description.
+         --tilt = resting angle, --i = pop-in order. Tag: "tag" = experience (green), "tag tag--project" = pink.
+         Images live in public/images/stickers/ (all 4:3, 640x480).
          ============================================================ -->
-    <section id="experience" class="section">
-      <header class="section-head" data-reveal>
-        <p class="label"><span class="tick" aria-hidden="true">///</span> 01 / 04 <span class="label__sep">Experience</span></p>
-        <h2 class="section-head__title"><span class="poster">EXPERIENCE</span><span class="script section-head__script writes" aria-hidden="true">my work</span></h2>
+    <section id="work" class="section work">
+      <header class="work-head" data-reveal>
+        <p class="label"><span class="tick" aria-hidden="true">///</span> My work</p>
+        <p class="script work-head__script writes" aria-hidden="true">lately</p>
+        <p class="label work-head__count">01 / 03</p>
       </header>
 
-      <div class="entries">
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/mastercard.jpg" alt="Angela at the Mastercard office" width="900" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">June 2026 – August 2026</p>
-            <h3 class="entry__title">Technical Product Management Intern <span class="entry__at">at Mastercard</span></h3>
-            <p class="entry__desc">Shaped product strategy for consolidating marketing technology platforms and supported feature development for Mastercard.com.</p>
-          </div>
-        </article>
-
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/dcc.jpg" alt="Design Consulting at Cornell team photo" width="900" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">January 2026 – Present</p>
-            <h3 class="entry__title">President of Design Consulting <span class="entry__at">at Cornell</span></h3>
-            <p class="entry__desc">Leading Cornell's student-run design consultancy, supporting client projects and internal team operations.</p>
-          </div>
-        </article>
-
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/ptc.jpg" alt="PTC intern group in the PTC office" width="900" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">June 2025 – August 2025</p>
-            <h3 class="entry__title">User Experience and Research Intern <span class="entry__at">at PTC</span></h3>
-            <p class="entry__desc">Redesigned complex workflows to simplify the Windchill software experience.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="projects" class="section">
-      <header class="section-head" data-reveal>
-        <p class="label"><span class="tick" aria-hidden="true">///</span> 02 / 04 <span class="label__sep">Projects</span></p>
-        <h2 class="section-head__title"><span class="poster">PROJECTS</span><span class="script section-head__script writes" aria-hidden="true">lately</span></h2>
-      </header>
-
-      <div class="entries">
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/docupal.jpg" alt="DocuPal upload screen: Household documents made simple" width="960" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">2026</p>
-            <h3 class="entry__title">DocuPal <span class="entry__at">– Developer and Designer</span></h3>
-            <p class="entry__desc">AI-powered platform to help immigrants understand complex documents and navigate important paperwork.</p>
-          </div>
-        </article>
-
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/microsoft.jpg" alt="Microsoft bid review interface mockups" width="960" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">2025</p>
-            <h3 class="entry__title">Microsoft <span class="entry__at">– Contract Designer</span></h3>
-            <p class="entry__desc">AI-powered bid review experience to help buyers navigate complex information and make more confident purchasing decisions.</p>
-          </div>
-        </article>
-
-        <article class="entry" data-reveal>
-          <figure class="entry__img"><img src="/images/work/pinpoint.jpg" alt="PinPoint app shown on two phones" width="960" height="600" loading="lazy" /></figure>
-          <div class="entry__text">
-            <p class="label entry__date">Mobile app</p>
-            <h3 class="entry__title">PinPoint <span class="entry__at">– Designer</span></h3>
-            <p class="entry__desc">Mobile experience to help Cornell students discover local events and activities around Ithaca.</p>
-          </div>
-        </article>
-      </div>
+      <ul class="stickers" data-reveal>
+        <li class="sticker" style="--tilt:-2.5deg; --i:0">
+          <button class="sticker__card" type="button" aria-label="Design Consulting at Cornell: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/dcc.jpg" alt="Design Consulting at Cornell team photo" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">Design Consulting at Cornell</span>
+              <span class="sticker__back-desc">Leading Cornell's student-run design consultancy, supporting client projects and internal team operations.</span>
+            </span>
+          </button>
+          <p class="tag">Leadership</p>
+          <h3 class="sticker__name">Design Consulting at Cornell</h3>
+          <p class="sticker__role">President · 2026 – Present</p>
+        </li>
+        <li class="sticker" style="--tilt:2deg; --i:1">
+          <button class="sticker__card" type="button" aria-label="Mastercard: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/mastercard.jpg" alt="Angela at the Mastercard office" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">Mastercard</span>
+              <span class="sticker__back-desc">Shaped product strategy for consolidating marketing technology platforms and supported feature development for Mastercard.com.</span>
+            </span>
+          </button>
+          <p class="tag">Internship</p>
+          <h3 class="sticker__name">Mastercard</h3>
+          <p class="sticker__role">Technical Product Management Intern · 2026</p>
+        </li>
+        <li class="sticker" style="--tilt:-1.5deg; --i:2">
+          <button class="sticker__card" type="button" aria-label="PTC: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/ptc.jpg" alt="PTC intern group in the PTC office" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">PTC</span>
+              <span class="sticker__back-desc">Redesigned complex workflows to simplify the Windchill software experience.</span>
+            </span>
+          </button>
+          <p class="tag">Internship</p>
+          <h3 class="sticker__name">PTC</h3>
+          <p class="sticker__role">User Experience and Research Intern · 2025</p>
+        </li>
+        <li class="sticker" style="--tilt:3deg; --i:3">
+          <button class="sticker__card" type="button" aria-label="DocuPal: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/docupal.jpg" alt="DocuPal upload screen" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">DocuPal</span>
+              <span class="sticker__back-desc">AI-powered platform to help immigrants understand complex documents and navigate important paperwork.</span>
+            </span>
+          </button>
+          <p class="tag tag--project">Project</p>
+          <h3 class="sticker__name">DocuPal</h3>
+          <p class="sticker__role">Developer and Designer · 2026</p>
+        </li>
+        <li class="sticker" style="--tilt:-3deg; --i:4">
+          <button class="sticker__card" type="button" aria-label="Microsoft: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/microsoft.jpg" alt="Microsoft bid review interface mockups" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">Microsoft</span>
+              <span class="sticker__back-desc">AI-powered bid review experience to help buyers navigate complex information and make more confident purchasing decisions.</span>
+            </span>
+          </button>
+          <p class="tag tag--project">Project</p>
+          <h3 class="sticker__name">Microsoft</h3>
+          <p class="sticker__role">Contract Designer · 2025</p>
+        </li>
+        <li class="sticker" style="--tilt:1.5deg; --i:5">
+          <button class="sticker__card" type="button" aria-label="Pinpoint: show description">
+            <span class="sticker__face sticker__front"><img src="/images/stickers/pinpoint.jpg" alt="Pinpoint app shown on two phones" width="640" height="480" loading="lazy" /></span>
+            <span class="sticker__face sticker__back">
+              <span class="sticker__back-name">Pinpoint</span>
+              <span class="sticker__back-desc">Mobile experience to help Cornell students discover local events and activities around Ithaca.</span>
+            </span>
+          </button>
+          <p class="tag tag--project">Project</p>
+          <h3 class="sticker__name">Pinpoint</h3>
+          <p class="sticker__role">Designer</p>
+        </li>
+      </ul>
     </section>
 
     <!-- ============================================================
@@ -194,7 +205,7 @@
          Edit both copies if you change the words.
          ============================================================ -->
     <section class="marquee" aria-label="Some things I love">
-      <p class="label marquee__label"><span class="tick" aria-hidden="true">///</span> 03 / 04 <span class="label__sep">Things I love</span></p>
+      <p class="label marquee__label"><span class="tick" aria-hidden="true">///</span> 02 / 03 <span class="label__sep">Things I love</span></p>
       <div class="marquee__band">
         <div class="marquee__track">
           <p class="poster marquee__text">MATCHA <i>·</i> CANDLES <i>·</i> PHOTOGRAPHY <i>·</i> BUNNIES <i>·</i> STARS <i>·</i> YOSHITOMO NARA <i>·</i> CATS <i>·</i> SMISKI <i>·</i> HOT POT <i>·</i> BARCELONA <i>·</i> HAIR CLIPS <i>·</i> ANGEL WINGS <i>·</i>&nbsp;</p>
@@ -209,7 +220,7 @@
          ============================================================ -->
     <section id="tin" class="section tin-section">
       <header class="tin-head" data-reveal>
-        <p class="label"><span class="tick" aria-hidden="true">///</span> 04 / 04 <span class="label__sep">The tin</span></p>
+        <p class="label"><span class="tick" aria-hidden="true">///</span> 03 / 03 <span class="label__sep">The tin</span></p>
         <h2 class="script tin-head__title writes">What<span class="apos">’</span>s in my tin?</h2>
       </header>
 
@@ -218,45 +229,35 @@
           <!-- bottom half (the tray) with charms inside -->
           <div class="tin__base">
             <img class="tin__tray" src="/images/tin/tray.svg" alt="" />
-            <!-- Each charm: --x/--y = position inside the tray, --r = tilt, --i = order it appears.
-                 data-side = which side its note shows on. -->
-            <ul class="charms" aria-label="Hobbies and interests">
-              <li style="--x:22%; --y:33%; --r:-8deg; --i:0">
-                <button class="charm" type="button" data-side="right" aria-describedby="note-sushi">
-                  <img class="charm__art" src="/images/charms/sushi.svg" alt="" />
-                  <span class="charm__label">Sushi</span>
-                  <span class="charm__note" id="note-sushi" role="tooltip">[Sushi description]</span>
-                </button>
+            <!-- Each charm: --x/--y = position inside the tray, --r = tilt, --i = order it appears. Visual only. -->
+            <ul class="charms" aria-label="Things in my tin: sushi, yoga, my smiski, candles, traveling, walks, crafting">
+              <li class="charm" style="--x:17%; --y:33%; --r:-8deg; --i:0">
+                <img class="charm__art" src="/images/charms/sushi.svg" alt="" />
+                <span class="charm__label">Sushi</span>
               </li>
-              <li style="--x:51%; --y:30%; --r:5deg; --i:1">
-                <button class="charm" type="button" data-side="right" aria-describedby="note-yoga">
-                  <img class="charm__art" src="/images/charms/yoga.svg" alt="" />
-                  <span class="charm__label">Yoga</span>
-                  <span class="charm__note" id="note-yoga" role="tooltip">[Yoga description]</span>
-                </button>
+              <li class="charm" style="--x:39%; --y:30%; --r:5deg; --i:1">
+                <img class="charm__art" src="/images/charms/yoga.svg" alt="" />
+                <span class="charm__label">Yoga</span>
               </li>
-              <li style="--x:79%; --y:34%; --r:-4deg; --i:2">
-                <!-- TODO: swap the placeholder span for your smiski photo, e.g.
-                     <img class="charm__art" src="/images/charms/smiski.png" alt="" />  (transparent PNG works best) -->
-                <button class="charm" type="button" data-side="left" aria-describedby="note-smiski">
-                  <span class="charm__art charm__art--placeholder" aria-hidden="true">photo<br />soon</span>
-                  <span class="charm__label">Smiski</span>
-                  <span class="charm__note" id="note-smiski" role="tooltip">[Smiski description]</span>
-                </button>
+              <li class="charm" style="--x:61%; --y:32%; --r:-4deg; --i:2">
+                <img class="charm__art charm__art--photo" src="/images/charms/smiski.png" alt="" />
+                <span class="charm__label">Smiski</span>
               </li>
-              <li style="--x:34%; --y:72%; --r:6deg; --i:3">
-                <button class="charm" type="button" data-side="right" aria-describedby="note-travel">
-                  <img class="charm__art" src="/images/charms/travel.svg" alt="" />
-                  <span class="charm__label">Traveling</span>
-                  <span class="charm__note" id="note-travel" role="tooltip">[Traveling description]</span>
-                </button>
+              <li class="charm" style="--x:83%; --y:33%; --r:4deg; --i:3">
+                <img class="charm__art" src="/images/charms/candles.svg" alt="" />
+                <span class="charm__label">Candles</span>
               </li>
-              <li style="--x:67%; --y:71%; --r:-6deg; --i:4">
-                <button class="charm" type="button" data-side="left" aria-describedby="note-craft">
-                  <img class="charm__art" src="/images/charms/craft.svg" alt="" />
-                  <span class="charm__label">Crafting</span>
-                  <span class="charm__note" id="note-craft" role="tooltip">[Crafting description]</span>
-                </button>
+              <li class="charm" style="--x:27%; --y:72%; --r:6deg; --i:4">
+                <img class="charm__art" src="/images/charms/travel.svg" alt="" />
+                <span class="charm__label">Traveling</span>
+              </li>
+              <li class="charm" style="--x:50%; --y:73%; --r:-3deg; --i:5">
+                <img class="charm__art" src="/images/charms/walks.svg" alt="" />
+                <span class="charm__label">Walks</span>
+              </li>
+              <li class="charm" style="--x:73%; --y:71%; --r:-6deg; --i:6">
+                <img class="charm__art" src="/images/charms/craft.svg" alt="" />
+                <span class="charm__label">Crafting</span>
               </li>
             </ul>
           </div>
