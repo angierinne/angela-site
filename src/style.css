@@ -6,7 +6,7 @@
    Sections in this file:
    0. Tokens   1. Base + shared pieces (labels, links, script, hairlines)
    2. Motion helpers   3. Hero   4. Section heads + entries
-   5. Marquee   6. Tin   7. Footer   8. Reduced motion
+   5. Tin (toss + scatter)   6. Footer   7. Reduced motion
    ============================================================= */
 
 /* ---------- 0. TOKENS ---------- */
@@ -45,7 +45,7 @@ body {
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
-h1, h2, h3, p, figure { margin: 0; }
+h1, h2, h3, h4, p, figure { margin: 0; }
 ul { list-style: none; margin: 0; padding: 0; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--rose); outline-offset: 4px; border-radius: 2px; }
@@ -110,11 +110,11 @@ button { font: inherit; color: inherit; }
 .js .is-ready .hero__hi { animation-delay: .45s; }
 
 /* generic scroll reveal: slide up once */
-.js [data-reveal]:not(.carousel) { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-.js [data-reveal].is-in:not(.carousel) { opacity: 1; transform: none; }
+.js [data-reveal]:not(.work-group) { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.js [data-reveal].is-in:not(.work-group) { opacity: 1; transform: none; }
 
 /* ---------- 3. HERO ---------- */
-.hero { position: relative; display: flex; flex-direction: column; padding: 22px var(--side) 0; min-height: 100svh; }
+.hero { position: relative; padding: 22px var(--side) clamp(64px, 9vw, 120px); min-height: 100svh; }
 .hero__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
 /* the AW mark, top-left */
@@ -170,18 +170,6 @@ button { font: inherit; color: inherit; }
 .hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: var(--ink-soft); }
 .hero .links { margin-top: 28px; }
 
-/* Skills ticker: small, quiet texture on the hero's bottom edge. Drifts left; duration is set from its width in main.js. */
-.skills {
-  margin: auto calc(-1 * var(--side)) 0;   /* pushed to the bottom, full-bleed */
-  padding-top: clamp(48px, 7vw, 88px);
-  overflow: hidden;
-}
-.skills__track { display: flex; width: max-content; padding: 12px 0; border-top: 1px solid rgb(71 67 41 / .35); animation: drift 50s linear infinite; }
-.skills:hover .skills__track { animation-play-state: paused; }
-.skills__text { white-space: nowrap; padding-right: .9em; font-size: 12.5px; font-weight: 500; letter-spacing: .2em; color: var(--ink); }
-.skills__text i { font-style: normal; color: var(--rose); margin: 0 .7em; font-weight: 700; }
-@keyframes drift { to { transform: translateX(-50%); } }
-
 @media (max-width: 760px) {
   .hero { min-height: 0; }
   .hero__stage { margin-top: 72px; }
@@ -198,30 +186,83 @@ button { font: inherit; color: inherit; }
 /* "sticker book" motion: a bouncy ease (slight overshoot) used ONLY for the photo stickers */
 :root { --bounce: cubic-bezier(.34, 1.56, .64, 1); }
 
-.work { padding-top: clamp(96px, 12vw, 160px); padding-bottom: clamp(64px, 8vw, 110px); }
 .work-head {
   display: flex; align-items: baseline; gap: 14px;
-  border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: clamp(8px, 2vw, 20px);
+  border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: clamp(40px, 5vw, 64px);
 }
 .work-head__script { font-size: clamp(48px, 5vw, 64px); line-height: .8; padding: 0 .25em 0 0; transform: rotate(-4deg) translateY(.12em); }
-.work-head__count { margin-left: auto; }
 
-/* Carousel: a native horizontal scroller (so touch swipe + trackpad scroll just work).
-   main.js clones the stickers for a seamless loop and nudges scrollLeft to slide it. */
-.carousel {
-  margin-inline: calc(-1 * var(--side));
-  overflow-x: auto; overflow-y: hidden;
-  scrollbar-width: none;
-  padding: 34px 0 30px;                 /* room for the tilt, lift and shadow */
-  cursor: grab;
-  overscroll-behavior-x: contain;
+/* ----- rows: placed by hand, not a rigid grid -----
+   Each group = a script note with an arrow + a row of 3 stickers.
+   Row 1 sits a little left (note on its right), row 2 a little right (note on its left), so they interlock.
+   Inside a row, --y nudges each sticker up/down for a gentle wave and --tilt sets its angle. */
+.work { padding-bottom: clamp(48px, 6vw, 80px); }
+.work-group { display: grid; align-items: center; column-gap: clamp(16px, 2vw, 28px); }
+.work-group + .work-group { margin-top: clamp(56px, 7vw, 96px); }
+.work-group--worked { grid-template-columns: minmax(0, 1fr) 190px; margin-right: -2%; }
+.work-group--worked .row-note { grid-column: 2; grid-row: 1; }
+.work-group--worked .sticker-row { grid-column: 1; grid-row: 1; }
+.work-group--made { grid-template-columns: 190px minmax(0, 1fr); margin-left: -2%; }
+.work-group--made .row-note { grid-column: 1; grid-row: 1; }
+.work-group--made .sticker-row { grid-column: 2; grid-row: 1; }
+
+.sticker-row { display: flex; gap: clamp(20px, 2.6vw, 36px); align-items: flex-start; }
+.sticker { position: relative; top: var(--y, 0); flex: 1 1 0; min-width: 0; }
+
+/* script note + tiny hand-drawn arrow */
+.row-note { position: relative; display: flex; flex-direction: column; color: var(--rose); }
+.row-note__text { font-size: clamp(34px, 3.2vw, 44px); line-height: 1; padding: .1em .2em .2em; }
+.row-note__arrow { width: 64px; height: 44px; margin-top: -4px; }
+.row-note--right { align-items: flex-start; }                      /* note right of row 1, arrow points left at it */
+.row-note--left { align-items: flex-end; text-align: right; }      /* note left of row 2, arrow points right */
+.row-note--left .row-note__arrow { transform: scaleX(-1); }
+
+/* neighbors nudge away from the hovered sticker, then settle back */
+.sticker__body { display: flex; flex-direction: column; align-items: flex-start; transition: translate .5s var(--bounce); }
+@media (hover: hover) {
+  .sticker:has(+ .sticker .sticker__card:hover) .sticker__body { translate: -14px 0; }
+  .sticker:has(.sticker__card:hover) + .sticker .sticker__body { translate: 14px 0; }
 }
-.carousel::-webkit-scrollbar { display: none; }
-.carousel.is-dragging { cursor: grabbing; user-select: none; }
-.carousel.is-dragging .sticker__card { pointer-events: none; }   /* don't flip while dragging */
-.stickers { display: flex; width: max-content; gap: clamp(28px, 3.2vw, 48px); padding-inline: var(--side); }
-.sticker { flex: none; width: clamp(250px, 28vw, 380px); display: flex; flex-direction: column; align-items: flex-start; }
-.sticker img { -webkit-user-drag: none; user-select: none; }
+
+/* Entrance: stickers get "slapped on" one by one. Each drops from slightly above, a bit bigger and
+   more tilted, lands, and settles with a small bounce. Then the row's note fades in and its arrow draws in. */
+.js .work-group .sticker { opacity: 0; }
+.js .work-group.is-in .sticker { animation: slap .75s var(--bounce) forwards; animation-delay: calc(var(--i) * 160ms + 100ms); }
+@keyframes slap {
+  0%   { opacity: 0; translate: 0 -46px; scale: 1.14; rotate: 9deg; }
+  45%  { opacity: 1; }
+  70%  { translate: 0 3px; scale: .985; rotate: -1deg; }
+  100% { opacity: 1; translate: 0 0; scale: 1; rotate: 0deg; }
+}
+.js .row-note__text { opacity: 0; transition: opacity .6s var(--ease) .75s; }
+.js .work-group.is-in .row-note__text { opacity: 1; }
+.js .row-note__arrow use { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .6s var(--ease) 1.05s; }
+.js .work-group.is-in .row-note__arrow use { stroke-dashoffset: 0; }
+
+/* Skills ticker: small, quiet texture under the projects row. Drifts left; duration is set from its width in main.js. */
+.skills { margin: clamp(72px, 9vw, 120px) calc(-1 * var(--side)) 0; overflow: hidden; }
+.skills__track { display: flex; width: max-content; padding: 12px 0; border-top: 1px solid rgb(71 67 41 / .35); animation: drift 50s linear infinite; }
+.skills:hover .skills__track { animation-play-state: paused; }
+.skills__text { white-space: nowrap; padding-right: .9em; font-size: 12.5px; font-weight: 500; letter-spacing: .2em; color: var(--ink); }
+.skills__text i { font-style: normal; color: var(--rose); margin: 0 .7em; font-weight: 700; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
+/* tablets: notes go above each row */
+@media (max-width: 1000px) {
+  .work-group--worked, .work-group--made { grid-template-columns: 1fr; margin: 0; }
+  .work-group .row-note { grid-column: 1; grid-row: 1; margin-bottom: 14px; }
+  .work-group .sticker-row { grid-column: 1; grid-row: 2; }
+  .row-note, .row-note--left { flex-direction: row; align-items: flex-end; text-align: left; gap: 4px; }
+  .row-note__arrow, .row-note--left .row-note__arrow { transform: scaleX(-1); margin: 0 0 -14px; }   /* points down-right at the row */
+  .work-group--made .sticker-row { padding-left: 4%; }
+}
+/* phones: one zig-zag column, big enough to tap and read the flipped description */
+@media (max-width: 640px) {
+  .sticker-row { flex-direction: column; gap: 34px; }
+  .sticker { top: 0; width: 84%; flex: none; }
+  .sticker:nth-child(even) { align-self: flex-end; }
+  .work-group--made .sticker-row { padding-left: 0; }
+}
 
 /* the card that tilts, lifts and flips. Resting tilt = --tilt. */
 .sticker__card {
@@ -274,24 +315,9 @@ button { font: inherit; color: inherit; }
 .sticker__name { margin-top: 10px; font-size: 17px; font-weight: 500; line-height: 1.3; }   /* = landing paragraph size */
 .sticker__role { margin-top: 1px; font-size: 17px; line-height: 1.35; color: var(--ink-soft); }
 
-/* pop in one by one with a small bounce when the grid scrolls into view */
-.js .carousel .sticker { opacity: 0; scale: .7; translate: 0 18px; }
-/* the observer watches the visible .carousel window (the looping row itself is far wider than the screen) */
-.js .carousel.is-in .sticker { animation: pop .6s var(--bounce) forwards; animation-delay: calc(var(--i) * 90ms); }
-@keyframes pop { to { opacity: 1; scale: 1; translate: 0 0; } }
-
-/* ---------- 5. MARQUEE ---------- */
-.marquee { padding: clamp(24px, 4vw, 48px) 0; }
-.marquee__label { padding: 0 var(--side); margin-bottom: 14px; }
-.marquee__band { overflow: hidden; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 10px; }
-.marquee__track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
-.marquee__band:hover .marquee__track { animation-play-state: paused; }
-.marquee__text { font-size: clamp(44px, 6.5vw, 92px); white-space: nowrap; line-height: 1; padding-right: .3em; }
-.marquee__text i { font-style: normal; color: var(--rose); margin: 0 .25em; }
-@keyframes marquee { to { transform: translateX(-50%); } }
-
-/* ---------- 6. TIN ---------- */
-.tin-head { text-align: center; margin-bottom: clamp(8px, 2vw, 24px); }
+/* ---------- 5. TIN ---------- */
+.tin-head { text-align: center; margin-bottom: clamp(8px, 2vw, 20px); }
+.tin-head__sub { margin-top: -.2em; font-size: 17px; color: var(--ink-soft); }
 .tin-head__title { font-size: min(14vw, 150px); padding: 0 .3em .1em; margin-top: 8px; }
 
 /* The stage is two lids tall: closed, the tin sits in the middle; open, the lid
@@ -341,34 +367,77 @@ button { font: inherit; color: inherit; }
 .tin[data-state="open"] .tin__body { transform: none; }
 .tin[data-state="open"] .tin__lid { transform: rotateX(180deg); }
 
-/* charms inside the tray: visual only. Hidden until open, then fade up one at a time. */
-.charms { position: absolute; inset: 0; }
-.charm {
-  position: absolute; left: var(--x); top: var(--y); translate: -50% -50%;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  opacity: 0; transform: translateY(14px) rotate(var(--r));
-  transition: opacity .25s, transform .25s;
+/* ----- the stage: the tin sits centered, the items scatter around it -----
+   Items are absolutely positioned at the stage's top-left and moved with the `translate` /
+   `rotate` / `scale` properties from main.js. The bouncy transition does the "toss". */
+.toss-stage { position: relative; height: clamp(560px, 50vw, 660px); margin-top: clamp(12px, 2vw, 24px); }
+.toss-stage .tin { position: absolute; left: 50%; top: 50%; width: min(330px, 29%); translate: -50% -50%; margin: 0; }
+.tin.is-shaking { animation: tin-shake .7s ease-in-out; }
+@keyframes tin-shake {
+  0%, 100% { rotate: 0deg; }
+  15% { rotate: -5deg; } 30% { rotate: 4deg; } 45% { rotate: -4deg; } 60% { rotate: 3deg; } 78% { rotate: -1.5deg; }
 }
-.tin[data-state="open"] .charm {
-  opacity: 1; transform: rotate(var(--r));
-  transition: opacity .7s var(--ease), transform .7s var(--ease);
-  transition-delay: calc(1.35s + var(--i) * .13s);
-}
-.charm__art {
-  width: clamp(44px, 12vw, 78px); height: auto;
-  filter: url(#sticker-sm);           /* same white cutout outline as the hero sticker */
-}
-/* the smiski photo is taller than the drawn items: size it by height so it matches them */
-.charm__art--photo { width: auto; height: clamp(40px, 11vw, 70px); }
-.charm__label { font-size: clamp(8.5px, 2.2vw, 11px); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
 
-.tin-replay {
-  display: block; margin: 14px auto 0; padding: 4px 10px;
-  font-size: 11px; color: var(--ink-soft); background: none; border: 0; cursor: pointer;
+.toss-items { position: absolute; inset: 0; pointer-events: none; }
+.toss {
+  --size: clamp(68px, 8.4vw, 106px);
+  position: absolute; left: 0; top: 0; z-index: 2;
+  padding: 0; border: 0; background: none; cursor: grab;
+  pointer-events: auto; touch-action: manipulation;
+  opacity: 0; scale: .25;
+  transition: translate .9s var(--bounce), rotate .9s var(--bounce), scale .7s var(--bounce), opacity .3s var(--ease);
 }
-.tin-replay:hover { color: var(--ink); }
+.toss.is-out { opacity: 1; }
+.toss.is-inside { pointer-events: none; }
+.toss.no-anim { transition: none; }
+.toss.is-dragging { cursor: grabbing; z-index: 5; transition: rotate .3s var(--ease), scale .3s var(--ease); scale: 1.08; }
+.toss:hover, .toss.is-active { z-index: 6; }
+.toss__art { display: block; width: var(--size); height: auto; filter: url(#sticker-item); pointer-events: none; user-select: none; -webkit-user-drag: none; }
+/* the smiski photo is taller than the drawings: size it by height so it matches them */
+.toss__art--photo { width: auto; height: calc(var(--size) * .95); }
 
-/* ---------- 7. FOOTER ---------- */
+/* note: dusty rose script + tiny arrow pointing at the item. Above or below (data-v), aligned by data-h. */
+.toss__note {
+  position: absolute; z-index: 8; width: max-content; max-width: 250px;
+  display: flex; flex-direction: column; align-items: center;
+  color: var(--rose); pointer-events: none;
+  opacity: 0; translate: 0 6px; transition: opacity .25s var(--ease), translate .35s var(--bounce);
+}
+.toss__text { font-size: clamp(30px, 2.8vw, 38px); line-height: .95; text-align: center; padding: .1em .25em .15em; }
+.toss__arrow { width: 44px; height: 30px; }
+.toss[data-v="above"] .toss__note { bottom: calc(100% + 2px); flex-direction: column; }
+.toss[data-v="below"] .toss__note { top: calc(100% + 2px); flex-direction: column-reverse; }
+.toss[data-v="above"] .toss__arrow { transform: rotate(-20deg); }
+.toss[data-v="below"] .toss__arrow { transform: scaleY(-1) rotate(-20deg); }
+.toss[data-h="center"] .toss__note { left: 50%; margin-left: -125px; width: 250px; }
+.toss[data-h="start"] .toss__note { left: -6px; align-items: flex-start; }
+.toss[data-h="start"] .toss__text { text-align: left; }
+.toss[data-h="end"] .toss__note { right: -6px; align-items: flex-end; }
+.toss[data-h="end"] .toss__text { text-align: right; }
+@media (hover: hover) { .toss:hover:not(.is-dragging) .toss__note { opacity: 1; translate: 0 0; } }
+.toss.is-active .toss__note, .toss:focus-visible .toss__note { opacity: 1; translate: 0 0; }
+
+.tin-shake {
+  display: block; position: relative; margin: 10px auto 0; padding: 4px 2px;
+  font-size: 15px; font-weight: 500; color: var(--ink); background: none; border: 0; cursor: pointer;
+}
+.tin-shake::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: var(--rose);
+  transform: scaleX(.35); transform-origin: left; transition: transform .35s var(--ease);
+}
+.tin-shake:hover::after, .tin-shake:focus-visible::after { transform: scaleX(1); }
+
+/* phones: the tin sits at the top of a taller stage and the items land below it */
+@media (max-width: 700px) {
+  .toss-stage { height: 860px; }
+  .toss-stage .tin { top: 0; width: 62%; translate: -50% 0; }
+  .toss { --size: 70px; }
+  .toss__note { max-width: 190px; }
+  .toss[data-h="center"] .toss__note { margin-left: -95px; width: 190px; }
+  .toss__text { font-size: 28px; }
+}
+
+/* ---------- 6. FOOTER ---------- */
 .footer { padding: 0 var(--side) clamp(32px, 5vw, 56px); }
 .footer__row {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px;
@@ -377,11 +446,16 @@ button { font: inherit; color: inherit; }
 /* the sign-off signature */
 .signoff { text-align: center; font-size: min(30vw, 200px); line-height: 1; margin-top: clamp(24px, 4vw, 48px); padding: 0 .3em; }
 
-/* ---------- 8. REDUCED MOTION: final states, no animation ---------- */
+/* ---------- 7. REDUCED MOTION: final states, no animation ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .carousel .sticker { opacity: 1 !important; transform: none !important; scale: none !important; translate: none !important; }
+  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .work-group .sticker { opacity: 1 !important; transform: none !important; scale: none !important; translate: none !important; rotate: none !important; }
+  .js .row-note__text { opacity: 1 !important; }
+  .js .row-note__arrow use { stroke-dashoffset: 0 !important; }
+  .sticker__body { translate: none !important; }
+  .toss { scale: 1 !important; }
+  .toss.is-inside { opacity: 0 !important; }
   .js .hero__hi, .js .writes { -webkit-mask-image: none !important; mask-image: none !important; }
   .skills__track { transform: none !important; }
   .me-sticker img:nth-child(1) { opacity: 1; }

@@ -35,7 +35,7 @@ Promise.race([
 /* =============================================================
    SCROLL REVEALS
    [data-reveal] gets .is-in once it scrolls into view. CSS decides what that does:
-   the work stickers pop in one by one, scripts write in, the sign-off signs itself.
+   the work stickers get slapped on, script notes + arrows draw in, the sign-off signs itself.
    ============================================================= */
 const revealer = new IntersectionObserver((entries) => {
   entries.forEach(({ isIntersecting, target }) => {
@@ -47,187 +47,237 @@ const revealer = new IntersectionObserver((entries) => {
 document.querySelectorAll('[data-reveal]').forEach((el) => revealer.observe(el));
 
 /* =============================================================
-   THE TIN
-   closed → wiggle (1.3s) → pop (0.45s) → open (lid swings up 1.6s, charms fade in; they're visual only)
-   The look of each step lives in style.css under [data-state="..."].
-   ============================================================= */
-const tin = document.querySelector('.tin');
-const lid = tin.querySelector('.tin__lid');
-const replay = document.querySelector('.tin-replay');
-
-const WIGGLE_MS = 1300;
-const POP_MS = 450;
-let timers = [];
-
-function setState(state) { tin.dataset.state = state; }
-function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-
-function openTin() {
-  clearTimers();
-  if (reduceMotion) return setState('open');
-  setState('wiggle');
-  later(() => setState('pop'), WIGGLE_MS);
-  later(() => setState('open'), WIGGLE_MS + POP_MS);
-}
-
-function closeTin() {
-  clearTimers();
-  setState('closed');
-}
-
-// Open the first time the tin scrolls into view
-new IntersectionObserver((entries, obs) => {
-  if (entries[0].isIntersecting) { openTin(); obs.disconnect(); }
-}, { threshold: 0.5 }).observe(tin);
-
-// Click the lid or the replay link to close and re-open
-function replayTin() {
-  if (tin.dataset.state === 'closed') return openTin();
-  closeTin();
-  later(openTin, reduceMotion ? 0 : 1700); // wait for the lid to swing shut
-}
-lid.addEventListener('click', replayTin);
-replay.addEventListener('click', replayTin);
-
-/* =============================================================
    SKILLS TICKER: set its speed from its width (CSS does the drift)
    ============================================================= */
 const SKILLS_SPEED = 34; // px per second
 const skillsTrack = document.querySelector('.skills__track');
 if (skillsTrack) skillsTrack.style.animationDuration = `${skillsTrack.scrollWidth / 2 / SKILLS_SPEED}s`;
 
-/* =============================================================
-   WORK CAROUSEL
-   The row is a native horizontal scroller, so touch swipe and trackpad scroll work for free.
-   For a seamless loop the 6 stickers are cloned on both sides: [copy][originals][copy].
-   We slowly move scrollLeft and, whenever it drifts out of the middle set, jump by exactly
-   one set width. The jump lands on identical-looking stickers, so it's invisible.
-   Pauses: hover, dragging, a flipped sticker, keyboard focus inside, or for RESUME_MS after a drag/scroll/swipe.
-   Reduced motion: no clones, no auto-slide, just a scrollable (and draggable) row.
-   ============================================================= */
-const CAROUSEL_SPEED = 16;  // px per second (slower than the skills ticker on purpose)
-const RESUME_MS = 3000;     // resume sliding this long after the user lets go
-
-const carousel = document.querySelector('[data-carousel]');
-const row = carousel.querySelector('.stickers');
-const originals = [...row.children];
-const loops = !reduceMotion;
-
-function makeCopy(li) {
-  const copy = li.cloneNode(true);
-  copy.setAttribute('aria-hidden', 'true');                       // screen readers get the originals only
-  copy.querySelectorAll('button').forEach((b) => { b.tabIndex = -1; });
-  return copy;
-}
-if (loops) {
-  originals.forEach((li) => row.append(makeCopy(li)));                       // copy after
-  [...originals].reverse().forEach((li) => row.prepend(makeCopy(li)));       // copy before
-}
-
-let setWidth = 0;
-let pos = 0;
-const measure = () => {
-  setWidth = loops ? originals[0].offsetLeft - row.children[0].offsetLeft : 0;
-};
-// keep pos inside the middle set (originals), shifting by one set width when needed
-const wrap = (p) => {
-  if (!loops || !setWidth) return p;
-  if (p >= setWidth * 2) return p - setWidth;
-  if (p < setWidth) return p + setWidth;
-  return p;
-};
-
-measure();
-pos = setWidth;
-carousel.scrollLeft = pos;
-
-let hovering = false;
-let dragging = false;
-let touching = false;
-let focusInside = false;
-let visible = false;
-let resumeAt = 0;
-// pause for at least `ms` (never shortens a longer pause that's already running)
-const holdFor = (ms) => { resumeAt = Math.max(resumeAt, performance.now() + ms); };
-
-carousel.addEventListener('mouseenter', () => { hovering = true; });
-carousel.addEventListener('mouseleave', () => { hovering = false; holdFor(1000); });
-carousel.addEventListener('wheel', () => holdFor(RESUME_MS), { passive: true });
-carousel.addEventListener('touchstart', () => { touching = true; }, { passive: true });
-carousel.addEventListener('touchend', () => { touching = false; holdFor(RESUME_MS); }, { passive: true });
-// only keyboard focus pauses (a mouse click also focuses the button, which shouldn't freeze the row)
-carousel.addEventListener('focusin', (e) => { focusInside = e.target.matches(':focus-visible'); });
-carousel.addEventListener('focusout', () => { focusInside = false; holdFor(RESUME_MS); });
-new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(carousel);
-
-// mouse drag (touch uses native scrolling)
-let startX = 0;
-let startScroll = 0;
-let dragged = false;
-carousel.addEventListener('pointerdown', (e) => {
-  if (e.pointerType !== 'mouse' || e.button !== 0) return;
-  dragging = true; dragged = false;
-  startX = e.clientX; startScroll = carousel.scrollLeft;
-  carousel.setPointerCapture(e.pointerId);
-});
-carousel.addEventListener('pointermove', (e) => {
-  if (!dragging) return;
-  const dx = e.clientX - startX;
-  if (Math.abs(dx) > 4) { dragged = true; carousel.classList.add('is-dragging'); }
-  const raw = startScroll - dx;
-  const wrapped = wrap(raw);
-  startScroll += wrapped - raw;     // keep dragging smoothly across a wrap
-  pos = wrapped;
-  carousel.scrollLeft = pos;
-});
-const endDrag = () => {
-  if (!dragging) return;
-  dragging = false;
-  carousel.classList.remove('is-dragging');
-  holdFor(RESUME_MS);
-};
-carousel.addEventListener('pointerup', endDrag);
-carousel.addEventListener('pointercancel', endDrag);
-
-// the slide loop
-let last = performance.now();
-function tick(now) {
-  const dt = Math.min(now - last, 64) / 1000;
-  last = now;
-  if (loops) {
-    const paused = hovering || dragging || touching || focusInside || !visible
-      || now < resumeAt || row.querySelector('.is-flipped');
-    if (paused) {
-      // follow wherever the user scrolled, wrapping when they leave the middle set
-      const current = carousel.scrollLeft;
-      const wrapped = wrap(current);
-      if (wrapped !== current && !touching) carousel.scrollLeft = wrapped;
-      pos = wrapped;
-    } else {
-      pos = wrap(pos + CAROUSEL_SPEED * dt);
-      carousel.scrollLeft = pos;
-    }
-  }
-  requestAnimationFrame(tick);
-}
-requestAnimationFrame(tick);
-
-window.addEventListener('resize', () => {
-  const offset = setWidth ? (pos - setWidth) / setWidth : 0;   // where we were inside the set (0..1)
-  measure();
-  pos = setWidth + offset * setWidth;
-  carousel.scrollLeft = pos;
-});
+const canHover = window.matchMedia('(hover: hover)').matches;
 
 /* =============================================================
    WORK STICKERS: flip on tap
    Desktop flips on hover (CSS). Touch screens have no hover, so a tap flips the
-   sticker and a second tap flips it back. (Delegated, so the carousel copies work too.)
+   sticker and a second tap flips it back.
    ============================================================= */
-const canHover = window.matchMedia('(hover: hover)').matches;
-row.addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
   const card = e.target.closest('.sticker__card');
-  if (!card || canHover || dragged) return;
+  if (!card || canHover) return;
   card.classList.toggle('is-flipped');
+});
+
+/* =============================================================
+   THE TIN + ITS ITEMS
+   1. scrolls into view: closed → wiggle → pop → open (lid swings up). Look lives in style.css [data-state].
+   2. the items pop out of the tray one by one and land around the tin (random, balanced spots).
+   3. hover (tap on phones) an item for its note; drag it with a mouse; drop it on the tin to put it back.
+   4. "Shake the tin": items fly back in, the tin shakes, they scatter again to new spots.
+   Item positions are stored as the item's CENTER in stage fractions (0–1), so they survive resizes.
+   ============================================================= */
+const stage = document.querySelector('[data-stage]');
+const tin = stage.querySelector('.tin');
+const tray = tin.querySelector('.tin__base');
+const tosses = [...stage.querySelectorAll('.toss')];
+const shakeBtn = document.querySelector('.tin-shake');
+const narrow = window.matchMedia('(max-width: 700px)');   // same breakpoint as the CSS
+
+const WIGGLE_MS = 1300;
+const POP_MS = 450;
+const OPEN_MS = 1500;      // start tossing items when the lid is nearly open
+const TOSS_GAP_MS = 170;   // between items popping out
+
+// Landing spots (item centers, as fractions of the stage). The tin sits in the middle on wide
+// screens, so spots ring it left and right; on phones the tin is at the top and items land below.
+const SPOTS = {
+  left:  [[0.08, 0.17], [0.24, 0.13], [0.12, 0.47], [0.27, 0.43], [0.09, 0.81], [0.25, 0.83]],
+  right: [[0.92, 0.18], [0.76, 0.12], [0.88, 0.49], [0.73, 0.45], [0.91, 0.82], [0.75, 0.80]],
+  narrow: [[0.2, 0.47], [0.5, 0.49], [0.8, 0.47], [0.18, 0.66], [0.5, 0.68], [0.82, 0.66], [0.2, 0.86], [0.5, 0.88], [0.8, 0.86]],
+};
+const CALM_TILTS = [-8, 6, -5, 9, -6, 7, -4];   // used when motion is reduced (no randomness)
+
+const rand = (a, b) => a + Math.random() * (b - a);
+const shuffle = (list) => {
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+};
+
+// pick 7 spots: balanced (3–4 per side) on wide screens, a few random gaps on phones
+function newLayout(random = !reduceMotion) {
+  let spots;
+  if (narrow.matches) {
+    spots = random ? shuffle(SPOTS.narrow).slice(0, tosses.length) : SPOTS.narrow.slice(0, tosses.length);
+  } else {
+    const nLeft = random ? (Math.random() < 0.5 ? 4 : 3) : 4;
+    const L = random ? shuffle(SPOTS.left) : SPOTS.left;
+    const R = random ? shuffle(SPOTS.right) : SPOTS.right;
+    spots = [...L.slice(0, nLeft), ...R.slice(0, tosses.length - nLeft)];
+    if (random) spots = shuffle(spots);
+  }
+  return spots.map(([x, y], i) => ({
+    x: x + (random ? rand(-0.018, 0.018) : 0),
+    y: y + (random ? rand(-0.022, 0.022) : 0),
+    r: random ? rand(-12, 12) : CALM_TILTS[i],
+  }));
+}
+
+const where = new Map();   // item -> {x, y, r} while it's out, null while it's inside the tin
+
+function moveTo(el, cx, cy, r, scale) {
+  el.style.translate = `${cx - el.offsetWidth / 2}px ${cy - el.offsetHeight / 2}px`;
+  el.style.rotate = `${r}deg`;
+  el.style.scale = String(scale);
+}
+function trayCenter() {
+  const s = stage.getBoundingClientRect();
+  const t = tray.getBoundingClientRect();
+  return { x: t.left - s.left + t.width / 2, y: t.top - s.top + t.height / 2 };
+}
+// decide which side the note opens on, so it stays inside the stage
+function aimNote(el, p) {
+  el.dataset.v = p.y < 0.35 ? 'below' : 'above';
+  el.dataset.h = p.x < 0.2 ? 'start' : p.x > 0.8 ? 'end' : 'center';
+}
+function withoutAnimation(el, fn) {
+  el.classList.add('no-anim');
+  fn();
+  void el.offsetWidth;          // apply instantly
+  el.classList.remove('no-anim');
+}
+function putInside(el, animate = true) {
+  const c = trayCenter();
+  const go = () => {
+    moveTo(el, c.x, c.y, 0, 0.25);
+    el.classList.remove('is-out', 'is-active');
+    el.classList.add('is-inside');
+    where.set(el, null);
+  };
+  animate ? go() : withoutAnimation(el, go);
+}
+function putOut(el, p, animate = true) {
+  const go = () => {
+    const { width: W, height: H } = stage.getBoundingClientRect();
+    moveTo(el, p.x * W, p.y * H, p.r, 1);
+    el.classList.add('is-out');
+    el.classList.remove('is-inside');
+    aimNote(el, p);
+    where.set(el, p);
+  };
+  animate ? go() : withoutAnimation(el, go);
+}
+// toss every item out of the tray, one by one
+function tossAll(layout, after = 0) {
+  tosses.forEach((el, i) => {
+    putInside(el, false);       // start at the tray, hidden
+    setTimeout(() => putOut(el, layout[i]), after + i * TOSS_GAP_MS);
+  });
+}
+const clearNotes = () => tosses.forEach((el) => el.classList.remove('is-active'));
+
+// start: everything hidden in the tin
+tosses.forEach((el) => putInside(el, false));
+
+function openTin() {
+  if (reduceMotion) {
+    tin.dataset.state = 'open';
+    const layout = newLayout(false);
+    requestAnimationFrame(() => tosses.forEach((el, i) => putOut(el, layout[i], false)));
+    return;
+  }
+  tin.dataset.state = 'wiggle';
+  setTimeout(() => { tin.dataset.state = 'pop'; }, WIGGLE_MS);
+  setTimeout(() => { tin.dataset.state = 'open'; }, WIGGLE_MS + POP_MS);
+  setTimeout(() => tossAll(newLayout()), WIGGLE_MS + POP_MS + OPEN_MS);
+}
+new IntersectionObserver((entries, obs) => {
+  if (entries[0].isIntersecting) { openTin(); obs.disconnect(); }
+}, { threshold: 0.4 }).observe(stage);
+
+// "Shake the tin": collect → shake → scatter again
+let shaking = false;
+shakeBtn.addEventListener('click', () => {
+  if (shaking || tin.dataset.state !== 'open') return;
+  clearNotes();
+  const layout = newLayout();
+  if (reduceMotion) { tosses.forEach((el, i) => putOut(el, layout[i], false)); return; }
+  shaking = true;
+  const out = tosses.filter((el) => el.classList.contains('is-out'));
+  out.forEach((el, i) => setTimeout(() => putInside(el), i * 60));
+  const shakeAt = out.length * 60 + 550;
+  setTimeout(() => { tin.classList.remove('is-shaking'); void tin.offsetWidth; tin.classList.add('is-shaking'); }, shakeAt);
+  setTimeout(() => {
+    tin.classList.remove('is-shaking');
+    tossAll(layout);
+    setTimeout(() => { shaking = false; }, tosses.length * TOSS_GAP_MS + 600);
+  }, shakeAt + 700);
+});
+
+/* Drag with a mouse or pen (touch is left for scrolling; a tap shows the note instead).
+   Items stay inside the stage. Dropped on the tin, an item goes back inside. */
+let drag = null;
+function overTin(el) {
+  const t = tin.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  const inset = t.width * 0.08;
+  return cx > t.left + inset && cx < t.right - inset && cy > t.top + inset && cy < t.bottom - inset;
+}
+tosses.forEach((el) => {
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch' || !el.classList.contains('is-out')) return;
+    e.preventDefault();
+    const s = stage.getBoundingClientRect();
+    const p = where.get(el);
+    drag = { el, x0: e.clientX, y0: e.clientY, dx: e.clientX - (s.left + p.x * s.width), dy: e.clientY - (s.top + p.y * s.height), moved: false };
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (!drag || drag.el !== el) return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 4) return;
+    drag.moved = true;
+    el.classList.add('is-dragging');
+    const s = stage.getBoundingClientRect();
+    const hw = el.offsetWidth / 2;
+    const hh = el.offsetHeight / 2;
+    const cx = Math.min(Math.max(e.clientX - s.left - drag.dx, hw), s.width - hw);
+    const cy = Math.min(Math.max(e.clientY - s.top - drag.dy, hh), s.height - hh);
+    const p = { ...where.get(el), x: cx / s.width, y: cy / s.height };
+    where.set(el, p);
+    el.style.translate = `${cx - hw}px ${cy - hh}px`;
+  });
+  const drop = () => {
+    if (!drag || drag.el !== el) return;
+    const { moved } = drag;
+    drag = null;
+    el.classList.remove('is-dragging');
+    if (!moved) return;
+    if (overTin(el)) putInside(el);
+    else aimNote(el, where.get(el));
+  };
+  el.addEventListener('pointerup', drop);
+  el.addEventListener('pointercancel', drop);
+});
+
+// tap (touch screens): show one note at a time; tap elsewhere to hide it
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('.toss');
+  if (canHover) return;
+  if (!el) { clearNotes(); return; }
+  const was = el.classList.contains('is-active');
+  clearNotes();
+  if (!was) el.classList.add('is-active');
+});
+
+// keep items in place on resize; re-scatter if we cross the phone/desktop layout
+let wasNarrow = narrow.matches;
+window.addEventListener('resize', () => {
+  const crossed = narrow.matches !== wasNarrow;
+  wasNarrow = narrow.matches;
+  const layout = crossed ? newLayout() : null;
+  tosses.forEach((el, i) => {
+    const p = where.get(el);
+    if (p) putOut(el, crossed ? layout[i] : p, false);
+    else putInside(el, false);
+  });
 });
