@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Fonts: Anton (poster headlines), Mrs Saint Delafield (pink signature script), Afacad (everything else) -->
+  <!-- Fonts: Anton (poster headlines), Mrs Saint Delafield (dusty rose signature script), Afacad (everything else) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&family=Anton&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
@@ -69,7 +69,7 @@
 
     <!-- ============================================================
          1. HERO
-         Big ANGELA (Anton) with the sticker standing in front of it and a pink script "Hi, I'm".
+         Big ANGELA (Anton) with the sticker standing in front of it and a dusty rose script "Hi, I’m".
          Entrance (main.js + style.css): ANGELA letters rise → script writes in → [data-rise] lines fade up.
          ============================================================ -->
     <section id="top" class="hero" aria-labelledby="hero-name">
@@ -102,19 +102,25 @@
           As a designer and developer, I love being able to think creatively and build technically.
         </p>
         <ul class="links" aria-label="Quick links" data-rise>
-          <!-- TODO: put your resume at public/resume.pdf, and replace the email / profile URLs -->
-          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume ↗</a></li>
-          <li><a href="mailto:you@example.com">Email</a></li>
-          <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="mailto:aw858@cornell.edu">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/angela-wang-3b6767212/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="https://github.com/angierinne" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
+      </div>
+
+      <!-- Skills ticker: quiet texture at the bottom of the landing. Written twice so it loops seamlessly (edit both copies). -->
+      <div class="skills" aria-label="Skills: PRODUCT STRATEGY, PYTHON, USER RESEARCH, REACT, ROADMAPPING, JAVA, FIGMA, LLM APIS, PROTOTYPING, SQL, AGILE, C, GIT">
+        <div class="skills__track" aria-hidden="true">
+          <p class="skills__text">PRODUCT STRATEGY <i>·</i> PYTHON <i>·</i> USER RESEARCH <i>·</i> REACT <i>·</i> ROADMAPPING <i>·</i> JAVA <i>·</i> FIGMA <i>·</i> LLM APIS <i>·</i> PROTOTYPING <i>·</i> SQL <i>·</i> AGILE <i>·</i> C <i>·</i> GIT <i>·</i> </p>
+          <p class="skills__text">PRODUCT STRATEGY <i>·</i> PYTHON <i>·</i> USER RESEARCH <i>·</i> REACT <i>·</i> ROADMAPPING <i>·</i> JAVA <i>·</i> FIGMA <i>·</i> LLM APIS <i>·</i> PROTOTYPING <i>·</i> SQL <i>·</i> AGILE <i>·</i> C <i>·</i> GIT <i>·</i> </p>
+        </div>
       </div>
     </section>
 
     <!-- ============================================================
-         2. MY WORK: one row of 6 photo stickers (3x2 on tablets, 2x3 on phones).
+         2. MY WORK: one row of 6 photo stickers in a slow, looping carousel (main.js).
          Each sticker pops in, then flips on hover (tap on phones) to show its description.
-         --tilt = resting angle, --i = pop-in order. Tag: "tag" = experience (green), "tag tag--project" = pink.
+         --tilt = resting angle, --i = pop-in order. Tag: "tag" = experience (green), "tag tag--project" = light rose.
          Images live in public/images/stickers/ (all 4:3, 640x480).
          ============================================================ -->
     <section id="work" class="section work">
@@ -124,7 +130,10 @@
         <p class="label work-head__count">01 / 03</p>
       </header>
 
-      <ul class="stickers" data-reveal>
+      <!-- Carousel: main.js clones the 6 stickers so the row loops seamlessly, slides slowly left,
+           pauses on hover, and can be dragged / scrolled. With reduced motion it's a plain scrollable row. -->
+      <div class="carousel" data-carousel data-reveal>
+      <ul class="stickers">
         <li class="sticker" style="--tilt:-2.5deg; --i:0">
           <button class="sticker__card" type="button" aria-label="Design Consulting at Cornell: show description">
             <span class="sticker__face sticker__front"><img src="/images/stickers/dcc.jpg" alt="Design Consulting at Cornell team photo" width="640" height="480" loading="lazy" /></span>
@@ -195,9 +204,10 @@
           </button>
           <p class="tag tag--project">Project</p>
           <h3 class="sticker__name">Pinpoint</h3>
-          <p class="sticker__role">Designer</p>
+          <p class="sticker__role">Designer · 2025</p>
         </li>
       </ul>
+      </div>
     </section>
 
     <!-- ============================================================
@@ -280,10 +290,9 @@
       <div class="footer__row">
         <p class="label">Angela Wang <span class="label__sep">Ithaca, NY</span></p>
         <ul class="links links--small" aria-label="Contact">
-          <li><a href="mailto:you@example.com">Email</a></li>
-          <li><a href="https://www.linkedin.com/in/YOUR-HANDLE" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="https://github.com/YOUR-HANDLE" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="/resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+          <li><a href="mailto:aw858@cornell.edu">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/angela-wang-3b6767212/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="https://github.com/angierinne" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
         <p class="label">© <span id="year"></span></p>
       </div>

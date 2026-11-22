@@ -1,6 +1,6 @@
 /* =============================================================
    Angela Wang — "a personal lookbook"
-   Bold poster type (Anton), a pink signature script (Mrs Saint Delafield),
+   Bold poster type (Anton), a dusty rose signature script (Mrs Saint Delafield),
    quiet body text (Afacad), earthy colors with one hot accent.
 
    Sections in this file:
@@ -15,7 +15,9 @@
   --sand: #F0E5DB;        /* Soft Sand: the one background for the whole page */
   --ink: #474329;         /* Mocha Green: text, headlines, hairlines */
   --ink-soft: #6a6548;    /* Mocha Green, lighter: quiet body text (still ~5:1 on sand) */
-  --pink: #FC75B4;        /* Watermelon Pink: script, small markers, hover underlines ONLY. Never body text. */
+  --rose: #D9879A;        /* Dusty Rose: script, small markers, hover underlines, tag accents ONLY.
+                             Only ~2.1:1 on sand, so NEVER use it for small text: small text stays Mocha Green. */
+  --rose-tint: #F4D6DD;   /* light rose fill behind small Mocha Green text (PROJECT tags), ~6:1 */
 
   --font-poster: "Anton", "Impact", sans-serif;                 /* big headlines */
   --font-script: "Mrs Saint Delafield", cursive;                /* signature script, always large */
@@ -46,16 +48,16 @@ a { color: inherit; }
 h1, h2, h3, p, figure { margin: 0; }
 ul { list-style: none; margin: 0; padding: 0; }
 button { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--pink); outline-offset: 4px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--rose); outline-offset: 4px; border-radius: 2px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* big condensed poster type */
 .poster { font-family: var(--font-poster); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: -.005em; }
 
-/* pink signature script. Thin, so always large. A Soft Sand outline keeps it readable where it crosses green letters. */
+/* dusty rose signature script. Thin, so always large. A Soft Sand outline keeps it readable where it crosses green letters. */
 .script {
   font-family: var(--font-script); font-weight: 400;
-  color: var(--pink);
+  color: var(--rose);
   line-height: 1.1;
   -webkit-text-stroke: .09em var(--sand);
   paint-order: stroke fill;
@@ -69,15 +71,15 @@ button { font: inherit; color: inherit; }
 .label__sep::before { content: "—"; margin: 0 .7em; opacity: .5; }
 /* the script's apostrophe has wide built-in spacing; this pulls it in so "What’s" doesn't gap */
 .apos { margin: 0 -.22em 0 -.12em; }
-.tick { color: var(--pink); letter-spacing: .05em; margin-right: .5em; font-weight: 700; }
+.tick { color: var(--rose); letter-spacing: .05em; margin-right: .5em; font-weight: 700; }
 
-/* links: plain text; a short pink underline draws in on hover */
+/* links: plain text; a dusty rose underline draws in on hover */
 .links { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 500; font-size: 17px; }
 .links--small { font-size: 14px; gap: 6px 22px; }
 .links a { position: relative; text-decoration: none; }
 .links a::after {
   content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px;
-  background: var(--pink);
+  background: var(--rose);
   transform: scaleX(0); transform-origin: left;
   transition: transform .35s var(--ease);
 }
@@ -108,16 +110,16 @@ button { font: inherit; color: inherit; }
 .js .is-ready .hero__hi { animation-delay: .45s; }
 
 /* generic scroll reveal: slide up once */
-.js [data-reveal]:not(.stickers) { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
-.js [data-reveal].is-in:not(.stickers) { opacity: 1; transform: none; }
+.js [data-reveal]:not(.carousel) { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.js [data-reveal].is-in:not(.carousel) { opacity: 1; transform: none; }
 
 /* ---------- 3. HERO ---------- */
-.hero { position: relative; padding: 22px var(--side) clamp(64px, 9vw, 120px); min-height: 100svh; }
+.hero { position: relative; display: flex; flex-direction: column; padding: 22px var(--side) 0; min-height: 100svh; }
 .hero__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
 /* the AW mark, top-left */
 .mark {
-  font-family: var(--font-script); color: var(--pink); text-decoration: none;
+  font-family: var(--font-script); color: var(--rose); text-decoration: none;
   font-size: 46px; line-height: 1; padding: 0 .2em;
 }
 
@@ -168,6 +170,18 @@ button { font: inherit; color: inherit; }
 .hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: var(--ink-soft); }
 .hero .links { margin-top: 28px; }
 
+/* Skills ticker: small, quiet texture on the hero's bottom edge. Drifts left; duration is set from its width in main.js. */
+.skills {
+  margin: auto calc(-1 * var(--side)) 0;   /* pushed to the bottom, full-bleed */
+  padding-top: clamp(48px, 7vw, 88px);
+  overflow: hidden;
+}
+.skills__track { display: flex; width: max-content; padding: 12px 0; border-top: 1px solid rgb(71 67 41 / .35); animation: drift 50s linear infinite; }
+.skills:hover .skills__track { animation-play-state: paused; }
+.skills__text { white-space: nowrap; padding-right: .9em; font-size: 12.5px; font-weight: 500; letter-spacing: .2em; color: var(--ink); }
+.skills__text i { font-style: normal; color: var(--rose); margin: 0 .7em; font-weight: 700; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
 @media (max-width: 760px) {
   .hero { min-height: 0; }
   .hero__stage { margin-top: 72px; }
@@ -184,19 +198,30 @@ button { font: inherit; color: inherit; }
 /* "sticker book" motion: a bouncy ease (slight overshoot) used ONLY for the photo stickers */
 :root { --bounce: cubic-bezier(.34, 1.56, .64, 1); }
 
-.work { --side: max(var(--gutter), calc((100% - 1320px) / 2)); padding-top: clamp(56px, 7vw, 96px); padding-bottom: clamp(56px, 7vw, 96px); }
+.work { padding-top: clamp(96px, 12vw, 160px); padding-bottom: clamp(64px, 8vw, 110px); }
 .work-head {
   display: flex; align-items: baseline; gap: 14px;
-  border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: clamp(28px, 4vw, 48px);
+  border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: clamp(8px, 2vw, 20px);
 }
 .work-head__script { font-size: clamp(48px, 5vw, 64px); line-height: .8; padding: 0 .25em 0 0; transform: rotate(-4deg) translateY(.12em); }
 .work-head__count { margin-left: auto; }
 
-.stickers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(20px, 2.4vw, 32px) clamp(16px, 2vw, 28px); }
-@media (max-width: 1100px) { .stickers { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px)  { .stickers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-.sticker { display: flex; flex-direction: column; align-items: flex-start; }
+/* Carousel: a native horizontal scroller (so touch swipe + trackpad scroll just work).
+   main.js clones the stickers for a seamless loop and nudges scrollLeft to slide it. */
+.carousel {
+  margin-inline: calc(-1 * var(--side));
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 34px 0 30px;                 /* room for the tilt, lift and shadow */
+  cursor: grab;
+  overscroll-behavior-x: contain;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.carousel.is-dragging { cursor: grabbing; user-select: none; }
+.carousel.is-dragging .sticker__card { pointer-events: none; }   /* don't flip while dragging */
+.stickers { display: flex; width: max-content; gap: clamp(28px, 3.2vw, 48px); padding-inline: var(--side); }
+.sticker { flex: none; width: clamp(250px, 28vw, 380px); display: flex; flex-direction: column; align-items: flex-start; }
+.sticker img { -webkit-user-drag: none; user-select: none; }
 
 /* the card that tilts, lifts and flips. Resting tilt = --tilt. */
 .sticker__card {
@@ -209,22 +234,22 @@ button { font: inherit; color: inherit; }
 /* inner flipper: both faces live here */
 .sticker__face {
   position: absolute; inset: 0;
-  border-radius: 12px; overflow: hidden;
-  background: #fff; padding: 6px;                    /* the white sticker border */
+  border-radius: 16px; overflow: hidden;
+  background: #fff; padding: 9px;                    /* the white sticker border */
   box-shadow: 0 2px 4px rgb(71 67 41 / .1), 0 12px 22px -10px rgb(71 67 41 / .35);
   backface-visibility: hidden;
   transition: transform .7s var(--bounce), box-shadow .5s var(--ease);
 }
-.sticker__front img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
+.sticker__front img { width: 100%; height: 100%; object-fit: cover; border-radius: 9px; }
 .sticker__back {
   transform: rotateY(-180deg);
   display: flex; flex-direction: column; gap: .4em; text-align: left;
 }
 /* the back: plain Soft Sand inside the white border */
-.sticker__back::before { content: ""; position: absolute; inset: 6px; border-radius: 7px; background: var(--sand); z-index: -1; }
-.sticker__back { isolation: isolate; padding: max(10px, 7cqi) max(11px, 7.5cqi); color: var(--ink); }
-.sticker__back-name { font-weight: 600; font-size: clamp(12px, 8cqi, 16px); line-height: 1.15; }
-.sticker__back-desc { font-size: clamp(10.5px, 6.4cqi, 13.5px); line-height: 1.32; }
+.sticker__back::before { content: ""; position: absolute; inset: 9px; border-radius: 9px; background: var(--sand); z-index: -1; }
+.sticker__back { isolation: isolate; padding: max(14px, 6.5cqi) max(16px, 7cqi); color: var(--ink); }
+.sticker__back-name { font-weight: 600; font-size: clamp(14px, 6cqi, 21px); line-height: 1.15; }
+.sticker__back-desc { font-size: clamp(12.5px, 4.6cqi, 16px); line-height: 1.38; }
 
 /* flipped: on hover (desktop), on focus, or tapped (phones, .is-flipped from main.js) */
 @media (hover: hover) {
@@ -239,18 +264,20 @@ button { font: inherit; color: inherit; }
 
 /* caption under the sticker */
 .tag {
-  margin-top: 14px;
-  font-size: 9.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; line-height: 1;
-  padding: 5px 8px 4px; border-radius: 999px;
+  margin-top: 18px;
+  font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; line-height: 1;
+  padding: 6px 10px 5px; border-radius: 999px;
   background: var(--ink); color: var(--sand);
 }
-.tag--project { background: var(--pink); color: var(--ink); }
-.sticker__name { margin-top: 8px; font-size: 17px; font-weight: 500; line-height: 1.2; }
-.sticker__role { margin-top: 2px; font-size: 13.5px; line-height: 1.35; color: var(--ink-soft); }
+/* rose is too light for small text, so PROJECT tags use a light rose fill + rose border with Mocha Green text */
+.tag--project { background: var(--rose-tint); color: var(--ink); box-shadow: inset 0 0 0 1px var(--rose); }
+.sticker__name { margin-top: 10px; font-size: 17px; font-weight: 500; line-height: 1.3; }   /* = landing paragraph size */
+.sticker__role { margin-top: 1px; font-size: 17px; line-height: 1.35; color: var(--ink-soft); }
 
 /* pop in one by one with a small bounce when the grid scrolls into view */
-.js .stickers .sticker { opacity: 0; scale: .7; translate: 0 18px; }
-.js .stickers.is-in .sticker { animation: pop .6s var(--bounce) forwards; animation-delay: calc(var(--i) * 90ms); }
+.js .carousel .sticker { opacity: 0; scale: .7; translate: 0 18px; }
+/* the observer watches the visible .carousel window (the looping row itself is far wider than the screen) */
+.js .carousel.is-in .sticker { animation: pop .6s var(--bounce) forwards; animation-delay: calc(var(--i) * 90ms); }
 @keyframes pop { to { opacity: 1; scale: 1; translate: 0 0; } }
 
 /* ---------- 5. MARQUEE ---------- */
@@ -260,7 +287,7 @@ button { font: inherit; color: inherit; }
 .marquee__track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
 .marquee__band:hover .marquee__track { animation-play-state: paused; }
 .marquee__text { font-size: clamp(44px, 6.5vw, 92px); white-space: nowrap; line-height: 1; padding-right: .3em; }
-.marquee__text i { font-style: normal; color: var(--pink); margin: 0 .25em; }
+.marquee__text i { font-style: normal; color: var(--rose); margin: 0 .25em; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---------- 6. TIN ---------- */
@@ -354,8 +381,9 @@ button { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .stickers .sticker { opacity: 1 !important; transform: none !important; scale: none !important; translate: none !important; }
+  .js [data-rise], .js [data-split] .ch, .js [data-reveal], .js .carousel .sticker { opacity: 1 !important; transform: none !important; scale: none !important; translate: none !important; }
   .js .hero__hi, .js .writes { -webkit-mask-image: none !important; mask-image: none !important; }
+  .skills__track { transform: none !important; }
   .me-sticker img:nth-child(1) { opacity: 1; }
   .me-sticker img:not(:first-child) { opacity: 0; }
   /* stickers: no tilt change, lift or flip. The description simply fades in over the photo. */
