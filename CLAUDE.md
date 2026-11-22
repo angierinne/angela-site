@@ -59,11 +59,17 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 `npm run dev` (http://localhost:5173), `npm run build`, `npm run preview`.
 
 ## Where we left off (2026-11-22)
-- Done: minimal redesign (one background, Roycella + Afacad, no scrapbook styling), new hero copy + entrance animation, alternating "printing" work entries, wall section removed, tin redrawn as SVG with a slower hinge reveal.
-- Still placeholder: charm notes, smiski photo, email/LinkedIn/GitHub URLs, `public/resume.pdf`.
+- Done (commit 585df40): minimal redesign (one background, Roycella + Afacad, no scrapbook styling), new hero copy + letter-by-letter entrance, alternating tilted work entries that "print" out of a slot and then float, wall section removed, tin redrawn as original SVG illustrations with a slower wiggle → lift → hinge reveal, charms with hover/tap notes. Checked at 1400px and 390px, plus reduced motion.
+- Still placeholder: charm notes ("[Sushi description]" etc.), smiski photo slot, email/LinkedIn/GitHub URLs (`you@example.com`, `YOUR-HANDLE`), `public/resume.pdf` (all resume links 404 until it's added).
+- Open questions for Angela:
+  - "PinPoint" vs "Pinpoint" (the app mockup says "Pinpoint"), and "DocuPal" spelling.
+  - Section titles are in Roycella and smaller headings in Afacad bold (her two messages conflicted on this).
+  - Keep or drop the small "Close and open again" link under the tin?
+  - Roycella is a personal-use-only demo; buy the commercial license if the site is ever used commercially.
 
 ### Next steps
-1. Angela writes the charm notes and adds a transparent PNG of her smiski (see the TODO in the tin markup).
+1. Angela writes the charm notes and adds a transparent PNG of her smiski (see the TODO in the tin markup; use `class="charm__art"`).
 2. Add real links + `public/resume.pdf`.
-3. Decide on the Roycella license (personal-use demo) before treating the site as anything commercial.
-4. Polish + deploy: favicon, share-preview image, then deploy to Netlify or Vercel.
+3. Answer the open questions above.
+4. Polish: favicon (no `favicon.ico` yet, so it 404s), share-preview image + meta tags.
+5. Deploy to Netlify or Vercel (`npm run build`, output in `dist/`).
