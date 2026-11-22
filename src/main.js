@@ -1,70 +1,61 @@
-
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =============================================================
    THE TIN
-   closed → wiggle (lid shakes) → open (lid pops off, items rise out)
+   closed → wiggle (1.4s) → pop (0.35s) → open (lid flips up, charms appear)
+   The look of each step lives in style.css under [data-state="..."].
    ============================================================= */
-const wall = document.querySelector('.wall');
-const tin = wall.querySelector('.tin');
-const base = wall.querySelector('.tin__base');
-const lid = wall.querySelector('.tin__lid');
-const items = [...wall.querySelectorAll('.tin-item')];
-const replay = wall.querySelector('.tin-replay');
+const tin = document.querySelector('.tin');
+const lid = tin.querySelector('.tin__lid');
+const charms = [...tin.querySelectorAll('.charm')];
+const replay = document.querySelector('.tin-replay');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Position of an element's center inside .wall, ignoring CSS transforms
-function centerIn(el) {
-  let x = el.offsetWidth / 2, y = el.offsetHeight / 2;
-  while (el && el !== wall) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
-  return { x, y };
-}
+const WIGGLE_MS = 1400;
+const POP_MS = 350;
+let timers = [];
 
-// Tell each item how far it is from the tin, so it can start "inside" it
-function aimItemsAtTin() {
-  const mouth = centerIn(base);
-  items.forEach((item, i) => {
-    const c = centerIn(item);
-    item.style.setProperty('--dx', `${mouth.x - c.x}px`);
-    item.style.setProperty('--dy', `${mouth.y - c.y}px`);
-    item.style.setProperty('--i', i);
-  });
-}
+function setState(state) { tin.dataset.state = state; }
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
 
-let timer;
 function openTin() {
-  clearTimeout(timer);
-  if (reduceMotion) { tin.dataset.state = 'open'; wall.classList.add('is-open'); return; }
-  aimItemsAtTin();
-  tin.dataset.state = 'wiggle';
-  timer = setTimeout(() => {
-    tin.dataset.state = 'open';
-    wall.classList.add('is-open');
-  }, 700);
+  clearTimers();
+  if (reduceMotion) return setState('open');
+  setState('wiggle');
+  later(() => setState('pop'), WIGGLE_MS);
+  later(() => setState('open'), WIGGLE_MS + POP_MS);
 }
 
 function closeTin() {
-  clearTimeout(timer);
-  aimItemsAtTin();
-  wall.classList.remove('is-open');
-  tin.dataset.state = 'closed';
+  clearTimers();
+  charms.forEach((c) => c.classList.remove('is-active'));
+  setState('closed');
 }
 
 // Open the first time the tin scrolls into view
 new IntersectionObserver((entries, obs) => {
   if (entries[0].isIntersecting) { openTin(); obs.disconnect(); }
-}, { threshold: 0.4 }).observe(tin);
+}, { threshold: 0.5 }).observe(tin);
 
 // Click the lid or the replay link to close and re-open
-function toggle() {
+function replayTin() {
   if (tin.dataset.state === 'closed') return openTin();
   closeTin();
-  timer = setTimeout(openTin, 450);
+  later(openTin, 1600); // wait for the lid to swing shut
 }
-lid.addEventListener('click', toggle);
-replay.addEventListener('click', toggle);
+lid.addEventListener('click', replayTin);
+replay.addEventListener('click', replayTin);
 
-// Keep item start positions right if the layout changes size
-window.addEventListener('resize', aimItemsAtTin);
-aimItemsAtTin();
+/* Charm notes: desktop shows them on hover (CSS).
+   On touch screens there's no hover, so a tap toggles the note instead. */
+charms.forEach((charm) => {
+  charm.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasActive = charm.classList.contains('is-active');
+    charms.forEach((c) => c.classList.remove('is-active'));
+    if (!wasActive) charm.classList.add('is-active');
+  });
+});
+document.addEventListener('click', () => charms.forEach((c) => c.classList.remove('is-active')));
