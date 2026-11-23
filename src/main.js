@@ -56,13 +56,40 @@ if (skillsTrack) skillsTrack.style.animationDuration = `${skillsTrack.scrollWidt
 const canHover = window.matchMedia('(hover: hover)').matches;
 
 /* =============================================================
-   WORK STICKERS: flip on tap
-   Desktop flips on hover (CSS). Touch screens have no hover, so a tap flips the
-   sticker and a second tap flips it back.
+   WORK STICKERS: when to flip
+   Desktop: the cursor has to rest in the MIDDLE of the photo (the center ~70%) for a
+   moment before the sticker flips, so sweeping across the row doesn't flip everything.
+   Once flipped it stays flipped anywhere on the sticker (so the link on the back is
+   reachable) and flips back when the cursor leaves it.
+   Touch screens: tap to flip, tap again to flip back. Tapping the link just opens it.
    ============================================================= */
+const FLIP_DELAY_MS = 150;
+const FLIP_ZONE = 0.7;   // the middle 70% of the photo, edges ignored
+
+document.querySelectorAll('.sticker__card').forEach((card) => {
+  let timer = null;
+  const cancel = () => { clearTimeout(timer); timer = null; };
+  card.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch' || card.classList.contains('is-flipped')) return;
+    const r = card.getBoundingClientRect();
+    const edge = (1 - FLIP_ZONE) / 2;
+    const fx = (e.clientX - r.left) / r.width;
+    const fy = (e.clientY - r.top) / r.height;
+    const inMiddle = fx > edge && fx < 1 - edge && fy > edge && fy < 1 - edge;
+    if (!inMiddle) cancel();
+    else if (!timer) timer = setTimeout(() => card.classList.add('is-flipped'), FLIP_DELAY_MS);
+  });
+  card.addEventListener('pointerleave', (e) => {
+    if (e.pointerType === 'touch') return;
+    cancel();
+    card.classList.remove('is-flipped');
+  });
+});
+
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.sticker__card');
-  if (!card || canHover) return;
+  if (!card || e.target.closest('a')) return;
+  if (canHover && e.pointerType !== 'touch') return;   // mouse uses the hover logic above
   card.classList.toggle('is-flipped');
 });
 
@@ -91,7 +118,7 @@ const TOSS_GAP_MS = 170;   // between items popping out
 const SPOTS = {
   left:  [[0.08, 0.17], [0.24, 0.13], [0.12, 0.47], [0.27, 0.43], [0.09, 0.81], [0.25, 0.83]],
   right: [[0.92, 0.18], [0.76, 0.12], [0.88, 0.49], [0.73, 0.45], [0.91, 0.82], [0.75, 0.80]],
-  narrow: [[0.2, 0.47], [0.5, 0.49], [0.8, 0.47], [0.18, 0.66], [0.5, 0.68], [0.82, 0.66], [0.2, 0.86], [0.5, 0.88], [0.8, 0.86]],
+  narrow: [[0.2, 0.4], [0.5, 0.42], [0.8, 0.4], [0.18, 0.64], [0.5, 0.66], [0.82, 0.64], [0.2, 0.88], [0.5, 0.9], [0.8, 0.88]],
 };
 const CALM_TILTS = [-8, 6, -5, 9, -6, 7, -4];   // used when motion is reduced (no randomness)
 
@@ -114,9 +141,10 @@ function newLayout(random = !reduceMotion) {
     spots = [...L.slice(0, nLeft), ...R.slice(0, tosses.length - nLeft)];
     if (random) spots = shuffle(spots);
   }
+  const jitter = narrow.matches ? 0.5 : 1;   // phones are tighter: less wobble so notes have room
   return spots.map(([x, y], i) => ({
-    x: x + (random ? rand(-0.018, 0.018) : 0),
-    y: y + (random ? rand(-0.022, 0.022) : 0),
+    x: x + (random ? rand(-0.018, 0.018) * jitter : 0),
+    y: y + (random ? rand(-0.022, 0.022) * jitter : 0),
     r: random ? rand(-12, 12) : CALM_TILTS[i],
   }));
 }
@@ -125,7 +153,7 @@ const where = new Map();   // item -> {x, y, r} while it's out, null while it's 
 
 function moveTo(el, cx, cy, r, scale) {
   el.style.translate = `${cx - el.offsetWidth / 2}px ${cy - el.offsetHeight / 2}px`;
-  el.style.rotate = `${r}deg`;
+  el.style.setProperty('--r', `${r}deg`);   // the tilt lives on the art (see .toss__art), so notes stay level
   el.style.scale = String(scale);
 }
 function trayCenter() {
@@ -133,10 +161,55 @@ function trayCenter() {
   const t = tray.getBoundingClientRect();
   return { x: t.left - s.left + t.width / 2, y: t.top - s.top + t.height / 2 };
 }
-// decide which side the note opens on, so it stays inside the stage
+// a quick first guess for where the note opens (placeNote refines it when it's shown)
 function aimNote(el, p) {
   el.dataset.v = p.y < 0.35 ? 'below' : 'above';
   el.dataset.h = p.x < 0.2 ? 'start' : p.x > 0.8 ? 'end' : 'center';
+}
+// Try every side the note could open on (each with a few small slides that keep the arrow on the
+// item) and keep the one that stays inside the stage and covers the fewest other items (then the
+// least of the tin). Runs right before the note shows.
+const NOTE_SPOTS = [
+  ['above', 'center'], ['below', 'center'], ['above', 'start'], ['above', 'end'],
+  ['below', 'start'], ['below', 'end'], ['right', 'center'], ['left', 'center'],
+];
+const SLIDES = {   // [nx, ny] in px; above/below slide sideways (or a bit further away), sides slide up/down
+  above: [[0, 0], [-24, 0], [24, 0], [-44, 0], [44, 0], [0, -18], [-30, -18], [30, -18]],
+  below: [[0, 0], [-24, 0], [24, 0], [-44, 0], [44, 0], [0, 18], [-30, 18], [30, 18]],
+  right: [[0, 0], [0, -22], [0, 22], [0, -40], [0, 40], [10, 0]],
+  left:  [[0, 0], [0, -22], [0, 22], [0, -40], [0, 40], [-10, 0]],
+};
+const overlap = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+                          Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+function placeNote(el) {
+  const note = el.querySelector('.toss__note');
+  const s = stage.getBoundingClientRect();
+  const box = { left: Math.max(s.left, 0), right: Math.min(s.right, window.innerWidth), top: s.top, bottom: s.bottom };
+  const others = tosses.filter((o) => o !== el && o.classList.contains('is-out'))
+    .map((o) => o.querySelector('.toss__art').getBoundingClientRect());
+  const tinBox = tray.getBoundingClientRect();
+  let best = null;
+  note.style.transition = 'none';   // measure without the slide-in animation getting in the way
+  NOTE_SPOTS.forEach(([v, h], i) => {
+    el.dataset.v = v;
+    el.dataset.h = h;
+    SLIDES[v].forEach(([nx, ny], j) => {
+      note.style.setProperty('--nx', `${nx}px`);
+      note.style.setProperty('--ny', `${ny}px`);
+      const n = note.getBoundingClientRect();
+      const outside = n.width * n.height - overlap(n, box);
+      const onItems = others.reduce((sum, o) => sum + overlap(n, o), 0);
+      // prefer earlier spots and smaller slides when it's a tie
+      const score = outside * 100 + onItems * 10 + overlap(n, tinBox) + i * 4 + j;
+      if (!best || score < best.score) best = { v, h, nx, ny, score };
+    });
+  });
+  el.dataset.v = best.v;
+  el.dataset.h = best.h;
+  note.style.setProperty('--nx', `${best.nx}px`);
+  note.style.setProperty('--ny', `${best.ny}px`);
+  void note.offsetWidth;
+  note.style.transition = '';
 }
 function withoutAnimation(el, fn) {
   el.classList.add('no-anim');
@@ -224,6 +297,8 @@ function overTin(el) {
   return cx > t.left + inset && cx < t.right - inset && cy > t.top + inset && cy < t.bottom - inset;
 }
 tosses.forEach((el) => {
+  el.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch' && !drag) placeNote(el); });
+  el.addEventListener('focus', () => placeNote(el));
   el.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'touch' || !el.classList.contains('is-out')) return;
     e.preventDefault();
@@ -253,7 +328,7 @@ tosses.forEach((el) => {
     el.classList.remove('is-dragging');
     if (!moved) return;
     if (overTin(el)) putInside(el);
-    else aimNote(el, where.get(el));
+    else placeNote(el);
   };
   el.addEventListener('pointerup', drop);
   el.addEventListener('pointercancel', drop);
@@ -266,7 +341,7 @@ document.addEventListener('click', (e) => {
   if (!el) { clearNotes(); return; }
   const was = el.classList.contains('is-active');
   clearNotes();
-  if (!was) el.classList.add('is-active');
+  if (!was) { placeNote(el); el.classList.add('is-active'); }
 });
 
 // keep items in place on resize; re-scatter if we cross the phone/desktop layout

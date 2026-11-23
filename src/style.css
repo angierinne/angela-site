@@ -217,12 +217,29 @@ button { font: inherit; color: inherit; }
 .row-note--left { align-items: flex-end; text-align: right; }      /* note left of row 2, arrow points right */
 .row-note--left .row-note__arrow { transform: scaleX(-1); }
 
+/* Wide screens: aim each arrow's tip at the middle of the photo next to it (PTC / DocuPal).
+   The arrow is pinned and the words hang above it. --card-h = one sticker photo's height, worked out
+   from the group's width (container units) with the same gaps as the grid and row above.
+   --aim-y = that sticker's --y in the HTML (PTC 14px, DocuPal 16px). 33px = where the tip sits in the arrow. */
+@media (min-width: 1001px) {
+  .work-group { container-type: inline-size; }
+  .work-group--worked { --aim-y: 14px; }
+  .work-group--made { --aim-y: 16px; }
+  .row-note {
+    --card-h: calc((100cqi - 190px - clamp(16px, 2vw, 28px) - 2 * clamp(20px, 2.6vw, 36px)) / 3 * .75);
+    align-self: start;
+    margin-top: calc(var(--aim-y) + var(--card-h) / 2 - 33px);
+  }
+  .row-note__text { position: absolute; bottom: calc(100% - 4px); width: max-content; max-width: 190px; }
+  .row-note--right .row-note__text { left: 0; }
+  .row-note--left .row-note__text { right: 0; }
+  .row-note__arrow { margin-top: 0; }
+}
+
 /* neighbors nudge away from the hovered sticker, then settle back */
 .sticker__body { display: flex; flex-direction: column; align-items: flex-start; transition: translate .5s var(--bounce); }
-@media (hover: hover) {
-  .sticker:has(+ .sticker .sticker__card:hover) .sticker__body { translate: -14px 0; }
-  .sticker:has(.sticker__card:hover) + .sticker .sticker__body { translate: 14px 0; }
-}
+.sticker:has(+ .sticker .is-flipped) .sticker__body { translate: -14px 0; }
+.sticker:has(.is-flipped) + .sticker .sticker__body { translate: 14px 0; }
 
 /* Entrance: stickers get "slapped on" one by one. Each drops from slightly above, a bit bigger and
    more tilted, lands, and settles with a small bounce. Then the row's note fades in and its arrow draws in. */
@@ -266,7 +283,7 @@ button { font: inherit; color: inherit; }
 
 /* the card that tilts, lifts and flips. Resting tilt = --tilt. */
 .sticker__card {
-  position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; background: none; cursor: pointer;
+  position: relative; display: block; width: 100%; aspect-ratio: 4 / 3;
   container-type: inline-size;
   perspective: 900px;
   rotate: var(--tilt); translate: 0 0;
@@ -290,18 +307,30 @@ button { font: inherit; color: inherit; }
 .sticker__back::before { content: ""; position: absolute; inset: 9px; border-radius: 9px; background: var(--sand); z-index: -1; }
 .sticker__back { isolation: isolate; padding: max(14px, 6.5cqi) max(16px, 7cqi); color: var(--ink); }
 .sticker__back-name { font-weight: 600; font-size: clamp(14px, 6cqi, 21px); line-height: 1.15; }
-.sticker__back-desc { font-size: clamp(12.5px, 4.6cqi, 16px); line-height: 1.38; }
+.sticker__back-desc { font-size: clamp(12.5px, 4.4cqi, 16px); line-height: 1.36; }
 
-/* flipped: on hover (desktop), on focus, or tapped (phones, .is-flipped from main.js) */
-@media (hover: hover) {
-  .sticker__card:hover { rotate: 0deg; translate: 0 -8px; }
-  .sticker__card:hover .sticker__front { transform: rotateY(180deg); }
-  .sticker__card:hover .sticker__back { transform: rotateY(0deg); }
-  .sticker__card:hover .sticker__face { box-shadow: 0 4px 8px rgb(71 67 41 / .12), 0 22px 30px -12px rgb(71 67 41 / .4); }
+/* optional link under the description: small Afacad, rose underline draws in on hover */
+.sticker__link {
+  position: relative; align-self: flex-start; margin-top: .3em;
+  font-size: clamp(12.5px, 4.2cqi, 15px); font-weight: 600; line-height: 1.2;
+  color: var(--ink); text-decoration: none;
 }
-.sticker__card:focus-visible, .sticker__card.is-flipped { rotate: 0deg; translate: 0 -8px; }
-.sticker__card:focus-visible .sticker__front, .sticker__card.is-flipped .sticker__front { transform: rotateY(180deg); }
-.sticker__card:focus-visible .sticker__back, .sticker__card.is-flipped .sticker__back { transform: rotateY(0deg); }
+.sticker__link::after {
+  content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; background: var(--rose);
+  transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease);
+}
+.sticker__link:hover::after, .sticker__link:focus-visible::after { transform: scaleX(1); }
+
+/* Flipped: .is-flipped comes from main.js (desktop: cursor rests in the middle of the photo for
+   ~150ms; phones: tap). Keyboard focus on the card or its link flips it too.
+   The back only takes clicks while it's showing, so a hidden link can't be clicked through the photo. */
+.sticker__card:focus-visible, .sticker__card:has(:focus-visible), .sticker__card.is-flipped { rotate: 0deg; translate: 0 -8px; }
+.sticker__card:focus-visible .sticker__front, .sticker__card:has(:focus-visible) .sticker__front, .sticker__card.is-flipped .sticker__front { transform: rotateY(180deg); }
+.sticker__card:focus-visible .sticker__back, .sticker__card:has(:focus-visible) .sticker__back, .sticker__card.is-flipped .sticker__back { transform: rotateY(0deg); }
+.sticker__card.is-flipped .sticker__face { box-shadow: 0 4px 8px rgb(71 67 41 / .12), 0 22px 30px -12px rgb(71 67 41 / .4); }
+.sticker__back { pointer-events: none; }
+.sticker__card:focus-visible .sticker__back, .sticker__card:has(:focus-visible) .sticker__back, .sticker__card.is-flipped .sticker__back { pointer-events: auto; }
+@media (hover: none) { .sticker__card { cursor: pointer; } }
 
 /* caption under the sticker */
 .tag {
@@ -370,7 +399,7 @@ button { font: inherit; color: inherit; }
 /* ----- the stage: the tin sits centered, the items scatter around it -----
    Items are absolutely positioned at the stage's top-left and moved with the `translate` /
    `rotate` / `scale` properties from main.js. The bouncy transition does the "toss". */
-.toss-stage { position: relative; height: clamp(560px, 50vw, 660px); margin-top: clamp(12px, 2vw, 24px); }
+.toss-stage { position: relative; height: clamp(660px, 58vw, 780px); margin-top: clamp(12px, 2vw, 24px); }
 .toss-stage .tin { position: absolute; left: 50%; top: 50%; width: min(330px, 29%); translate: -50% -50%; margin: 0; }
 .tin.is-shaking { animation: tin-shake .7s ease-in-out; }
 @keyframes tin-shake {
@@ -385,37 +414,55 @@ button { font: inherit; color: inherit; }
   padding: 0; border: 0; background: none; cursor: grab;
   pointer-events: auto; touch-action: manipulation;
   opacity: 0; scale: .25;
-  transition: translate .9s var(--bounce), rotate .9s var(--bounce), scale .7s var(--bounce), opacity .3s var(--ease);
+  transition: translate .9s var(--bounce), scale .7s var(--bounce), opacity .3s var(--ease);
 }
 .toss.is-out { opacity: 1; }
 .toss.is-inside { pointer-events: none; }
-.toss.no-anim { transition: none; }
-.toss.is-dragging { cursor: grabbing; z-index: 5; transition: rotate .3s var(--ease), scale .3s var(--ease); scale: 1.08; }
+.toss.no-anim, .toss.no-anim .toss__art { transition: none; }
+.toss.is-dragging { cursor: grabbing; z-index: 5; transition: scale .3s var(--ease); scale: 1.08; }
 .toss:hover, .toss.is-active { z-index: 6; }
-.toss__art { display: block; width: var(--size); height: auto; filter: url(#sticker-item); pointer-events: none; user-select: none; -webkit-user-drag: none; }
+/* the tilt (--r, set in main.js) lives on the art, not the button, so the note above it stays level */
+.toss__art {
+  display: block; width: var(--size); height: auto; filter: url(#sticker-item); pointer-events: none; user-select: none; -webkit-user-drag: none;
+  rotate: var(--r, 0deg); transition: rotate .9s var(--bounce);
+}
 /* the smiski photo is taller than the drawings: size it by height so it matches them */
 .toss__art--photo { width: auto; height: calc(var(--size) * .95); }
 
-/* note: dusty rose script + tiny arrow pointing at the item. Above or below (data-v), aligned by data-h. */
+/* Note: a short dusty rose script label (the item's name) + the note itself in Afacad, plus a tiny
+   arrow pointing at the item. main.js picks the side (data-v = above / below / left / right) and the
+   alignment (data-h = start / center / end) so the note stays inside the stage and clear of other items. */
 .toss__note {
-  position: absolute; z-index: 8; width: max-content; max-width: 250px;
-  display: flex; flex-direction: column; align-items: center;
-  color: var(--rose); pointer-events: none;
-  opacity: 0; translate: 0 6px; transition: opacity .25s var(--ease), translate .35s var(--bounce);
+  position: absolute; z-index: 8; width: max-content; max-width: 210px;
+  display: grid; justify-items: center; align-items: center; column-gap: 2px;
+  grid-template-areas: "label" "text" "arrow";
+  text-align: center; pointer-events: none;
+  /* --nx / --ny: a small slide main.js may add to dodge other items. --ty centers side notes. */
+  opacity: 0; translate: var(--nx, 0px) calc(var(--ty, 0%) + var(--ny, 0px) + 6px);
+  transition: opacity .25s var(--ease), translate .35s var(--bounce);
 }
-.toss__text { font-size: clamp(30px, 2.8vw, 38px); line-height: .95; text-align: center; padding: .1em .25em .15em; }
-.toss__arrow { width: 44px; height: 30px; }
-.toss[data-v="above"] .toss__note { bottom: calc(100% + 2px); flex-direction: column; }
-.toss[data-v="below"] .toss__note { top: calc(100% + 2px); flex-direction: column-reverse; }
+.toss__label { grid-area: label; font-size: clamp(40px, 3.4vw, 48px); line-height: .8; padding: .1em .3em .06em; }
+.toss__text { grid-area: text; font-size: 16px; line-height: 1.3; font-weight: 500; color: var(--ink); }
+.toss__arrow { grid-area: arrow; width: 40px; height: 28px; color: var(--rose); }
+
+.toss[data-v="above"] .toss__note { bottom: calc(100% + 2px); }
+.toss[data-v="below"] .toss__note { top: calc(100% + 2px); grid-template-areas: "arrow" "label" "text"; }
 .toss[data-v="above"] .toss__arrow { transform: rotate(-20deg); }
 .toss[data-v="below"] .toss__arrow { transform: scaleY(-1) rotate(-20deg); }
-.toss[data-h="center"] .toss__note { left: 50%; margin-left: -125px; width: 250px; }
-.toss[data-h="start"] .toss__note { left: -6px; align-items: flex-start; }
-.toss[data-h="start"] .toss__text { text-align: left; }
-.toss[data-h="end"] .toss__note { right: -6px; align-items: flex-end; }
-.toss[data-h="end"] .toss__text { text-align: right; }
-@media (hover: hover) { .toss:hover:not(.is-dragging) .toss__note { opacity: 1; translate: 0 0; } }
-.toss.is-active .toss__note, .toss:focus-visible .toss__note { opacity: 1; translate: 0 0; }
+.toss[data-h="center"] .toss__note { left: 50%; margin-left: -105px; width: 210px; }
+.toss[data-h="start"] .toss__note { left: -6px; justify-items: start; text-align: left; }
+.toss[data-h="end"] .toss__note { right: -6px; justify-items: end; text-align: right; }
+/* beside the item, vertically centered, arrow pointing sideways at it */
+.toss[data-v="right"] .toss__note, .toss[data-v="left"] .toss__note {
+  --ty: -50%; top: 50%; width: 190px; margin: 0;
+}
+.toss[data-v="right"] .toss__note { left: calc(100% - 4px); right: auto; grid-template-areas: "arrow label" "arrow text"; justify-items: start; text-align: left; }
+.toss[data-v="left"] .toss__note { right: calc(100% - 4px); left: auto; grid-template-areas: "label arrow" "text arrow"; justify-items: end; text-align: right; }
+.toss[data-v="right"] .toss__arrow { transform: rotate(35deg); }
+.toss[data-v="left"] .toss__arrow { transform: scaleX(-1) rotate(35deg); }
+
+@media (hover: hover) { .toss:hover:not(.is-dragging) .toss__note { opacity: 1; translate: var(--nx, 0px) calc(var(--ty, 0%) + var(--ny, 0px)); } }
+.toss.is-active .toss__note, .toss:focus-visible .toss__note { opacity: 1; translate: var(--nx, 0px) calc(var(--ty, 0%) + var(--ny, 0px)); }
 
 .tin-shake {
   display: block; position: relative; margin: 10px auto 0; padding: 4px 2px;
@@ -429,12 +476,14 @@ button { font: inherit; color: inherit; }
 
 /* phones: the tin sits at the top of a taller stage and the items land below it */
 @media (max-width: 700px) {
-  .toss-stage { height: 860px; }
+  .toss-stage { height: 1080px; }
   .toss-stage .tin { top: 0; width: 62%; translate: -50% 0; }
   .toss { --size: 70px; }
-  .toss__note { max-width: 190px; }
-  .toss[data-h="center"] .toss__note { margin-left: -95px; width: 190px; }
-  .toss__text { font-size: 28px; }
+  .toss__note { max-width: 170px; }
+  .toss[data-h="center"] .toss__note { margin-left: -85px; width: 170px; }
+  .toss[data-v="right"] .toss__note, .toss[data-v="left"] .toss__note { width: 150px; }
+  .toss__label { font-size: 40px; }
+  .toss__text { font-size: 15px; }
 }
 
 /* ---------- 6. FOOTER ---------- */
@@ -464,5 +513,5 @@ button { font: inherit; color: inherit; }
   .sticker__card { rotate: var(--tilt) !important; translate: none !important; }
   .sticker__front { transform: none !important; }
   .sticker__back { transform: none !important; opacity: 0; transition: opacity .3s linear !important; }
-  .sticker__card:hover .sticker__back, .sticker__card:focus-visible .sticker__back, .sticker__card.is-flipped .sticker__back { opacity: 1; }
+  .sticker__card:focus-visible .sticker__back, .sticker__card:has(:focus-visible) .sticker__back, .sticker__card.is-flipped .sticker__back { opacity: 1; }
 }

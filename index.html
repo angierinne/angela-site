@@ -96,7 +96,7 @@
         <p class="hero__lead" data-rise>I like products, and I like people.</p>
         <p class="hero__about" data-rise>
           I love thinking about what we should build, how it helps people, and how to go about it.
-          As a designer and developer, I love being able to think creatively and build technically.
+          As a designer and developer, I get to think creatively and build technically.
         </p>
         <ul class="links" aria-label="Quick links" data-rise>
           <li><a href="mailto:aw858@cornell.edu">Email</a></li>
@@ -111,6 +111,7 @@
          2. MY WORK: two static rows of photo stickers, placed by hand.
          Row 1 = experience, row 2 = projects. Each sticker: --tilt (resting angle), --y (nudge up/down
          for the wave), --i (order it gets "slapped on"). Flips to its description on hover / tap.
+         Optional link on the back: <a class="sticker__link" ...>Label<span aria-hidden="true"> ↗</span></a>
          Tag: "tag" = experience (green), "tag tag--project" = light rose.
          Images live in public/images/stickers/ (all 4:3, 640x480).
          ============================================================ -->
@@ -129,13 +130,14 @@
         <ul class="sticker-row">
           <li class="sticker" style="--tilt:-3deg; --y:0px; --i:0">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="Design Consulting at Cornell: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="Design Consulting at Cornell">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/dcc.jpg" alt="Design Consulting at Cornell team photo" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">Design Consulting at Cornell</span>
                   <span class="sticker__back-desc">Leading Cornell's student-run design consultancy, supporting client projects and internal team operations.</span>
+                  <a class="sticker__link" href="https://designconsultingcornell.com/" target="_blank" rel="noopener noreferrer">Website<span aria-hidden="true"> ↗</span></a>
                 </span>
-              </button>
+              </div>
               <p class="tag">Leadership</p>
               <h4 class="sticker__name">Design Consulting at Cornell</h4>
               <p class="sticker__role">President · 2026 – Present</p>
@@ -143,13 +145,13 @@
           </li>
           <li class="sticker" style="--tilt:2.5deg; --y:-26px; --i:1">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="Mastercard: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="Mastercard">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/mastercard.jpg" alt="Angela at the Mastercard office" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">Mastercard</span>
                   <span class="sticker__back-desc">Shaped product strategy for consolidating marketing technology platforms and supported feature development for Mastercard.com.</span>
                 </span>
-              </button>
+              </div>
               <p class="tag">Internship</p>
               <h4 class="sticker__name">Mastercard</h4>
               <p class="sticker__role">Technical Product Management Intern · 2026</p>
@@ -157,13 +159,13 @@
           </li>
           <li class="sticker" style="--tilt:-1.5deg; --y:14px; --i:2">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="PTC: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="PTC">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/ptc.jpg" alt="PTC intern group in the PTC office" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">PTC</span>
-                  <span class="sticker__back-desc">Redesigned complex workflows to simplify the Windchill software experience.</span>
+                  <span class="sticker__back-desc">Redesigned complex workflows on the Collector tool to simplify the Windchill software experience for product lifecycle management.</span>
                 </span>
-              </button>
+              </div>
               <p class="tag">Internship</p>
               <h4 class="sticker__name">PTC</h4>
               <p class="sticker__role">User Experience and Research Intern · 2025</p>
@@ -181,13 +183,14 @@
         <ul class="sticker-row">
           <li class="sticker" style="--tilt:3.5deg; --y:16px; --i:0">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="DocuPal: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="DocuPal">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/docupal.jpg" alt="DocuPal upload screen" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">DocuPal</span>
                   <span class="sticker__back-desc">AI-powered platform to help immigrants understand complex documents and navigate important paperwork.</span>
+                  <a class="sticker__link" href="https://www.youtube.com/watch?v=Q3xORvbDQ7o" target="_blank" rel="noopener noreferrer">Demo<span aria-hidden="true"> ↗</span></a>
                 </span>
-              </button>
+              </div>
               <p class="tag tag--project">Project</p>
               <h4 class="sticker__name">DocuPal</h4>
               <p class="sticker__role">Developer and Designer · 2026</p>
@@ -195,13 +198,14 @@
           </li>
           <li class="sticker" style="--tilt:-4deg; --y:-18px; --i:1">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="Microsoft: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="Microsoft">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/microsoft.jpg" alt="Microsoft bid review interface mockups" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">Microsoft</span>
                   <span class="sticker__back-desc">AI-powered bid review experience to help buyers navigate complex information and make more confident purchasing decisions.</span>
+                  <a class="sticker__link" href="https://jeweled-cousin-792.notion.site/Microsoft-Copilot-for-Sales-20b848fa74cd8132a813ecf156358a7f" target="_blank" rel="noopener noreferrer">Case Study<span aria-hidden="true"> ↗</span></a>
                 </span>
-              </button>
+              </div>
               <p class="tag tag--project">Project</p>
               <h4 class="sticker__name">Microsoft</h4>
               <p class="sticker__role">Contract Designer · 2025</p>
@@ -209,16 +213,17 @@
           </li>
           <li class="sticker" style="--tilt:2deg; --y:8px; --i:2">
             <div class="sticker__body">
-              <button class="sticker__card" type="button" aria-label="Pinpoint: show description">
+              <div class="sticker__card" tabindex="0" role="group" aria-label="Pinpoint">
                 <span class="sticker__face sticker__front"><img src="/images/stickers/pinpoint.jpg" alt="Pinpoint app shown on two phones" width="640" height="480" loading="lazy" /></span>
                 <span class="sticker__face sticker__back">
                   <span class="sticker__back-name">Pinpoint</span>
                   <span class="sticker__back-desc">Mobile experience to help Cornell students discover local events and activities around Ithaca.</span>
+                  <a class="sticker__link" href="https://jeweled-cousin-792.notion.site/Pinpoint-256848fa74cd81c8b611e0b89dcb17e7" target="_blank" rel="noopener noreferrer">Case Study<span aria-hidden="true"> ↗</span></a>
                 </span>
-              </button>
+              </div>
               <p class="tag tag--project">Project</p>
               <h4 class="sticker__name">Pinpoint</h4>
-              <p class="sticker__role">Designer · 2025</p>
+              <p class="sticker__role">Designer · 2024</p>
             </div>
           </li>
         </ul>
@@ -266,7 +271,8 @@
             <button class="toss" type="button" aria-label="Sushi" aria-describedby="note-sushi">
               <img class="toss__art" src="/images/charms/sushi.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-sushi" role="tooltip">
-                <span class="script toss__text">Toro nigiri and lots of tuna</span>
+                <span class="script toss__label" aria-hidden="true">sushi</span>
+                <span class="toss__text">Toro nigiri and lots of tuna</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -275,7 +281,8 @@
             <button class="toss" type="button" aria-label="Yoga" aria-describedby="note-yoga">
               <img class="toss__art" src="/images/charms/yoga.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-yoga" role="tooltip">
-                <span class="script toss__text">Flowing to savasana</span>
+                <span class="script toss__label" aria-hidden="true">yoga</span>
+                <span class="toss__text">Flowing to savasana</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -284,7 +291,8 @@
             <button class="toss" type="button" aria-label="Traveling" aria-describedby="note-travel">
               <img class="toss__art" src="/images/charms/travel.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-travel" role="tooltip">
-                <span class="script toss__text">Favorite city so far: Barcelona!</span>
+                <span class="script toss__label" aria-hidden="true">traveling</span>
+                <span class="toss__text">Favorite city so far: Barcelona!</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -293,7 +301,8 @@
             <button class="toss" type="button" aria-label="Smiski" aria-describedby="note-smiski">
               <img class="toss__art toss__art--photo" src="/images/charms/smiski.png" alt="" draggable="false" />
               <span class="toss__note" id="note-smiski" role="tooltip">
-                <span class="script toss__text">I have 14 in my room</span>
+                <span class="script toss__label" aria-hidden="true">smiski</span>
+                <span class="toss__text">I have 14 in my room</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -302,7 +311,8 @@
             <button class="toss" type="button" aria-label="Candles" aria-describedby="note-candles">
               <img class="toss__art" src="/images/charms/candles.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-candles" role="tooltip">
-                <span class="script toss__text">Currently burning: warm vanilla</span>
+                <span class="script toss__label" aria-hidden="true">candles</span>
+                <span class="toss__text">Currently burning: warm vanilla</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -311,7 +321,8 @@
             <button class="toss" type="button" aria-label="Crafting (crochet)" aria-describedby="note-craft">
               <img class="toss__art" src="/images/charms/craft.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-craft" role="tooltip">
-                <span class="script toss__text">I crochet bags and plushies</span>
+                <span class="script toss__label" aria-hidden="true">crafting</span>
+                <span class="toss__text">I crochet bags and plushies</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -320,7 +331,8 @@
             <button class="toss" type="button" aria-label="Walks" aria-describedby="note-walks">
               <img class="toss__art" src="/images/charms/walks.svg" alt="" draggable="false" />
               <span class="toss__note" id="note-walks" role="tooltip">
-                <span class="script toss__text">Daily walks while Ithaca weather allows</span>
+                <span class="script toss__label" aria-hidden="true">walks</span>
+                <span class="toss__text">Daily walks while Ithaca weather allows</span>
                 <svg class="toss__arrow" aria-hidden="true"><use href="#hand-arrow" /></svg>
               </span>
             </button>
@@ -336,7 +348,7 @@
          ============================================================ -->
     <footer id="contact" class="footer">
       <div class="footer__row">
-        <p class="label">Angela Wang <span class="label__sep">Ithaca, NY</span></p>
+        <p class="label">Angela Wang</p>
         <ul class="links links--small" aria-label="Contact">
           <li><a href="mailto:aw858@cornell.edu">Email</a></li>
           <li><a href="https://www.linkedin.com/in/angela-wang-3b6767212/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
