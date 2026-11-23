@@ -98,18 +98,24 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 ## Commands
 `npm run dev` (http://localhost:5173), `npm run build`, `npm run preview`.
 
-## Where we left off (2026-11-22)
-- Latest (2026-11-23): fixed the script being clipped flat at the top ("Hi, I’m", "What’s in my tin?", AW: the write-in mask only covered the line box); added "Thanks for visiting!" above the footer and shrank the AW signature; phones only: tighter hero spacing, swipeable work rows with dots, compact tin cluster. Desktop checked pixel-for-pixel against before (only the unclipped swashes + footer differ).
-- Before that: new landing paragraph; work notes aimed at PTC / DocuPal; calmer flip (center + 150ms delay) with links on the backs; PTC description + Pinpoint 2024; two-line tin notes (script label + Afacad) placed to avoid other items; "Ithaca, NY" removed from the footer.
-- Before that: removed the interests marquee, section counters and the work carousel. "My work" is two static, hand-placed rows with script notes + arrows, slap-on entrance, neighbor nudge, and the skills ticker under it. The tin is now a toss-and-scatter play area: items pop out, notes on hover/tap, mouse drag, drop-into-tin, "Shake the tin". Crafting redrawn as crochet. Checked at 1400 / 900 / 390px + reduced motion: no item overlaps, nothing outside the stage, no description overflow, no horizontal scroll.
-- Open questions for Angela:
-  - "DocuPal" spelling.
-  - The rose script headline "What’s in my tin?" is large but low contrast (~2.1:1). It's mostly decorative.
-  - Favicon script is thin at 16px tab size.
-  - On phones the sticker covers part of the final "A" in ANGELA.
-  - Tablet (769–1000px) tin notes: in rare crowded random layouts a note's corner can brush another item's box by a few px.
-  - Phone tin cluster is ~75% shorter than before (asked for 50–60%); it's tight on purpose so it reads as "spilled out". Loosen `row2` / the 14px gap in `clusterSpots()` if it feels cramped.
+## Where we left off (2026-11-23)
+- **State:** the site is feature-complete for a first launch. Hero, "My work" (two hand-placed sticker rows on desktop, swipeable rows with dots on phones, flip-to-description with links on the backs), the tin finale (toss-and-scatter on desktop, spilled-out cluster on phones), and the footer ("Thanks for visiting!" + small AW signature). All committed.
+- **Latest round (2026-11-23):** fixed script swashes being clipped flat at the top (`.writes` `--room`); added "Thanks for visiting!" and shrank the AW signature; phone-only layout changes at ≤768px (tighter hero spacing, swipe rows + dots, compact tin cluster, notes above items). Desktop was pixel-diffed against the previous version: only the unclipped swashes and the footer changed.
+- **Earlier (2026-11-22):** new landing paragraph; arrows aimed at PTC / DocuPal; calmer flip (center ~70% + 150ms); back links (DCC, DocuPal, Microsoft, Pinpoint); two-line tin notes; removed the marquee, counters, carousel and "Ithaca, NY".
+- **How it was checked:** puppeteer (system Chrome) at 1440 / 1100 / 900px and 390 / 430px in device mode, plus reduced motion. Checks: no horizontal scroll, no sticker/tin overlaps, notes on screen, swipe doesn't flip, links clickable when flipped, no console errors.
+
+### Open questions for Angela
+- "DocuPal" spelling.
+- The rose script headline "What’s in my tin?" is large but low contrast (~2.1:1). It's mostly decorative.
+- Favicon script is thin at 16px tab size.
+- On phones the sticker covers part of the final "A" in ANGELA.
+- Phone tin cluster is ~75% shorter than before (asked for 50–60%), tight on purpose so it reads as "spilled out". Loosen `row2` / the 14px gap in `clusterSpots()` if it feels cramped.
+- On phones a tap note covers its neighbors behind a soft sand glow; over the tin's shadow the glow can read as a faint lighter patch.
+- Tablet (769–1000px) tin notes: in rare crowded random layouts a note's corner can brush another item's box by a few px.
+- Flipped-sticker back text is small on tablets (~12.5px).
 
 ### Next steps
 1. Answer the open questions above.
-2. Share-preview image + meta tags, then deploy to Netlify or Vercel (`npm run build`, output in `dist/`).
+2. Test on a real iPhone (swipe feel, tap-to-flip, tin notes, Safari's script rendering).
+3. Share-preview image + meta tags (title, description, Open Graph / Twitter card).
+4. Deploy to Netlify or Vercel (`npm run build`, output in `dist/`), then check the live site at all widths.
