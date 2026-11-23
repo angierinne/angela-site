@@ -86,11 +86,49 @@ document.querySelectorAll('.sticker__card').forEach((card) => {
   });
 });
 
+// a swipe on the phone rows must not flip: remember where a touch started and how far the row was scrolled
+let press = null;
+document.addEventListener('pointerdown', (e) => {
+  const row = e.target.closest('.sticker-row');
+  press = row ? { row, x: e.clientX, y: e.clientY, scroll: row.scrollLeft } : null;
+});
+const wasSwipe = (e) => press && (Math.abs(press.row.scrollLeft - press.scroll) > 4 ||
+  Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10);
+
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.sticker__card');
   if (!card || e.target.closest('a')) return;
   if (canHover && e.pointerType !== 'touch') return;   // mouse uses the hover logic above
+  if (wasSwipe(e)) return;
   card.classList.toggle('is-flipped');
+});
+
+/* =============================================================
+   PHONE ROWS: dots under each swipeable row (hidden on bigger screens by CSS)
+   Dusty rose = the sticker you're on. Tapping a dot scrolls to that sticker. No auto-sliding.
+   ============================================================= */
+document.querySelectorAll('.sticker-row').forEach((row) => {
+  const stickers = [...row.children];
+  const dots = document.createElement('div');
+  dots.className = 'row-dots';
+  stickers.forEach((sticker, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `Show sticker ${i + 1} of ${stickers.length}`);
+    dot.addEventListener('click', () => {
+      row.scrollTo({ left: sticker.offsetLeft - stickers[0].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    dots.append(dot);
+  });
+  row.after(dots);
+  const update = () => {
+    const step = stickers[1].offsetLeft - stickers[0].offsetLeft;
+    const atEnd = row.scrollLeft >= row.scrollWidth - row.clientWidth - 2;
+    const current = atEnd ? stickers.length - 1 : Math.round(row.scrollLeft / step);
+    [...dots.children].forEach((d, i) => d.setAttribute('aria-current', String(i === current)));
+  };
+  row.addEventListener('scroll', update, { passive: true });
+  update();
 });
 
 /* =============================================================
@@ -106,7 +144,7 @@ const tin = stage.querySelector('.tin');
 const tray = tin.querySelector('.tin__base');
 const tosses = [...stage.querySelectorAll('.toss')];
 const shakeBtn = document.querySelector('.tin-shake');
-const narrow = window.matchMedia('(max-width: 700px)');   // same breakpoint as the CSS
+const narrow = window.matchMedia('(max-width: 768px)');   // same breakpoint as the CSS
 
 const WIGGLE_MS = 1300;
 const POP_MS = 450;
@@ -114,12 +152,25 @@ const OPEN_MS = 1500;      // start tossing items when the lid is nearly open
 const TOSS_GAP_MS = 170;   // between items popping out
 
 // Landing spots (item centers, as fractions of the stage). The tin sits in the middle on wide
-// screens, so spots ring it left and right; on phones the tin is at the top and items land below.
+// screens, so spots ring it left and right. (Phones use clusterSpots() below instead.)
 const SPOTS = {
   left:  [[0.08, 0.17], [0.24, 0.13], [0.12, 0.47], [0.27, 0.43], [0.09, 0.81], [0.25, 0.83]],
   right: [[0.92, 0.18], [0.76, 0.12], [0.88, 0.49], [0.73, 0.45], [0.91, 0.82], [0.75, 0.80]],
-  narrow: [[0.2, 0.4], [0.5, 0.42], [0.8, 0.4], [0.18, 0.64], [0.5, 0.66], [0.82, 0.64], [0.2, 0.88], [0.5, 0.9], [0.8, 0.88]],
 };
+// Phones: a tight "just spilled out" cluster right under the tin: 4 on top, 3 below,
+// offset so they interlock. Worked out in px from the real tin + item sizes, returned as fractions.
+const CLUSTER_X = [[0.125, 0.375, 0.625, 0.875], [0.25, 0.5, 0.75]];
+const CLUSTER_NUDGE_Y = [-4, 5, -2, 6, 3, -5, 2];   // small fixed wobble so the rows don't look ruled
+function clusterSpots() {
+  const { width: W, height: H } = stage.getBoundingClientRect();
+  const itemH = Math.max(...tosses.map((el) => el.offsetHeight));
+  const tinBottom = tin.offsetTop + tin.offsetHeight;
+  const row1 = tinBottom + 14 + itemH / 2;
+  const row2 = row1 + itemH + 10;
+  const spots = [];
+  CLUSTER_X.forEach((xs, r) => xs.forEach((x) => spots.push([x, (r ? row2 : row1) / H])));
+  return spots.map(([x, y], i) => [x, y + CLUSTER_NUDGE_Y[i] / H]);
+}
 const CALM_TILTS = [-8, 6, -5, 9, -6, 7, -4];   // used when motion is reduced (no randomness)
 
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -133,7 +184,8 @@ const shuffle = (list) => {
 function newLayout(random = !reduceMotion) {
   let spots;
   if (narrow.matches) {
-    spots = random ? shuffle(SPOTS.narrow).slice(0, tosses.length) : SPOTS.narrow.slice(0, tosses.length);
+    spots = clusterSpots();   // which item goes where is shuffled below
+    if (random) spots = shuffle(spots);
   } else {
     const nLeft = random ? (Math.random() < 0.5 ? 4 : 3) : 4;
     const L = random ? shuffle(SPOTS.left) : SPOTS.left;
@@ -141,11 +193,11 @@ function newLayout(random = !reduceMotion) {
     spots = [...L.slice(0, nLeft), ...R.slice(0, tosses.length - nLeft)];
     if (random) spots = shuffle(spots);
   }
-  const jitter = narrow.matches ? 0.5 : 1;   // phones are tighter: less wobble so notes have room
+  const jitter = narrow.matches ? 0.15 : 1;   // phones: a tight cluster, just a hint of wobble
   return spots.map(([x, y], i) => ({
     x: x + (random ? rand(-0.018, 0.018) * jitter : 0),
     y: y + (random ? rand(-0.022, 0.022) * jitter : 0),
-    r: random ? rand(-12, 12) : CALM_TILTS[i],
+    r: random ? rand(-12, 12) * (narrow.matches ? 0.7 : 1) : CALM_TILTS[i],
   }));
 }
 
@@ -181,16 +233,29 @@ const SLIDES = {   // [nx, ny] in px; above/below slide sideways (or a bit furth
 };
 const overlap = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
                           Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+const PHONE_SPOTS = (first) => {
+  const other = first === 'above' ? 'below' : 'above';
+  return [[first, 'center'], [first, 'start'], [first, 'end'], [other, 'center'], [other, 'start'], [other, 'end']];
+};
 function placeNote(el) {
   const note = el.querySelector('.toss__note');
   const s = stage.getBoundingClientRect();
-  const box = { left: Math.max(s.left, 0), right: Math.min(s.right, window.innerWidth), top: s.top, bottom: s.bottom };
+  let box = { left: Math.max(s.left, 0), right: Math.min(s.right, window.innerWidth), top: s.top, bottom: s.bottom };
+  let spots = NOTE_SPOTS;
+  let itemWeight = 10;
+  // Phones: the cluster is tight, so the note opens just above the item (below only if there's no
+  // room on screen), in front of its neighbors, and only has to stay fully on screen.
+  if (narrow.matches) {
+    spots = PHONE_SPOTS('above');
+    box = { left: 0, right: window.innerWidth, top: 0, bottom: window.innerHeight };
+    itemWeight = 0;
+  }
   const others = tosses.filter((o) => o !== el && o.classList.contains('is-out'))
     .map((o) => o.querySelector('.toss__art').getBoundingClientRect());
   const tinBox = tray.getBoundingClientRect();
   let best = null;
   note.style.transition = 'none';   // measure without the slide-in animation getting in the way
-  NOTE_SPOTS.forEach(([v, h], i) => {
+  spots.forEach(([v, h], i) => {
     el.dataset.v = v;
     el.dataset.h = h;
     SLIDES[v].forEach(([nx, ny], j) => {
@@ -200,7 +265,7 @@ function placeNote(el) {
       const outside = n.width * n.height - overlap(n, box);
       const onItems = others.reduce((sum, o) => sum + overlap(n, o), 0);
       // prefer earlier spots and smaller slides when it's a tie
-      const score = outside * 100 + onItems * 10 + overlap(n, tinBox) + i * 4 + j;
+      const score = outside * 100 + onItems * itemWeight + (itemWeight ? overlap(n, tinBox) : 0) + i * 4 + j;
       if (!best || score < best.score) best = { v, h, nx, ny, score };
     });
   });
