@@ -76,9 +76,11 @@ button { font: inherit; color: inherit; }
 /* links: plain text; a dusty rose underline draws in on hover */
 .links { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 500; font-size: 17px; }
 .links--small { font-size: 14px; gap: 6px 22px; }
-.links a { position: relative; text-decoration: none; }
+/* --hit = invisible padding around each link so it's easy to click / tap. Negative margins cancel it,
+   so the layout and the underline position don't change. */
+.links a { --hit-y: 8px; --hit-x: 6px; position: relative; text-decoration: none; padding: var(--hit-y) var(--hit-x); margin: calc(-1 * var(--hit-y)) calc(-1 * var(--hit-x)); }
 .links a::after {
-  content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px;
+  content: ""; position: absolute; left: var(--hit-x); bottom: calc(var(--hit-y) - 3px); width: calc(100% - 2 * var(--hit-x)); height: 2px;
   background: var(--rose);
   transform: scaleX(0); transform-origin: left;
   transition: transform .35s var(--ease);
@@ -103,7 +105,9 @@ button { font: inherit; color: inherit; }
    outside its line box. So every .writes element gets --room of padding above and below (cancelled by
    negative margins, so the layout doesn't move). The mask then covers the swashes and nothing is cut off.
    Rules that set padding on a .writes element must keep var(--room) on top and bottom. */
-.writes { --room: .55em; padding-block: var(--room); margin-block: calc(-1 * var(--room)); }
+.writes { --room: .55em; padding-block: var(--room); margin-block: calc(-1 * var(--room)); pointer-events: none; }
+/* pointer-events: none because that extra room is invisible but large: without it the AW signature's box
+   sat on top of the footer links and swallowed clicks. Written-in script is always decorative. */
 .js .writes {
   -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
           mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
@@ -269,8 +273,15 @@ button { font: inherit; color: inherit; }
 .js .work-group.is-in .row-note__arrow { opacity: 1; }
 
 /* Skills ticker: small, quiet texture under the projects row. Drifts left; duration is set from its width in main.js. */
-.skills { margin: clamp(72px, 9vw, 120px) calc(-1 * var(--side)) 0; overflow: hidden; }
-.skills__track { display: flex; width: max-content; padding: 12px 0; border-top: 1px solid rgb(71 67 41 / .35); animation: drift 50s linear infinite; }
+/* Sits within the content width (lined up with the rows above). The hairline is on .skills (crisp, full width);
+   the words scroll inside .skills__window, whose mask fades them in and out at both ends instead of cutting them. */
+.skills { margin-top: clamp(72px, 9vw, 120px); border-top: 1px solid rgb(71 67 41 / .35); }
+.skills__window {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.skills__track { display: flex; width: max-content; padding: 12px 0; animation: drift 50s linear infinite; }
 .skills:hover .skills__track { animation-play-state: paused; }
 .skills__text { white-space: nowrap; padding-right: .9em; font-size: 12.5px; font-weight: 500; letter-spacing: .2em; color: var(--ink); }
 .skills__text i { font-style: normal; color: var(--rose); margin: 0 .7em; font-weight: 700; }
@@ -343,12 +354,14 @@ button { font: inherit; color: inherit; }
 
 /* optional link under the description: small Afacad, rose underline draws in on hover */
 .sticker__link {
-  position: relative; align-self: flex-start; margin-top: .3em;
+  --hit-y: 6px; --hit-x: 6px;   /* invisible padding = bigger click / tap area; margins cancel it */
+  position: relative; align-self: flex-start;
+  padding: var(--hit-y) var(--hit-x); margin: calc(.3em - var(--hit-y)) calc(-1 * var(--hit-x)) calc(-1 * var(--hit-y));
   font-size: clamp(12.5px, 4.2cqi, 15px); font-weight: 600; line-height: 1.2;
   color: var(--ink); text-decoration: none;
 }
 .sticker__link::after {
-  content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; background: var(--rose);
+  content: ""; position: absolute; left: var(--hit-x); bottom: calc(var(--hit-y) - 2px); width: calc(100% - 2 * var(--hit-x)); height: 2px; background: var(--rose);
   transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease);
 }
 .sticker__link:hover::after, .sticker__link:focus-visible::after { transform: scaleX(1); }
