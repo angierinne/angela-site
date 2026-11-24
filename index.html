@@ -7,7 +7,10 @@
   <!-- lets CSS hide things that animate in, only when JS is running -->
   <script>document.documentElement.classList.add('js')</script>
   <meta name="description" content="Angela Wang: CS '28 at Cornell. Designer and developer who likes products and people." />
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <!-- Fonts: Anton (poster headlines), Mrs Saint Delafield (dusty rose signature script), Afacad (everything else) -->
@@ -350,13 +353,14 @@
     <footer id="contact" class="footer">
       <p class="script thanks writes" data-reveal>Thanks for visiting!</p>
       <div class="footer__row">
-        <p class="label">Angela Wang</p>
+        <!-- phones show "© 2026 ANGELA WANG" here and hide the © on the right (one row) -->
+        <p class="label"><span class="footer__copy-m">© <span data-year></span> </span>Angela Wang</p>
         <ul class="links links--small" aria-label="Contact">
           <li><a href="mailto:aw858@cornell.edu">Email</a></li>
           <li><a href="https://www.linkedin.com/in/angela-wang-3b6767212/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
           <li><a href="https://github.com/angierinne" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
-        <p class="label">© <span id="year"></span></p>
+        <p class="label footer__copy">© <span data-year></span></p>
       </div>
       <p class="script signoff writes" data-reveal aria-label="Signed, AW">AW</p>
     </footer>

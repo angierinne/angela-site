@@ -1,7 +1,7 @@
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Footer year
-document.getElementById('year').textContent = new Date().getFullYear();
+document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 
 /* =============================================================
    HERO ENTRANCE (~1.5s total)
@@ -162,19 +162,25 @@ const SPOTS = {
   left:  [[0.08, 0.17], [0.24, 0.13], [0.12, 0.47], [0.27, 0.43], [0.09, 0.81], [0.25, 0.83]],
   right: [[0.92, 0.18], [0.76, 0.12], [0.88, 0.49], [0.73, 0.45], [0.91, 0.82], [0.75, 0.80]],
 };
-// Phones: a tight "just spilled out" cluster right under the tin: 4 on top, 3 below,
-// offset so they interlock. Worked out in px from the real tin + item sizes, returned as fractions.
-const CLUSTER_X = [[0.11, 0.37, 0.63, 0.89], [0.24, 0.5, 0.76]];   // spread to the stage edges
-const CLUSTER_NUDGE_Y = [-4, 5, -2, 6, 3, -5, 2];   // small fixed wobble so the rows don't look ruled
+// Phones: a loose "just spilled out" scatter BELOW the open tin (never on the lid or tray):
+// 3 rows of 2 / 3 / 2, offset so they interlock, with roomy gaps so each item is easy to tap.
+// Worked out in px from the tin's layout box (its bottom = the open tray's bottom) and the item sizes,
+// then returned as stage fractions.
+const CLUSTER_X = [[0.28, 0.72], [0.14, 0.5, 0.86], [0.28, 0.72]];
+const CLUSTER_NUDGE = [[-6, -2], [4, 3], [3, -2], [-5, 3], [2, 2], [7, -3], [-3, 2]];   // small fixed wobble [x, y] px
+const CLUSTER_TOP_GAP = 18;   // px between the tray and the first row
+const CLUSTER_ROW_GAP = 30;   // px between rows (on top of the item height)
 function clusterSpots() {
-  const { width: W, height: H } = stage.getBoundingClientRect();
+  const { height: H } = stage.getBoundingClientRect();
+  const W = stage.clientWidth;
   const itemH = Math.max(...tosses.map((el) => el.offsetHeight));
-  const tinBottom = tin.offsetTop + tin.offsetHeight;
-  const row1 = tinBottom + 14 + itemH / 2;
-  const row2 = row1 + (itemH + 10) * 1.2;   // rows ~20% further apart
+  const tinBottom = tin.offsetTop + tin.offsetHeight;   // layout box: not affected by the open/close animation
   const spots = [];
-  CLUSTER_X.forEach((xs, r) => xs.forEach((x) => spots.push([x, (r ? row2 : row1) / H])));
-  return spots.map(([x, y], i) => [x, y + CLUSTER_NUDGE_Y[i] / H]);
+  CLUSTER_X.forEach((xs, r) => {
+    const y = tinBottom + CLUSTER_TOP_GAP + itemH / 2 + r * (itemH + CLUSTER_ROW_GAP);
+    xs.forEach((x) => spots.push([x * W, y]));
+  });
+  return spots.map(([x, y], i) => [(x + CLUSTER_NUDGE[i][0]) / W, (y + CLUSTER_NUDGE[i][1]) / H]);
 }
 const CALM_TILTS = [-8, 6, -5, 9, -6, 7, -4];   // used when motion is reduced (no randomness)
 
