@@ -6,7 +6,23 @@
   <title>Angela Wang</title>
   <!-- lets CSS hide things that animate in, only when JS is running -->
   <script>document.documentElement.classList.add('js')</script>
-  <meta name="description" content="Angela Wang: CS '28 at Cornell. Designer and developer who likes products and people." />
+  <meta name="description" content="Angela Wang is a CS student at Cornell who designs, develops, and builds products." />
+
+  <!-- Link previews (LinkedIn, iMessage, Slack, X). %VITE_SITE_URL% is filled in at build time from .env:
+       set it to the live address so the preview image gets a full URL. The image is a 1200×630 shot of the hero. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Angela Wang" />
+  <meta property="og:title" content="Angela Wang" />
+  <meta property="og:description" content="Angela Wang is a CS student at Cornell who designs, develops, and builds products." />
+  <meta property="og:url" content="%VITE_SITE_URL%/" />
+  <meta property="og:image" content="%VITE_SITE_URL%/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Hi, I'm Angela: a cutout photo of Angela next to her name, with 'CS '28 @ Cornell' and 'I like products, and I like people.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Angela Wang" />
+  <meta name="twitter:description" content="Angela Wang is a CS student at Cornell who designs, develops, and builds products." />
+  <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.jpg" />
   <!-- favicon: the script "A" (from the AW) in dusty rose. The SVG is the main icon (Chrome, Firefox, Edge); browsers without
        SVG support use favicon.ico (which holds the 16/32/48 PNGs); iPhones use the apple-touch-icon. Extra sized
        PNG <link>s are left out on purpose: Chrome tends to pick them over the SVG. Bump ?v= when icons change.

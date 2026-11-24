@@ -22,4 +22,3 @@ than the font's own (6.2-unit same-color outline; 60 units on the 16px PNG so it
 `index.html` links: favicon.ico (fallback) + favicon.svg (main) + apple-touch-icon. `favicon-16/32.png` and
 `favicon.png` (64) are kept as files (the .ico is built from them) but not linked separately, because Chrome
 tends to pick sized PNGs over the SVG. After changing the icons, bump `?v=` on the `<link>`s.
-`script/` is an older, unused rounded-square variant.

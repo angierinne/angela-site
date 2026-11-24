@@ -104,8 +104,15 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 ## Commands
 `npm run dev` (http://localhost:5173), `npm run build`, `npm run preview`.
 
+## Deploy / link previews
+- `index.html` has the page title "Angela Wang", a meta description, and Open Graph + Twitter card tags. The preview image is `public/og-image.jpg` (1200×630, a shot of the landing hero at 1440px wide, reduced motion so it's the final state).
+- **Set `VITE_SITE_URL` before the real deploy** (in `.env`, or as an environment variable in Vercel / Netlify), e.g. `https://angelawang.com` with no trailing slash. Vite fills `%VITE_SITE_URL%` into the og:image / og:url / twitter:image tags at build time; LinkedIn and iMessage need that full URL to show the preview image. Left empty, the tags fall back to relative paths.
+- If the hero changes, retake `og-image.jpg` (same size) so link previews stay current. LinkedIn caches previews: use its Post Inspector to refresh after redeploying.
+- Build output is `dist/` (git-ignored). `.DS_Store` files must not be in `public/` (Vite copies everything in it into the build).
+
 ## Where we left off (2026-11-24, latest)
-- **Latest:** "Thanks for visiting!" now matches the "things I’ve made" note size; the desktop "items closer to the tin" change was reverted (original scatter + stage height restored).
+- **Latest:** deploy prep: meta description, Open Graph / Twitter tags + `og-image.jpg`, `VITE_SITE_URL` for the full preview-image URL, all links checked, images already web-sized (lossless pass only), unused favicon variant removed.
+- **Before that:** "Thanks for visiting!" now matches the "things I’ve made" note size; the desktop "items closer to the tin" change was reverted (original scatter + stage height restored).
 - **Before that:** pre-launch polish: tin title down to the "lately" size; "Shake the tin" 20px under the tin with a full hover underline; more room between the AW mark and "Hi, I’m" on desktop; landing paragraph slightly darker.
 - **Before that:** spacing: ticker → "What's in my tin?" now matches the landing gap on desktop (shared `--section-gap`, 136px; was 152–228px), and is 40% smaller on phones (128 → 77px).
 - **Before that:** favicon v8: just the script "A" (complete), filling the icon, same stroke weight as v6; full-AW v6 saved in `images/favicon-alt/aw-v6/`; `?v=8`.
@@ -134,6 +141,6 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 
 ### Next steps
 1. Answer the open questions above.
-2. Test on a real iPhone (swipe feel, tap-to-flip, tin notes, Safari's script rendering).
-3. Share-preview image + meta tags (title, description, Open Graph / Twitter card).
-4. Deploy to Netlify or Vercel (`npm run build`, output in `dist/`), then check the live site at all widths.
+2. Deploy to Netlify or Vercel (build command `npm run build`, output `dist/`), with `VITE_SITE_URL` set to the live address.
+3. Check the live site at all widths and on a real iPhone (swipe feel, tap-to-flip, tin notes, Safari's script rendering).
+4. Paste the live link into LinkedIn's Post Inspector / an iMessage to confirm the preview card.
