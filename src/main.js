@@ -45,13 +45,29 @@ const revealer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('[data-reveal]').forEach((el) => revealer.observe(el));
+// At the very bottom of the page the last pieces (the AW signature) can't scroll high enough to cross the
+// observer's line, so once you reach the end, reveal whatever is still waiting.
+function revealAtEnd() {
+  if (window.scrollY + window.innerHeight < document.documentElement.scrollHeight - 4) return;
+  document.querySelectorAll('[data-reveal]:not(.is-in)').forEach((el) => { el.classList.add('is-in'); revealer.unobserve(el); });
+}
+window.addEventListener('scroll', revealAtEnd, { passive: true });
+window.addEventListener('resize', revealAtEnd);
 
 /* =============================================================
    SKILLS TICKER: set its speed from its width (CSS does the drift)
    ============================================================= */
-const SKILLS_SPEED = 34; // px per second
+const SKILLS_SPEED = 34;        // px per second (desktop)
+const SKILLS_SPEED_PHONE = 17;  // half as fast on phones (≤768px) so it's readable on a small screen
+const phoneMQ = window.matchMedia('(max-width: 768px)');
 const skillsTrack = document.querySelector('.skills__track');
-if (skillsTrack) skillsTrack.style.animationDuration = `${skillsTrack.scrollWidth / 2 / SKILLS_SPEED}s`;
+function setSkillsSpeed() {
+  if (!skillsTrack) return;
+  const speed = phoneMQ.matches ? SKILLS_SPEED_PHONE : SKILLS_SPEED;
+  skillsTrack.style.animationDuration = `${skillsTrack.scrollWidth / 2 / speed}s`;
+}
+setSkillsSpeed();
+phoneMQ.addEventListener('change', setSkillsSpeed);
 
 // Can this device hover? Checked live (not just once at load), and every tap also records its pointer
 // type, so touch taps work even on touch laptops or in the browser's device mode.
