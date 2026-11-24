@@ -53,7 +53,12 @@ const SKILLS_SPEED = 34; // px per second
 const skillsTrack = document.querySelector('.skills__track');
 if (skillsTrack) skillsTrack.style.animationDuration = `${skillsTrack.scrollWidth / 2 / SKILLS_SPEED}s`;
 
-const canHover = window.matchMedia('(hover: hover)').matches;
+// Can this device hover? Checked live (not just once at load), and every tap also records its pointer
+// type, so touch taps work even on touch laptops or in the browser's device mode.
+const hoverMQ = window.matchMedia('(hover: hover)');
+let lastPointer = 'mouse';
+document.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType; }, true);
+const isTouchTap = (e) => e.pointerType === 'touch' || (!e.pointerType && lastPointer === 'touch') || !hoverMQ.matches;
 
 /* =============================================================
    WORK STICKERS: when to flip
@@ -98,7 +103,7 @@ const wasSwipe = (e) => press && (Math.abs(press.row.scrollLeft - press.scroll) 
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.sticker__card');
   if (!card || e.target.closest('a')) return;
-  if (canHover && e.pointerType !== 'touch') return;   // mouse uses the hover logic above
+  if (!isTouchTap(e)) return;   // mouse uses the hover logic above
   if (wasSwipe(e)) return;
   card.classList.toggle('is-flipped');
 });
@@ -159,14 +164,14 @@ const SPOTS = {
 };
 // Phones: a tight "just spilled out" cluster right under the tin: 4 on top, 3 below,
 // offset so they interlock. Worked out in px from the real tin + item sizes, returned as fractions.
-const CLUSTER_X = [[0.125, 0.375, 0.625, 0.875], [0.25, 0.5, 0.75]];
+const CLUSTER_X = [[0.11, 0.37, 0.63, 0.89], [0.24, 0.5, 0.76]];   // spread to the stage edges
 const CLUSTER_NUDGE_Y = [-4, 5, -2, 6, 3, -5, 2];   // small fixed wobble so the rows don't look ruled
 function clusterSpots() {
   const { width: W, height: H } = stage.getBoundingClientRect();
   const itemH = Math.max(...tosses.map((el) => el.offsetHeight));
   const tinBottom = tin.offsetTop + tin.offsetHeight;
   const row1 = tinBottom + 14 + itemH / 2;
-  const row2 = row1 + itemH + 10;
+  const row2 = row1 + (itemH + 10) * 1.2;   // rows ~20% further apart
   const spots = [];
   CLUSTER_X.forEach((xs, r) => xs.forEach((x) => spots.push([x, (r ? row2 : row1) / H])));
   return spots.map(([x, y], i) => [x, y + CLUSTER_NUDGE_Y[i] / H]);
@@ -399,11 +404,11 @@ tosses.forEach((el) => {
   el.addEventListener('pointercancel', drop);
 });
 
-// tap (touch screens): show one note at a time; tap elsewhere to hide it
+// tap (touch screens): show one note at a time; tap it again or anywhere else to hide it
 document.addEventListener('click', (e) => {
+  if (!isTouchTap(e)) return;   // mouse uses hover (CSS)
   const el = e.target.closest('.toss');
-  if (canHover) return;
-  if (!el) { clearNotes(); return; }
+  if (!el || !el.classList.contains('is-out')) { clearNotes(); return; }
   const was = el.classList.contains('is-active');
   clearNotes();
   if (!was) { placeNote(el); el.classList.add('is-active'); }
