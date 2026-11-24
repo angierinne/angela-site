@@ -58,7 +58,7 @@ window.addEventListener('resize', revealAtEnd);
    SKILLS TICKER: set its speed from its width (CSS does the drift)
    ============================================================= */
 const SKILLS_SPEED = 34;        // px per second (desktop)
-const SKILLS_SPEED_PHONE = 22;  // slower on phones (≤768px) so it's readable on a small screen (~65% of desktop)
+const SKILLS_SPEED_PHONE = 19;  // slower on phones (≤768px) so it's readable on a small screen (~55% of desktop)
 const phoneMQ = window.matchMedia('(max-width: 768px)');
 const skillsTrack = document.querySelector('.skills__track');
 function setSkillsSpeed() {
