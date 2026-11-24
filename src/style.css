@@ -143,9 +143,16 @@ button { font: inherit; color: inherit; }
   position: absolute; z-index: 3;
   left: .08em; top: -.42em;
   font-size: min(12vw, 170px);
-  transform: rotate(-8deg); transform-origin: left center;
-  padding: var(--room) .3em calc(var(--room) + .1em) 0;   /* the write-in mask comes from .writes */
+  transform: rotate(-8deg); transform-origin: var(--room-x) center;
+  /* The write-in mask (from .writes) only covers this box, and the H's swash reaches past its left edge,
+     so there's room on the LEFT too (--room-x, rounded to whole pixels so the text renders exactly as
+     before). The negative margin-left and the transform-origin offset cancel it, so "Hi, I'm" sits and
+     rotates exactly where it did before. */
+  --room-x: var(--room);
+  padding: var(--room) .3em calc(var(--room) + .1em) var(--room-x);
+  margin-left: calc(-1 * var(--room-x));
 }
+@supports (width: round(1.5px, 1px)) { .hero__hi { --room-x: round(var(--room), 1px); } }   /* older browsers use the unrounded value */
 
 /* the sticker stands IN FRONT of the big letters */
 /* sits over the right leg of the final A, so the whole name still reads */
@@ -273,15 +280,8 @@ button { font: inherit; color: inherit; }
 .js .work-group.is-in .row-note__arrow { opacity: 1; }
 
 /* Skills ticker: small, quiet texture under the projects row. Drifts left; duration is set from its width in main.js. */
-/* Sits within the content width (lined up with the rows above). The hairline is on .skills (crisp, full width);
-   the words scroll inside .skills__window, whose mask fades them in and out at both ends instead of cutting them. */
-.skills { margin-top: clamp(72px, 9vw, 120px); border-top: 1px solid rgb(71 67 41 / .35); }
-.skills__window {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-}
-.skills__track { display: flex; width: max-content; padding: 12px 0; animation: drift 50s linear infinite; }
+.skills { margin: clamp(72px, 9vw, 120px) calc(-1 * var(--side)) 0; overflow: hidden; }
+.skills__track { display: flex; width: max-content; padding: 12px 0; border-top: 1px solid rgb(71 67 41 / .35); animation: drift 50s linear infinite; }
 .skills:hover .skills__track { animation-play-state: paused; }
 .skills__text { white-space: nowrap; padding-right: .9em; font-size: 12.5px; font-weight: 500; letter-spacing: .2em; color: var(--ink); }
 .skills__text i { font-style: normal; color: var(--rose); margin: 0 .7em; font-weight: 700; }
