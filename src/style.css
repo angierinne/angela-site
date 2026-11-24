@@ -181,7 +181,7 @@ button { font: inherit; color: inherit; }
 .hero__text { position: relative; z-index: 1; margin-top: clamp(28px, 4vw, 48px); max-width: min(50%, 560px); }
 .hero__school { margin-bottom: 18px; }
 .hero__lead { font-size: clamp(26px, 2.8vw, 36px); font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
-.hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: var(--ink-soft); }
+.hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: #57533a; }   /* between --ink-soft and --ink: easier to read, still quieter than the lead */
 .hero .links { margin-top: 28px; }
 
 /* Desktop: one shared gap between the big blocks, so they stay consistent:
@@ -190,6 +190,7 @@ button { font: inherit; color: inherit; }
 :root { --section-gap: 136px; }
 @media (min-width: 769px) {
   .hero { min-height: 0; padding-bottom: 0; }
+  .hero__stage { margin-top: calc(clamp(56px, 11vh, 120px) + 28px); }   /* so the AW mark and "Hi, I'm" don't nearly touch */
   #work { padding-top: var(--section-gap); padding-bottom: 0; }
   #tin { padding-top: calc(var(--section-gap) - 8px); }   /* - 8px: the title already sits 8px down (.tin-head__title margin) */
 }
@@ -402,7 +403,8 @@ button { font: inherit; color: inherit; }
 .tin-head__sub { font-size: 17px; color: var(--ink-soft); }
 .tin-head__hint { display: none; margin-top: 2px; font-size: 13px; letter-spacing: .02em; color: var(--ink-soft); }   /* phones only */
 /* padding-bottom also holds the subtitle's 3.4px pull-up (a negative margin there would collapse into this one's) */
-.tin-head__title { font-size: min(14vw, 150px); padding: var(--room) .3em calc(var(--room) + .1em - 3.4px); margin-top: calc(8px - var(--room)); }
+.tin-head__title { font-size: clamp(48px, 5vw, 64px);   /* same size as "Thanks for visiting!" / "lately" */
+   padding: var(--room) .3em calc(var(--room) + .1em - 3.4px); margin-top: calc(8px - var(--room)); }
 
 /* The stage is two lids tall: closed, the tin sits in the middle; open, the lid
    swings up on its hinge into the top half and the tray slides into the bottom half. */
@@ -454,7 +456,8 @@ button { font: inherit; color: inherit; }
 /* ----- the stage: the tin sits centered, the items scatter around it -----
    Items are absolutely positioned at the stage's top-left and moved with the `translate` /
    `rotate` / `scale` properties from main.js. The bouncy transition does the "toss". */
-.toss-stage { position: relative; height: clamp(660px, 58vw, 780px); margin-top: clamp(12px, 2vw, 24px); }
+.toss-stage { position: relative; height: clamp(528px, 46.4vw, 624px);   /* 20% shorter than before, so items sit closer to the tin (see SPOTS in main.js) */
+   margin-top: clamp(12px, 2vw, 24px); }
 .toss-stage .tin { position: absolute; left: 50%; top: 50%; width: min(330px, 29%); translate: -50% -50%; margin: 0; }
 .tin.is-shaking { animation: tin-shake .7s ease-in-out; }
 @keyframes tin-shake {
@@ -525,9 +528,15 @@ button { font: inherit; color: inherit; }
 }
 .tin-shake::after {
   content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: var(--rose);
-  transform: scaleX(.35); transform-origin: left; transition: transform .35s var(--ease);
+  transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease);
 }
 .tin-shake:hover::after, .tin-shake:focus-visible::after { transform: scaleX(1); }
+/* Desktop: sit 20px below the OPEN tin instead of below the whole stage.
+   Open tin height = its width (min(330px, 29%), same % base as the stage) × 680/500; the tin is centered
+   in the stage (height clamp(528px, 46.4vw, 624px)), so this negative margin pulls the button up to it. */
+@media (min-width: 769px) {
+  .tin-shake { margin-top: calc(min(330px, 29%) * 680 / 500 / 2 - clamp(528px, 46.4vw, 624px) / 2 + 20px); }
+}
 
 /* Phones: the tin sits at the top and the items land in a tight two-row cluster right under it
    (spots worked out in main.js). Stage height = the open tin (62% wide, 500:680) + room for the two rows. */

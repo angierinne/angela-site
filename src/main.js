@@ -158,10 +158,17 @@ const TOSS_GAP_MS = 170;   // between items popping out
 
 // Landing spots (item centers, as fractions of the stage). The tin sits in the middle on wide
 // screens, so spots ring it left and right. (Phones use clusterSpots() below instead.)
-const SPOTS = {
+// SPOTS_WIDE is the original wide scatter; PULL draws every spot sideways toward the tin's edge so the
+// items look like they just popped out of it (1 = original). Up/down, the same 20% comes from the desktop
+// stage being 20% shorter (style.css .toss-stage), since these are fractions of its height.
+const SPOTS_WIDE = {
   left:  [[0.08, 0.17], [0.24, 0.13], [0.12, 0.47], [0.27, 0.43], [0.09, 0.81], [0.25, 0.83]],
   right: [[0.92, 0.18], [0.76, 0.12], [0.88, 0.49], [0.73, 0.45], [0.91, 0.82], [0.75, 0.80]],
 };
+const PULL = 0.8;                                   // 20% closer
+const TIN_EDGE = { left: 0.355, right: 0.645 };     // where the tin's sides sit (fractions of the stage width)
+const pullIn = (side) => ([x, y]) => [TIN_EDGE[side] + (x - TIN_EDGE[side]) * PULL, y];
+const SPOTS = { left: SPOTS_WIDE.left.map(pullIn('left')), right: SPOTS_WIDE.right.map(pullIn('right')) };
 // Phones: a loose "just spilled out" scatter BELOW the open tin (never on the lid or tray):
 // 3 rows of 2 / 3 / 2, offset so they interlock, with roomy gaps so each item is easy to tap.
 // Worked out in px from the tin's layout box (its bottom = the open tray's bottom) and the item sizes,
@@ -191,8 +198,8 @@ const shuffle = (list) => {
   return a;
 };
 
-// pick 7 spots: balanced (3–4 per side) on wide screens, a few random gaps on phones
-function newLayout(random = !reduceMotion) {
+// one candidate layout (see newLayout)
+function oneLayout(random) {
   let spots;
   if (narrow.matches) {
     spots = clusterSpots();   // which item goes where is shuffled below
@@ -210,6 +217,43 @@ function newLayout(random = !reduceMotion) {
     y: y + (random ? rand(-0.022, 0.022) * jitter : 0),
     r: random ? rand(-12, 12) * (narrow.matches ? 0.7 : 1) : CALM_TILTS[i],
   }));
+}
+// How much a layout's items would overlap each other, the tin, or the stage edges (px², 0 = clean).
+// Uses each item's real size, grown for its tilt, plus a small gap.
+function layoutOverlap(layout) {
+  const s = stage.getBoundingClientRect();
+  const t = tin.getBoundingClientRect();
+  const tinBox = { l: t.left - s.left, r: t.right - s.left, t: t.top - s.top, b: t.bottom - s.top };
+  const GAP = 8;
+  const boxes = layout.map((p, i) => {
+    const art = tosses[i].querySelector('.toss__art');
+    const a = Math.abs(p.r) * Math.PI / 180, w = art.offsetWidth, h = art.offsetHeight;
+    const hw = (w * Math.cos(a) + h * Math.sin(a)) / 2 + GAP / 2, hh = (w * Math.sin(a) + h * Math.cos(a)) / 2 + GAP / 2;
+    const cx = p.x * s.width, cy = p.y * s.height;
+    return { l: cx - hw, r: cx + hw, t: cy - hh, b: cy + hh };
+  });
+  const ov = (A, B) => Math.max(0, Math.min(A.r, B.r) - Math.max(A.l, B.l)) * Math.max(0, Math.min(A.b, B.b) - Math.max(A.t, B.t));
+  let total = 0;
+  boxes.forEach((A, i) => {
+    total += ov(A, tinBox);
+    boxes.slice(i + 1).forEach((B) => { total += ov(A, B); });
+    total += Math.max(0, -A.l) + Math.max(0, A.r - s.width) + Math.max(0, -A.t) + Math.max(0, A.b - s.height);
+  });
+  return total;
+}
+// Pick 7 spots: balanced (3–4 per side) on wide screens, the 2 / 3 / 2 scatter on phones.
+// On wide screens the random jitter + tilt can make neighbors touch now that they sit close to the tin,
+// so we re-roll until nothing touches (keeping the best try as a fallback).
+function newLayout(random = !reduceMotion) {
+  if (!random || narrow.matches) return oneLayout(random);
+  let best = null;
+  for (let i = 0; i < 40; i++) {
+    const layout = oneLayout(true);
+    const score = layoutOverlap(layout);
+    if (!best || score < best.score) best = { layout, score };
+    if (score === 0) break;
+  }
+  return best.layout;
 }
 
 const where = new Map();   // item -> {x, y, r} while it's out, null while it's inside the tin
