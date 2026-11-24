@@ -184,11 +184,19 @@ button { font: inherit; color: inherit; }
 .hero__about { margin-top: 14px; max-width: 46ch; font-size: 17px; color: var(--ink-soft); }
 .hero .links { margin-top: 28px; }
 
-/* Desktop: the hero used to fill the whole screen (min-height: 100svh), which left a big, screen-height-
-   dependent gap above "My work". Now it is a fixed ~136px (half of what it was on a 900px-tall screen). */
+/* Desktop: one shared gap between the big blocks, so they stay consistent:
+   landing links → "My work" divider, and skills ticker → "What's in my tin?".
+   (The hero used to fill the whole screen, which left a big, screen-height-dependent gap.) */
+:root { --section-gap: 136px; }
 @media (min-width: 769px) {
-  .hero { min-height: 0; padding-bottom: 56px; }
-  #work { padding-top: 80px; }
+  .hero { min-height: 0; padding-bottom: 0; }
+  #work { padding-top: var(--section-gap); padding-bottom: 0; }
+  #tin { padding-top: calc(var(--section-gap) - 8px); }   /* - 8px: the title already sits 8px down (.tin-head__title margin) */
+}
+/* Phones: ticker → "What's in my tin?" is 77px (40% less than before); the landing gap is set in the hero's phone block */
+@media (max-width: 768px) {
+  #work { padding-bottom: 0; }
+  #tin { padding-top: calc(77px - 8px); }
 }
 @media (max-width: 768px) {
   .hero { min-height: 0; padding-bottom: 32px; }   /* links → "My work" gap: half of before */

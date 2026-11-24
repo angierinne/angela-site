@@ -52,7 +52,7 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 
 ## Page structure (one scrolling page, `index.html`)
 1. **Hero** (`#top`): AW mark top-left (no other top labels). Huge "ANGELA" (Anton). The stop-motion sticker stands IN FRONT of the letters, over the right leg of the final A so the name still reads. Dusty rose script "Hi, I’m" is rotated across the top of ANGELA. Below: "/// CS '28 @ Cornell" label, "I like products, and I like people." (strong secondary line), a short quiet paragraph, and minimal links: Email (`mailto:aw858@cornell.edu`), LinkedIn (`https://www.linkedin.com/in/angela-wang-3b6767212/`), GitHub (`https://github.com/angierinne`). LinkedIn/GitHub open in a new tab (`target="_blank" rel="noopener noreferrer"`). **No Resume link.**
-   - Desktop: the hero does NOT fill the screen (no `min-height: 100svh`); the links → "My work" gap is a fixed ~136px (hero padding-bottom 56px + `#work` padding-top 80px, inside `@media (min-width: 769px)`). Phones: 68px.
+   - Desktop: the hero does NOT fill the screen (no `min-height: 100svh`). The big gaps share one variable, `--section-gap` (136px): landing links → "My work" divider, and skills ticker → "What's in my tin?" (inside `@media (min-width: 769px)`). Phones: links → divider 68px, ticker → tin title 77px.
    - Entrance (~1.5s): ANGELA's letters rise in → the script writes in (mask wipe) → `[data-rise]` lines fade up in sequence.
 2. **My work** (`#work`): small header ("/// MY WORK" label + dusty rose script "lately"). Two STATIC rows of 3 photo stickers, placed by hand (not a rigid grid):
    - Row 1 (experience): Design Consulting at Cornell (LEADERSHIP · President · 2026 – Present), Mastercard (INTERNSHIP · Technical Product Management Intern · 2026), PTC (INTERNSHIP · User Experience and Research Intern · 2025). Script note "where I’ve worked" + arrow on its RIGHT; the row sits slightly left.
@@ -104,7 +104,8 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 `npm run dev` (http://localhost:5173), `npm run build`, `npm run preview`.
 
 ## Where we left off (2026-11-24, latest)
-- **Latest:** favicon v8: just the script "A" (complete), filling the icon, same stroke weight as v6; full-AW v6 saved in `images/favicon-alt/aw-v6/`; `?v=8`.
+- **Latest:** spacing: ticker → "What's in my tin?" now matches the landing gap on desktop (shared `--section-gap`, 136px; was 152–228px), and is 40% smaller on phones (128 → 77px).
+- **Before that:** favicon v8: just the script "A" (complete), filling the icon, same stroke weight as v6; full-AW v6 saved in `images/favicon-alt/aw-v6/`; `?v=8`.
 - **Before that:** favicon v6: complete AW (no cropped swashes) fit edge to edge, strokes ~20% bolder than the font's, `?v=6`.
 - **Before that:** favicon v5: original thin strokes (v4's thick outline removed), tighter crop so the letters are ~42% bigger, hairline outline at 16px only, `?v=5`.
 - **Before that:** favicon v4 (thick outline, SVG primary icon).
