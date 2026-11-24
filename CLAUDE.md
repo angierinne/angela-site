@@ -41,7 +41,7 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 ## Brand mark: "AW" signature
 - Dusty Rose Mrs Saint Delafield "AW", like she signed the page.
 - Used: small in the top-left of the hero (`.mark`, no nav bar), as the favicon, and as the sign-off at the very bottom (`.signoff`).
-- Favicon (NOT the site's `.mark`): the script "AW" (Mrs Saint Delafield, dusty rose, no background), built from the font's glyph outlines. In the favicon only, the A's far-left tail and the W's far-right flourish are cropped off so the letters are ~30% bigger, and a same-color stroke thickens them (heavier at smaller sizes). `public/favicon.svg` is the main icon; `favicon.ico` (16/32/48) is the fallback; `apple-touch-icon.png` (180) has a Soft Sand background (iOS shows transparency as black). `favicon-16/32.png` + `favicon.png` are kept as files but not linked (Chrome would pick them over the SVG). Links use `?v=4`: bump it when the icons change. How to rebuild: `images/favicon-alt/README.md`.
+- Favicon (NOT the site's `.mark`): the script "AW" (Mrs Saint Delafield, dusty rose, no background), built from the font's glyph outlines with its ORIGINAL thin strokes (matches the header AW). In the favicon only, the A's far-left tail and the W's far-right flourish are cropped off so the letters are ~42% bigger; only the 16px PNG gets a hairline outline so it doesn't vanish. `public/favicon.svg` is the main icon; `favicon.ico` (16/32/48) is the fallback; `apple-touch-icon.png` (180) has a Soft Sand background. `favicon-16/32.png` + `favicon.png` are kept as files but not linked (Chrome would pick them over the SVG). Links use `?v=5`: bump it when the icons change. How to rebuild: `images/favicon-alt/README.md`.
 
 ## Editorial details (use consistently, sparingly)
 - Tiny uppercase Afacad labels for texture: "MY WORK", "CS '28". **No section counters.** Tag pills under work stickers: Mocha Green fill + sand text for experience tags; PROJECT = light rose fill (`--rose-tint`) + rose border + Mocha Green text (rose itself is too light behind small text).
@@ -104,7 +104,8 @@ Single-page personal site for Angela Wang, a CS student (Cornell). Vite + vanill
 `npm run dev` (http://localhost:5173), `npm run build`, `npm run preview`.
 
 ## Where we left off (2026-11-24, latest)
-- **Latest:** favicon v4: script AW ~30% bigger (outer swash tails cropped in the favicon only), thicker strokes, SVG as the main icon with .ico + apple fallbacks.
+- **Latest:** favicon v5: original thin strokes (v4's thick outline removed), tighter crop so the letters are ~42% bigger, hairline outline at 16px only, `?v=5`.
+- **Before that:** favicon v4 (thick outline, SVG primary icon).
 - **Before that:** favicon back to the script AW, scaled to the full icon width (`?v=3`), Anton favicon deleted; skills ticker edge fade reverted (exactly as before); "Hi, I’m" no longer clipped on the left (mask room on the left). Desktop pixel-identical to before these three changes.
 - **Before that:** footer links fixed (the AW signature's padded box was covering them on phones → `.writes` is `pointer-events: none`; all links get bigger hit areas); favicon redesigned as Anton "AW" on a dusty rose square (`?v=2` cache-bust; script alternative in `images/favicon-alt/`); skills ticker now within the content width with soft faded edges. Desktop pixel-identical except the ticker.
 - **Before that (2026-11-24):** bigger script favicon (since replaced by the Anton one); phone tin = 2 / 3 / 2 scatter fully below the tin, roomier, button closer; phone footer row = "© 2026 ANGELA WANG" + links on one line. Desktop checked pixel-identical to the previous commit.
