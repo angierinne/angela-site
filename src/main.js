@@ -55,7 +55,12 @@ window.addEventListener('scroll', revealAtEnd, { passive: true });
 window.addEventListener('resize', revealAtEnd);
 
 /* =============================================================
-   SKILLS TICKER: set its speed from its width (CSS does the drift)
+   SKILLS TICKER: one CSS animation (@keyframes drift, time-based, so frame rate / Low Power Mode
+   don't matter). JS only sets its duration so the speed is a steady px per second:
+   duration = distance travelled (half the track: one copy of the text) ÷ speed.
+   The width is measured AFTER the web fonts load (measuring the narrower fallback font made the
+   speed differ between page loads), and again whenever the track's width changes. The ticker
+   stays still (.is-ready not set) until it has been measured, so it never starts at a wrong speed.
    ============================================================= */
 const SKILLS_SPEED = 34;        // px per second (desktop)
 const SKILLS_SPEED_PHONE = 19;  // slower on phones (≤768px) so it's readable on a small screen (~55% of desktop)
@@ -64,10 +69,17 @@ const skillsTrack = document.querySelector('.skills__track');
 function setSkillsSpeed() {
   if (!skillsTrack) return;
   const speed = phoneMQ.matches ? SKILLS_SPEED_PHONE : SKILLS_SPEED;
-  skillsTrack.style.animationDuration = `${skillsTrack.scrollWidth / 2 / speed}s`;
+  const distance = skillsTrack.offsetWidth / 2;   // layout width, not affected by the moving transform
+  if (distance > 0) skillsTrack.style.animationDuration = `${distance / speed}s`;
 }
-setSkillsSpeed();
-phoneMQ.addEventListener('change', setSkillsSpeed);
+if (skillsTrack) {
+  document.fonts.ready.then(() => {
+    setSkillsSpeed();
+    skillsTrack.classList.add('is-ready');   // start moving only now (see .skills__track in style.css)
+    new ResizeObserver(setSkillsSpeed).observe(skillsTrack);   // e.g. a late font swap or a resize
+  });
+  phoneMQ.addEventListener('change', setSkillsSpeed);
+}
 
 // Can this device hover? Checked live (not just once at load), and every tap also records its pointer
 // type, so touch taps work even on touch laptops or in the browser's device mode.
